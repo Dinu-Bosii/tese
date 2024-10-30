@@ -1,0 +1,5 @@
+Classifier,Mean AUC,Std AUC,Mean Accuracy,Std Accuracy,Mean F1 Score,Std F1 Score,Mean Precision,Std Precision,Mean Sensitivity,Std Sensitivity,Mean Specificity,Std Specificity
+SVM,0.73,0.019,0.846,0.008,0.469,0.026,0.395,0.025,0.578,0.038,0.882,0.008
+RF,0.775,0.015,0.82,0.012,0.484,0.02,0.366,0.021,0.715,0.03,0.835,0.014
+XGB,0.783,0.014,0.861,0.009,0.535,0.019,0.441,0.021,0.68,0.029,0.885,0.01
+KNN,0.661,0.017,0.9,0.008,0.45,0.033,0.635,0.044,0.35,0.034,0.973,0.005

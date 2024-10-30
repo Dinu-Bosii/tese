@@ -1,0 +1,27 @@
+Mean SVM Accuracy Score    -> 0.735+-0.014
+Mean SVM ROC-AUC Score     -> 0.735+-0.014
+Mean SVM F1-Score          -> 0.734+-0.018
+Mean SVM Precision Score   -> 0.726+-0.025
+Mean SVM Sensitivity Score -> 0.744+-0.03
+Mean SVM Specificity Score -> 0.726+-0.03
+
+Mean RF Accuracy Score    -> 0.758+-0.019
+Mean RF ROC-AUC Score     -> 0.759+-0.018
+Mean RF F1-Score          -> 0.778+-0.018
+Mean RF Precision Score   -> 0.71+-0.029
+Mean RF Sensitivity Score -> 0.863+-0.022
+Mean RF Specificity Score -> 0.655+-0.039
+
+Mean GP Accuracy Score    -> 0.48+-0.01
+Mean GP ROC-AUC Score     -> 0.5+-0.0
+Mean GP F1-Score          -> 0.455+-0.298
+Mean GP Precision Score   -> 0.337+-0.221
+Mean GP Sensitivity Score -> 0.7+-0.458
+Mean GP Specificity Score -> 0.3+-0.458
+
+Mean KNN Accuracy Score    -> 0.732+-0.024
+Mean KNN ROC-AUC Score     -> 0.732+-0.024
+Mean KNN F1-Score          -> 0.72+-0.024
+Mean KNN Precision Score   -> 0.747+-0.042
+Mean KNN Sensitivity Score -> 0.696+-0.036
+Mean KNN Specificity Score -> 0.768+-0.053
