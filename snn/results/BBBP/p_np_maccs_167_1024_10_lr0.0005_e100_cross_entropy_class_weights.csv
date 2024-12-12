@@ -1,0 +1,2 @@
+Mean Acc,Std Acc,Mean AUC,Std AUC,Mean Sn,Std Sn,Mean Sp,Std Sp,Mean F1,Std F1,Mean Precision,Std Precision
+0.871,0.011,0.823,0.018,0.916,0.021,0.731,0.05,0.915,0.008,0.916,0.015
