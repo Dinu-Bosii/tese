@@ -4,7 +4,6 @@ import snntorch as snn
 from snntorch.functional import ce_rate_loss, ce_temporal_loss, ce_count_loss
 
 device = "cpu"
-batch_size = 32
 
 # Neurons Count
 num_outputs = 2
@@ -34,7 +33,6 @@ class SNNet(nn.Module):
         #self.lif2 = snn.Synaptic
 
     
-    #Leaky RELU
 
     def forward(self, x):
         # Initialize hidden states at t=0
@@ -65,14 +63,19 @@ class SNNet(nn.Module):
         return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
     
 
-def train_snn(net, optimizer, device, num_epochs, train_loader, val_loader, loss_type, loss_fn, dtype):
+def train_snn(net, optimizer,  train_loader, val_loader, train_config):
+    device, num_epochs = train_config['device'],  train_config['num_epochs']
+    loss_type, loss_fn, dtype = train_config['loss_type'], train_config['loss_fn'], train_config['dtype']
+
+    val_acc_hist = []
+    val_auc_hist = []
     loss_hist = []
     num_steps = net.num_steps
     #best_eval_loss = float('inf')
     #patience = 6
     for epoch in range(num_epochs):
         net.train()
-        #print(f"Epoch:{epoch}")
+        print(f"Epoch:{epoch + 1}")
         train_batch = iter(train_loader)
 
         # Minibatch training loop
@@ -112,7 +115,7 @@ def train_snn(net, optimizer, device, num_epochs, train_loader, val_loader, loss
             break """
 
 
-    return net, loss_hist
+    return net, loss_hist, val_acc_hist, val_auc_hist
 
 
 def eval_snn(net, device, eval_loader, loss_type, loss_fn, dtype):
@@ -135,9 +138,6 @@ def eval_snn(net, device, eval_loader, loss_type, loss_fn, dtype):
     ## calcular mean Acc
     
     return mean_loss/i
-
-    
-
 
 
 def test_snn(net,  device, test_loader):
@@ -176,7 +176,7 @@ def get_loss_fn(loss_type, class_weights=None):
     return loss_dict[loss_type]
 
 
-def compute_loss(loss_type, loss_fn, spk_rec, mem_rec,num_steps, targets, dtype) :
+def compute_loss(loss_type, loss_fn, spk_rec, mem_rec, num_steps, targets, dtype):
     loss_val = torch.zeros((1), dtype=dtype, device=device)
 
     if loss_type == "rate_loss":
