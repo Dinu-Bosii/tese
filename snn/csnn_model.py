@@ -21,10 +21,10 @@ class CSNNet(nn.Module):
         super().__init__()
         self.num_steps = num_steps
         #trocar out channels - diminuir
-        self.conv1 = nn.Conv1d(in_channels=1, out_channels=32, kernel_size=3, stride=1, padding=1)
+        self.conv1 = nn.Conv1d(in_channels=1, out_channels=8, kernel_size=3, stride=1, padding=1)
         self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad)
 
-        self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=64, kernel_size=3, stride=1, padding=1)
+        self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=16, kernel_size=3, stride=1, padding=1)
         self.lif2 = snn.Leaky(beta=beta, spike_grad=spike_grad)
 
         # The formula below for calculate output size of conv doesn't always give the correct otput
@@ -86,6 +86,7 @@ class CSNNet(nn.Module):
 def train_csnn(net, optimizer, train_loader, val_loader, train_config):
     device, num_epochs, num_steps = train_config['device'],  train_config['num_epochs'], train_config['num_steps']
     loss_type, loss_fn, dtype = train_config['loss_type'], train_config['loss_fn'], train_config['dtype']
+    batch_size = train_config['batch_size']
     loss_hist = []
     val_acc_hist = []
     val_auc_hist = []
@@ -157,7 +158,7 @@ def val_csnn(net, device, val_loader, loss_type, loss_fn, num_steps, dtype):
 def test_csnn(net,  device, test_loader):
     all_preds = []
     all_targets = []
-
+    print("test dataset size:", len(test_loader.dataset))
     # Testing Set Loss
     with torch.no_grad():
         net.eval()
@@ -179,5 +180,6 @@ def test_csnn(net,  device, test_loader):
             all_preds.extend(predicted.cpu().numpy())
             all_targets.extend(targets.cpu().numpy())
 
+    print(len(all_preds), len(all_targets))
     return all_preds, all_targets
     

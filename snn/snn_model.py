@@ -159,10 +159,10 @@ def test_snn(net,  device, test_loader):
             # based on the times they spiked in the 10 time step interval
             
             _, predicted = test_spk.sum(dim=0).max(1)
-            
             all_preds.extend(predicted.cpu().numpy())
             all_targets.extend(targets.cpu().numpy())
 
+    print(len(predicted))
     return all_preds, all_targets
 
 
