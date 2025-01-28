@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import snntorch as snn
 from snntorch.functional import ce_rate_loss, ce_temporal_loss, ce_count_loss
+from sklearn.metrics import roc_auc_score, accuracy_score
 
 device = "cpu"
 
@@ -32,14 +33,12 @@ class SNNet(nn.Module):
             self.lif_out = snn.Leaky(beta=beta, output=True)
         #self.lif2 = snn.Synaptic
 
-    
-
     def forward(self, x):
         # Initialize hidden states at t=0
 
         mem1 = self.lif1.reset_mem()
         if self.l2:
-            mem2 = self.lif1.reset_mem()
+            mem2 = self.lif2.reset_mem()
         mem_out = self.lif_out.reset_mem()
         
 
@@ -66,13 +65,13 @@ class SNNet(nn.Module):
 def train_snn(net, optimizer,  train_loader, val_loader, train_config):
     device, num_epochs = train_config['device'],  train_config['num_epochs']
     loss_type, loss_fn, dtype = train_config['loss_type'], train_config['loss_fn'], train_config['dtype']
-
+    val_fn = train_config['val_net']
     val_acc_hist = []
     val_auc_hist = []
     loss_hist = []
     num_steps = net.num_steps
-    #best_eval_loss = float('inf')
-    #patience = 6
+    best_auc_roc = float('inf')
+    patience = 6
     for epoch in range(num_epochs):
         net.train()
         print(f"Epoch:{epoch + 1}")
@@ -103,24 +102,32 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config):
 
         #Naive Early Stopping -> Change to checking for a min_delta for the loss value
         # Do this after every 5th epoch for example
-        """ val_loss = val_snn(net, device, eval_loader, loss_type, loss_fn, dtype)
-        if eval_loss < best_eval_loss:
-            best_eval_loss = eval_loss
-            patience_counter = 0
-        else:
-            patience_counter += 1
 
-        if patience_counter >= patience:
-            print(f"Early stopping at epoch {epoch+1}")
-            break """
+        if epoch % 5 == 0:
+            _, auc_roc = val_snn(net, device, val_loader, loss_type, loss_fn, dtype)
+            if auc_roc > best_auc_roc:
+                best_auc_roc = auc_roc
+                patience_counter = 0
+            else:
+                patience_counter += 1
 
+            if patience_counter >= patience:
+                print(f"Early stopping at epoch {epoch+1}")
+                break
+            #val_acc_hist.extend(accuracy)
+            val_auc_hist.extend(auc_roc)
 
     return net, loss_hist, val_acc_hist, val_auc_hist
 
 
-def eval_snn(net, device, eval_loader, loss_type, loss_fn, dtype):
-    mean_loss = 0
+def val_snn(net, device, eval_loader, loss_type, loss_fn, dtype):
+    #mean_loss = 0
     eval_batch = iter(eval_loader)
+    accuracy = 0
+    auc_roc = 0
+    all_preds = []
+    all_targets = []
+
     net.eval()
     # Minibatch training loop
     i = 0
@@ -130,14 +137,18 @@ def eval_snn(net, device, eval_loader, loss_type, loss_fn, dtype):
         targets = targets.to(device)
 
         spk_rec, mem_rec = net(data)
+        _, predicted = spk_rec.sum(dim=0).max(1)
+        all_preds.extend(predicted.cpu().numpy())
+        all_targets.extend(targets.cpu().numpy())
 
-        loss_val = compute_loss(loss_type, loss_fn, spk_rec, mem_rec, targets, dtype) 
-
-        # Store loss history
-        mean_loss += loss_val
-    ## calcular mean Acc
+        #loss_val = compute_loss(loss_type, loss_fn, spk_rec, mem_rec, targets, dtype) 
+        # Store loss
+        #mean_loss += loss_val
+    ## accuracy and roc-auc
+    accuracy = accuracy_score(all_targets, predicted)
+    auc_roc = roc_auc_score(all_targets, all_preds)
     
-    return mean_loss/i
+    return accuracy, auc_roc
 
 
 def test_snn(net,  device, test_loader):

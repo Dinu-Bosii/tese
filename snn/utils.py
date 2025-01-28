@@ -9,8 +9,8 @@ from torch.utils.data import random_split, TensorDataset
 import deepchem as dc
 from deepchem.splits.splitters import ScaffoldSplitter
 import numpy as np
-from csnn_model import CSNNet, train_csnn, test_csnn
-from snn_model import SNNet, train_snn, test_snn
+from csnn_model import CSNNet, train_csnn, val_csnn, test_csnn
+from snn_model import SNNet, train_snn, val_snn, test_snn
 #from mordred import Calculator, descriptors
 
 
@@ -174,21 +174,24 @@ def get_spiking_net(net_type, net_config):
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters SNN: {num_params}")
         train_fn = train_snn
+        val_fn = val_snn
         test_fn = test_snn
-
+        
     elif net_type == "DSNN":
         net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, use_l2=True)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters DSNN: {num_params}")
         train_fn = train_snn
+        val_fn = val_snn
         test_fn = test_snn
         
     elif net_type == "CSNN":
         net = CSNNet(input_size=input_size, num_steps=time_steps, spike_grad=spike_grad)
         train_fn = train_csnn
+        val_fn = val_csnn
         test_fn = test_csnn
 
-    return net, train_fn, test_fn
+    return net, train_fn, val_fn, test_fn
 
 
 
