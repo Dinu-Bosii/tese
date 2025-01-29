@@ -4,8 +4,6 @@ import snntorch as snn
 from snntorch.functional import ce_rate_loss, ce_temporal_loss, ce_count_loss
 from sklearn.metrics import roc_auc_score, accuracy_score
 
-device = "cpu"
-
 # Neurons Count
 num_outputs = 2
 
@@ -89,7 +87,7 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config):
             #print(spk_rec, mem_rec)
             #print(spk_rec.size(), mem_rec.size(), targets.size())
             # Compute loss
-            loss_val = compute_loss(loss_type, loss_fn, spk_rec, mem_rec, num_steps, targets, dtype) 
+            loss_val = compute_loss(loss_type, loss_fn, spk_rec, mem_rec, num_steps, targets, dtype, device) 
             #print(loss_val.item())
 
             # Gradient calculation + weight update
@@ -141,7 +139,7 @@ def val_snn(net, device, eval_loader, loss_type, loss_fn, dtype):
         all_preds.extend(predicted.cpu().numpy())
         all_targets.extend(targets.cpu().numpy())
 
-        #loss_val = compute_loss(loss_type, loss_fn, spk_rec, mem_rec, targets, dtype) 
+        #loss_val = compute_loss(loss_type, loss_fn, spk_rec, mem_rec, targets, dtype, device) 
         # Store loss
         #mean_loss += loss_val
     ## accuracy and roc-auc
@@ -187,14 +185,14 @@ def get_loss_fn(loss_type, class_weights=None):
     return loss_dict[loss_type]
 
 
-def compute_loss(loss_type, loss_fn, spk_rec, mem_rec, num_steps, targets, dtype):
+def compute_loss(loss_type, loss_fn, spk_rec, mem_rec, num_steps, targets, dtype, device):
     loss_val = torch.zeros((1), dtype=dtype, device=device)
 
     if loss_type == "rate_loss":
-        loss_val = loss_fn(spk_rec, targets)
+        loss_val = loss_fn(spk_rec.to(device), targets.to(device))
     elif loss_type == "cross_entropy":
         for step in range(num_steps):
-            loss_val += loss_fn(mem_rec[step], targets)
+            loss_val += loss_fn(mem_rec[step].to(device), targets.to(device))
     elif loss_type == "temporal_loss":
         raise ValueError("Temporal Loss is not yet supported.")
     

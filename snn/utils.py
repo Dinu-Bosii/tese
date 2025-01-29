@@ -169,7 +169,6 @@ def get_spiking_net(net_type, net_config):
     spike_grad = net_config["spike_grad"]
 
     if net_type == "SNN":
-    
         net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, use_l2=False)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters SNN: {num_params}")
