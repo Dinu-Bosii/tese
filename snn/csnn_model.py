@@ -12,7 +12,7 @@ num_outputs = 2
 
 # Temporal Dynamics
 #num_steps = 10
-beta = 0.95
+beta = 0.95 #experimentar 0.7
 
 # NN Architecture
 class CSNNet(nn.Module):
@@ -20,15 +20,16 @@ class CSNNet(nn.Module):
         super().__init__()
         self.num_steps = num_steps
         self.max_pool_size = 2
-        self.conv_kernel = 3
-        #trocar out channels - diminuir
-        self.conv1 = nn.Conv1d(in_channels=1, out_channels=16, kernel_size=self.conv_kernel, stride=1, padding=1)
+        self.conv_kernel = 3 #5, -6
+        self.conv_stride = 2 #1
+        self.conv_groups = 1 #
+        #trocar out channels - diminuir - 
+        self.conv1 = nn.Conv1d(in_channels=1, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride, groups=self.conv_groups, padding=1)
         self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad)
-
-        self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=8, kernel_size=self.conv_kernel, stride=1, padding=1)
+        self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=4, kernel_size=self.conv_kernel, stride=self.conv_stride,groups=self.conv_groups, padding=1)
         self.lif2 = snn.Leaky(beta=beta, spike_grad=spike_grad)
 
-        # The formula below for calculate output size of conv doesn't always give the correct otput
+        # The formula below for calculating output size of conv doesn't always give the correct output
         # n_out = ((n_in  + 2 * padding - kernel_size) // stride) + 1
         #lin_size = (input_size + 2 * 1 - 5) // 1 + 1
         #lin_size = lin_size//2
@@ -106,7 +107,7 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
             #print(data.size(), data.unsqueeze(1).size())
 
             data = data.to(device).unsqueeze(1)
-            if data.shape[0] < 32:
+            if data.shape[0] < batch_size:
                 continue
             targets = targets.to(device)
             #print(targets.size(), targets.unsqueeze(1).size())
@@ -144,15 +145,16 @@ def val_csnn(net, device, val_loader, train_config):
     auc_roc = 0
     all_preds = []
     all_targets = []
-
+    batch_size = train_config['batch_size']
     for data, targets in eval_batch:
         data = data.to(device).unsqueeze(1)
-        if data.shape[0] < 32:
+        if data.shape[0] < batch_size:
             continue
         targets = targets.to(device)
 
         spk_rec, mem_rec = net(data)
         _, predicted = spk_rec.sum(dim=0).max(1)
+
         all_preds.extend(predicted.cpu().numpy())
         all_targets.extend(targets.cpu().numpy())
 
@@ -166,16 +168,16 @@ def val_csnn(net, device, val_loader, train_config):
     return accuracy, auc_roc
 
 
-def test_csnn(net,  device, test_loader):
+def test_csnn(net,  device, test_loader, train_config):
     all_preds = []
     all_targets = []
-
+    batch_size = train_config['batch_size']
     # Testing Set Loss
     with torch.no_grad():
         net.eval()
         for data, targets in test_loader:
             data = data.to(device).unsqueeze(1)
-            if data.shape[0] < 32:
+            if data.shape[0] < batch_size:
                 continue
             targets = targets.to(device)
             # forward pass

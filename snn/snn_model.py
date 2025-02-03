@@ -6,7 +6,7 @@ from sklearn.metrics import roc_auc_score, accuracy_score
 import copy
 
 # Neurons Count (support for pop coding with ce rate loss only on latest version)
-num_outputs = 2
+num_outputs = 1
 
 # Temporal Dynamics
 #num_steps = 10
@@ -130,8 +130,9 @@ def val_snn(net, device, val_loader, loss_type, loss_fn, dtype):
     for data, targets in val_batch:
         data = data.to(device)
         targets = targets.to(device)
-
         spk_rec, mem_rec = net(data)
+        #print(spk_rec.size())
+
         _, predicted = spk_rec.sum(dim=0).max(1)
         all_preds.extend(predicted.cpu().numpy())
         all_targets.extend(targets.cpu().numpy())
@@ -146,7 +147,7 @@ def val_snn(net, device, val_loader, loss_type, loss_fn, dtype):
     return accuracy, auc_roc
 
 
-def test_snn(net,  device, test_loader):
+def test_snn(net,  device, test_loader, train_config):
     all_preds = []
     all_targets = []
     all_probs = []
@@ -164,7 +165,8 @@ def test_snn(net,  device, test_loader):
             # max(1) -> gives the index (either 0 or 1) for either output neuron 
             # based on the times they spiked in the 10 time step interval
 
-            _, predicted = test_spk.sum(dim=0).max(1)
+            _, predicted = test_spk.sum(dim=0).max(1)            
+
             all_preds.extend(predicted.cpu().numpy())
             all_targets.extend(targets.cpu().numpy())
 
@@ -176,7 +178,8 @@ def get_loss_fn(loss_type, class_weights=None):
         "rate_loss": ce_rate_loss(weight=class_weights),   #, population_code=True, num_classes=2),
         "count_loss": ce_count_loss(weight=class_weights),
         "temporal_loss": ce_temporal_loss(weight=class_weights),
-        "cross_entropy": nn.CrossEntropyLoss(weight=class_weights)
+        "ce_mem": nn.CrossEntropyLoss(weight=class_weights),
+        "bce_loss": nn.BCEWithLogitsLoss(weight=class_weights[1])
     }
 
     return loss_dict[loss_type]
@@ -184,14 +187,15 @@ def get_loss_fn(loss_type, class_weights=None):
 
 def compute_loss(loss_type, loss_fn, spk_rec, mem_rec, num_steps, targets, dtype, device):
     loss_val = torch.zeros((1), dtype=dtype, device=device)
+    #targets = targets.unsqueeze(1)
     #print(mem_rec[0].size(), targets.size())
 
     if loss_type in ["rate_loss", "count_loss"]:
         loss_val = loss_fn(spk_rec, targets)
-    elif loss_type == "cross_entropy":
+    elif loss_type in ["ce_mem", "bce_loss"]:
         for step in range(num_steps):
             loss_val += loss_fn(mem_rec[step], targets) / num_steps
     elif loss_type == "temporal_loss":
         raise ValueError("Temporal Loss is not yet supported.")
-    
+
     return loss_val
