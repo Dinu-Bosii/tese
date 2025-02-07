@@ -2,31 +2,33 @@ import torch
 import torch.nn as nn
 import snntorch as snn
 import torch.nn.functional as F
-from snntorch import utils
+from snntorch import utils, spikegen
 from snn_model import compute_loss
 from sklearn.metrics import roc_auc_score, accuracy_score
 import numpy as np
+import copy
 
 # Neurons Count
 num_outputs = 2
 
 # Temporal Dynamics
 #num_steps = 10
-beta = 0.95 #experimentar 0.7
 
 # NN Architecture
 class CSNNet(nn.Module):
-    def __init__(self, input_size,num_steps, spike_grad=None):
+    def __init__(self, input_size,num_steps, beta, spike_grad=None):
         super().__init__()
         self.num_steps = num_steps
         self.max_pool_size = 2
         self.conv_kernel = 3 #5, -6
-        self.conv_stride = 2 #1
+        self.conv_stride = 1 #1
         self.conv_groups = 1 #
+        
         #trocar out channels - diminuir - 
-        self.conv1 = nn.Conv1d(in_channels=1, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride, groups=self.conv_groups, padding=1)
-        self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad)
-        self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=4, kernel_size=self.conv_kernel, stride=self.conv_stride,groups=self.conv_groups, padding=1)
+        self.conv1 = nn.Conv1d(in_channels=1, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride, padding=1)
+        torch.nn.init.xavier_uniform_(self.conv1.weight)
+        self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_beta=True)
+        self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride,groups=self.conv_groups, padding=1)
         self.lif2 = snn.Leaky(beta=beta, spike_grad=spike_grad)
 
         # The formula below for calculating output size of conv doesn't always give the correct output
@@ -41,6 +43,8 @@ class CSNNet(nn.Module):
 
         #evitar embeddings pequenos a entrar na linear
         self.fc_out = nn.Linear(lin_size * self.conv2.out_channels, num_outputs)
+        #self.fc_out = nn.Linear(lin_size * self.conv1.out_channels, num_outputs)
+        torch.nn.init.xavier_uniform_(self.fc_out.weight)
         self.lif_out = snn.Leaky(beta=beta, spike_grad=spike_grad)
     
 
@@ -52,8 +56,16 @@ class CSNNet(nn.Module):
         print(lin_size)
         return lin_size
 
+    def forward(self, x, input_encoding="rate"):
+        # switch 
+        if input_encoding == "rate":
+            return self.forward_rate(x)
+        elif input_encoding == "ttfs":
+            return self.forward_ttfs(x)
+        else:
+            raise ValueError(f"Error in input encoding type.")
 
-    def forward(self, x):
+    def forward_rate(self, x):
         # Initialize hidden states at t=0
         mem1 = self.lif1.reset_mem()
         mem2 = self.lif2.reset_mem()
@@ -86,6 +98,43 @@ class CSNNet(nn.Module):
 
         return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
     
+    def forward_ttfs(self, x):
+        # Initialize hidden states at t=0
+        mem1 = self.lif1.reset_mem()
+        mem2 = self.lif2.reset_mem()
+        mem_out = self.lif_out.reset_mem()
+        #utils.reset(self)
+
+        # Record the final layer
+        spk_out_rec = []
+        mem_out_rec = []
+
+        in_spikes = spikegen.latency(x, num_steps=self.num_steps, linear=True)
+        #print(in_spikes.size())
+
+        for x_in in in_spikes: #adicionar prints
+            cur1 = F.max_pool1d(self.conv1(x_in), kernel_size=self.max_pool_size)
+            spk, mem1 = self.lif1(cur1, mem1) 
+
+            #print("1st layer out: ", spk.shape) # deve ser mais de 150/200
+            #print("1st layer out (flat): ",spk.flatten().shape)
+
+            cur2 = F.max_pool1d(self.conv2(spk), kernel_size=self.max_pool_size)
+            spk, mem2 = self.lif2(cur2, mem2)
+            #print("2nd layer out: ", spk.shape) # deve ser mais de 150/200
+            
+            spk = spk.view(spk.size()[0], -1)
+            #print("2nd layer out (flat): ", spk.shape)
+            #print(self.lif_out)
+            cur_out = self.fc_out(spk)
+            spk_out, mem_out = self.lif_out(cur_out, mem_out)
+            #print(spk_out.size())
+            spk_out_rec.append(spk_out)
+            mem_out_rec.append(mem_out)
+
+
+        return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
+    
 
 def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_config):
     device, num_epochs, num_steps = train_config['device'],  train_config['num_epochs'], train_config['num_steps']
@@ -98,18 +147,18 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
     best_auc_roc = 0
     best_net_list = []
     auc_roc = 0
+    loss_val = 0
     for epoch in range(num_epochs):
         net.train()
-        if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1} - auc:{auc_roc}")
+        if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}")
 
         # Minibatch training loop
         for data, targets in train_loader:
             #print(data.size(), data.unsqueeze(1).size())
 
-            data = data.to(device).unsqueeze(1)
-            if data.shape[0] < batch_size:
-                continue
-            targets = targets.to(device)
+            data = data.to(device, non_blocking=True).unsqueeze(1)
+
+            targets = targets.to(device, non_blocking=True)
             #print(targets.size(), targets.unsqueeze(1).size())
             # forward pass
             spk_rec, mem_rec = net(data)
@@ -127,10 +176,10 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
             # Store loss history for future plotting
             loss_hist.append(loss_val.item())
         _, auc_roc = val_fn(net, device, val_loader, train_config)
-        if auc_roc > best_auc_roc:
-            best_auc_roc = auc_roc
+        #if auc_roc > best_auc_roc:
+        #    best_auc_roc = auc_roc
         #print(f"Epoch:{epoch + 1} - auc:{auc_roc} - loss:{loss_val}")           
-        best_net_list.append(net.state_dict())
+        best_net_list.append(copy.deepcopy(net.state_dict()))
 
             #val_acc_hist.extend(accuracy)
         val_auc_hist.extend([auc_roc])
@@ -146,15 +195,38 @@ def val_csnn(net, device, val_loader, train_config):
     all_preds = []
     all_targets = []
     batch_size = train_config['batch_size']
+    net.eval()
     for data, targets in eval_batch:
-        data = data.to(device).unsqueeze(1)
+        data = data.to(device, non_blocking=True).unsqueeze(1)
+        data_size = data.shape[0]
         if data.shape[0] < batch_size:
-            continue
-        targets = targets.to(device)
+            last_sample = data[-1].unsqueeze(0)
+            num_repeat = batch_size - data.shape[0]
+            repeated_samples = last_sample.repeat(num_repeat, *[1] * (data.dim() - 1))
+            #print(num_repeat, repeated_samples.size())
+
+            data = torch.cat([data, repeated_samples], dim=0)
+            #print(data.size())
+
+        targets = targets.to(device, non_blocking=True)
 
         spk_rec, mem_rec = net(data)
+        #print("spk_rec 1,", spk_rec.size())
+        spk_rec = spk_rec[:, :data_size]
+        #print("spk_rec 2,", spk_rec.size())
+        mem_rec = mem_rec[:, :data_size]
+
+        #rate
         _, predicted = spk_rec.sum(dim=0).max(1)
 
+        #population coding - wip
+        #_, predicted = spk_rec.sum(dim=0)
+        #predicted_c1 = predicted[:5].mean()
+        #predicted_c1 = predicted[5:].mean()
+        #temporal
+        #predicted = spk_rec.argmax(dim=0).min(1).indices  # Get first spike time for each neuron
+
+        #print(predicted.size())
         all_preds.extend(predicted.cpu().numpy())
         all_targets.extend(targets.cpu().numpy())
 
@@ -176,19 +248,28 @@ def test_csnn(net,  device, test_loader, train_config):
     with torch.no_grad():
         net.eval()
         for data, targets in test_loader:
-            data = data.to(device).unsqueeze(1)
+            data = data.to(device, non_blocking=True).unsqueeze(1)
+            data_size = data.shape[0]
             if data.shape[0] < batch_size:
-                continue
-            targets = targets.to(device)
+                last_sample = data[-1].unsqueeze(0)
+                num_repeat = batch_size - data.shape[0]
+                repeated_samples = last_sample.repeat(num_repeat, *[1] * (data.dim() - 1))
+                data = torch.cat([data, repeated_samples], dim=0)
+
+            targets = targets.to(device, non_blocking=True)
             # forward pass
             #test_spk, _ = net(data.view(data.size(0), -1))
             test_spk, _ = net(data)
+            test_spk = test_spk[:, :data_size]
 
             # calculate total accuracy
             # max(1) -> gives the index (either 0 or 1) for either output neuron 
             # based on the times they spiked in the 10 time step interval
-            
             _, predicted = test_spk.sum(dim=0).max(1)
+
+            #temporal
+            #predicted = test_spk.argmax(dim=0).min(1).indices  # Get first spike time for each neuron
+
             all_preds.extend(predicted.cpu().numpy())
             all_targets.extend(targets.cpu().numpy())
 

@@ -6,15 +6,11 @@ from sklearn.metrics import roc_auc_score, accuracy_score
 import copy
 
 # Neurons Count (support for pop coding with ce rate loss only on latest version)
-num_outputs = 1
-
-# Temporal Dynamics
-#num_steps = 10
-beta = 0.95
+num_outputs = 2
 
 # NN Architecture
 class SNNet(nn.Module):
-    def __init__(self, input_size,num_hidden, num_steps, spike_grad=None, use_l2=False, num_hidden_l2=256):
+    def __init__(self, input_size,num_hidden, num_steps, spike_grad=None, use_l2=False, beta=0.95, num_hidden_l2=256):
         super().__init__()
         self.l2 = use_l2
         self.num_steps = num_steps
@@ -196,6 +192,6 @@ def compute_loss(loss_type, loss_fn, spk_rec, mem_rec, num_steps, targets, dtype
         for step in range(num_steps):
             loss_val += loss_fn(mem_rec[step], targets) / num_steps
     elif loss_type == "temporal_loss":
-        raise ValueError("Temporal Loss is not yet supported.")
+        loss_val = loss_fn(spk_rec, targets)
 
     return loss_val

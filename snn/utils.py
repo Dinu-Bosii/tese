@@ -34,7 +34,7 @@ def load_dataset_df(filename):
 def data_splitter(df, target_name, dataset, split, seed, fp_config, dtype):
     if split == 'random':
         # Must be a torch dataset
-        generator = torch.Generator().manual_seed(seed)
+        generator = torch.Generator().manual_seed(int(seed))
         train, val, test = random_split(dataset, [0.8, 0.1, 0.1], generator=generator)
 
     elif split == 'scaffold':
@@ -161,6 +161,40 @@ def smile_to_fp(df, fp_config, target_name):
 
     return fp_array, target_array
 
+def smile_to_fp_mix(df, fp_config, target_name):
+    fp_type, num_bits = fp_config["fp_type"], fp_config["num_bits"]
+    fp_type_2, num_bits_2 = fp_config["fp_type_2"], fp_config["num_bits_2"]
+    radius = fp_config["radius"]
+    num_rows = len(df)
+    fp_array = np.zeros((num_rows, num_bits + num_bits_2))
+    target_array = np.zeros((num_rows, 1))
+    i = 0
+
+    img = None
+    # Smile to Fingerprint of size {num_bits}
+    fp_gen = fp_generator(fp_type, fp_size=num_bits, radius=radius)
+    fp_gen_2 = fp_generator(fp_type_2, fp_size=num_bits_2, radius=radius)
+
+    for idx, row in df.iterrows():
+        mol = Chem.MolFromSmiles(row['smiles'])
+        
+        if mol is None:
+            continue
+        
+
+        fingerprint = np.array(fp_gen(mol))
+        fingerprint_2 = np.array(fp_gen_2(mol))
+
+        fp_array[i] = np.concatenate([fingerprint, fingerprint_2])
+        target_array[i] = row[target_name]
+        i += 1
+
+    target_array = target_array.ravel()
+    fp_array = fp_array[0:i]
+    target_array = target_array[0:i]
+
+    return fp_array, target_array
+
 
 def get_spiking_net(net_type, net_config):
     #later on make spike_grad a input parameter
@@ -169,8 +203,9 @@ def get_spiking_net(net_type, net_config):
     time_steps = net_config["time_steps"]
     spike_grad = net_config["spike_grad"]
     num_hidden_l2 = net_config["num_hidden_l2"]
+    beta = net_config["beta"]
     if net_type == "SNN":
-        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, use_l2=False)
+        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, beta=beta, use_l2=False)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters SNN: {num_params}")
         train_fn = train_snn
@@ -178,7 +213,7 @@ def get_spiking_net(net_type, net_config):
         test_fn = test_snn
         
     elif net_type == "DSNN":
-        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, use_l2=True, num_hidden_l2=num_hidden_l2)
+        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad,beta=beta, use_l2=True, num_hidden_l2=num_hidden_l2)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters DSNN: {num_params}")
         train_fn = train_snn
@@ -186,7 +221,7 @@ def get_spiking_net(net_type, net_config):
         test_fn = test_snn
         
     elif net_type == "CSNN":
-        net = CSNNet(input_size=input_size, num_steps=time_steps, spike_grad=spike_grad)
+        net = CSNNet(input_size=input_size, num_steps=time_steps, spike_grad=spike_grad, beta=beta)
         train_fn = train_csnn
         val_fn = val_csnn
         test_fn = test_csnn
@@ -194,17 +229,20 @@ def get_spiking_net(net_type, net_config):
     return net, train_fn, val_fn, test_fn
 
 
-def make_filename(dirname, target, net_type, fp_type, lr, wd, optim_type, net_config, train_config, net):
+def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_config, train_config, net):
     results_dir = f"results\\{dirname}\\"
-
+    csnn_channels = f"out-{net.conv1.out_channels}" + (f"-{net.conv2.out_channels}" if hasattr(net, "conv2") else "")
     params = [
         None if dirname == 'BBBP' else target, 
         net_type, 
-        fp_type,
+        f"beta-{net_config['input_size']}",
+        fp_config['fp_type'],
+        None if fp_config['fp_type'] != 'morgan' else 'r-' + {fp_config['radius']},
+        fp_config['fp_type_2'] if fp_config['mix'] else None,
         net_config['input_size'],
         None if net_type == "CSNN" else f"l1{net_config['num_hidden']}",
         None if net_type != "DSNN" else f"l2{net_config['num_hidden_l2']}",
-        None if net_type != "CSNN" else f"out-{net.conv1.out_channels}-{net.conv1.out_channels}",
+        None if net_type != "CSNN" else csnn_channels,
         None if net_type != "CSNN" else f"kernel-{net.conv_kernel}",
         None if net_type != "CSNN" else f"stride-{net.conv_stride}",
         f"t{net_config['time_steps']}",
