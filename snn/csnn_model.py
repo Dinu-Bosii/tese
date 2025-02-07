@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import snntorch as snn
-from snntorch.functional import ce_rate_loss, ce_temporal_loss, ce_count_loss
 import torch.nn.functional as F
 from snntorch import utils
 from snn_model import compute_loss
@@ -13,21 +12,24 @@ num_outputs = 2
 
 # Temporal Dynamics
 #num_steps = 10
-beta = 0.95
+beta = 0.95 #experimentar 0.7
 
 # NN Architecture
 class CSNNet(nn.Module):
     def __init__(self, input_size,num_steps, spike_grad=None):
         super().__init__()
         self.num_steps = num_steps
-        #trocar out channels - diminuir
-        self.conv1 = nn.Conv1d(in_channels=1, out_channels=8, kernel_size=3, stride=1, padding=1)
+        self.max_pool_size = 2
+        self.conv_kernel = 3 #5, -6
+        self.conv_stride = 2 #1
+        self.conv_groups = 1 #
+        #trocar out channels - diminuir - 
+        self.conv1 = nn.Conv1d(in_channels=1, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride, groups=self.conv_groups, padding=1)
         self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad)
-
-        self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=16, kernel_size=3, stride=1, padding=1)
+        self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=4, kernel_size=self.conv_kernel, stride=self.conv_stride,groups=self.conv_groups, padding=1)
         self.lif2 = snn.Leaky(beta=beta, spike_grad=spike_grad)
 
-        # The formula below for calculate output size of conv doesn't always give the correct otput
+        # The formula below for calculating output size of conv doesn't always give the correct output
         # n_out = ((n_in  + 2 * padding - kernel_size) // stride) + 1
         #lin_size = (input_size + 2 * 1 - 5) // 1 + 1
         #lin_size = lin_size//2
@@ -44,9 +46,10 @@ class CSNNet(nn.Module):
 
     def calculate_lin_size(self, input_size):
         x = torch.zeros(1, 1, input_size)
-        x = F.max_pool1d(self.conv1(x), kernel_size=2)
-        x = F.max_pool1d(self.conv2(x), kernel_size=2)
+        x = F.max_pool1d(self.conv1(x), kernel_size=self.max_pool_size)
+        x = F.max_pool1d(self.conv2(x), kernel_size=self.max_pool_size)
         lin_size = x.shape[2]
+        print(lin_size)
         return lin_size
 
 
@@ -62,13 +65,13 @@ class CSNNet(nn.Module):
         mem_out_rec = []
 
         for _ in range(self.num_steps): #adicionar prints
-            cur1 = F.max_pool1d(self.conv1(x), kernel_size=2)
+            cur1 = F.max_pool1d(self.conv1(x), kernel_size=self.max_pool_size)
             spk, mem1 = self.lif1(cur1, mem1) 
 
             #print("1st layer out: ", spk.shape) # deve ser mais de 150/200
             #print("1st layer out (flat): ",spk.flatten().shape)
 
-            cur2 = F.max_pool1d(self.conv2(spk), kernel_size=2)
+            cur2 = F.max_pool1d(self.conv2(spk), kernel_size=self.max_pool_size)
             spk, mem2 = self.lif2(cur2, mem2)
             #print("2nd layer out: ", spk.shape) # deve ser mais de 150/200
             
@@ -77,38 +80,43 @@ class CSNNet(nn.Module):
             #print(self.lif_out)
             cur_out = self.fc_out(spk)
             spk_out, mem_out = self.lif_out(cur_out, mem_out)
+            #print(spk_out.size())
             spk_out_rec.append(spk_out)
             mem_out_rec.append(mem_out)
 
         return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
     
 
-def train_csnn(net, optimizer, train_loader, val_loader, train_config):
+def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_config):
     device, num_epochs, num_steps = train_config['device'],  train_config['num_epochs'], train_config['num_steps']
     loss_type, loss_fn, dtype = train_config['loss_type'], train_config['loss_fn'], train_config['dtype']
     batch_size = train_config['batch_size']
+    val_fn = train_config['val_net']
     loss_hist = []
     val_acc_hist = []
     val_auc_hist = []
-
+    best_auc_roc = 0
+    best_net_list = []
+    auc_roc = 0
     for epoch in range(num_epochs):
         net.train()
-        print(f"Epoch:{epoch + 1}")
+        if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1} - auc:{auc_roc}")
 
         # Minibatch training loop
         for data, targets in train_loader:
+            #print(data.size(), data.unsqueeze(1).size())
+
             data = data.to(device).unsqueeze(1)
-            targets = targets.to(device)
-            #print(data.size(), data.view(batch_size, -1).size())
-            if data.shape[0] < 32:
+            if data.shape[0] < batch_size:
                 continue
+            targets = targets.to(device)
+            #print(targets.size(), targets.unsqueeze(1).size())
             # forward pass
-            net.train()
             spk_rec, mem_rec = net(data)
             #print(spk_rec, mem_rec)
 
             # Compute loss
-            loss_val = compute_loss(loss_type=loss_type, loss_fn=loss_fn, spk_rec=spk_rec, mem_rec=mem_rec,num_steps=num_steps, targets=targets, dtype=dtype) 
+            loss_val = compute_loss(loss_type=loss_type, loss_fn=loss_fn, spk_rec=spk_rec, mem_rec=mem_rec,num_steps=num_steps, targets=targets, dtype=dtype, device=device) 
             #print(loss_val.item())
 
             # Gradient calculation + weight update
@@ -118,55 +126,60 @@ def train_csnn(net, optimizer, train_loader, val_loader, train_config):
 
             # Store loss history for future plotting
             loss_hist.append(loss_val.item())
-        
-        #_, val_acc, val_auc = val_csnn(net, device, val_loader, loss_type,loss_fn, num_steps, dtype)
-        # 
-        #val_acc_hist.append(val_acc)
-        #val_auc_hist.append(val_auc)
+        _, auc_roc = val_fn(net, device, val_loader, train_config)
+        if auc_roc > best_auc_roc:
+            best_auc_roc = auc_roc
+        #print(f"Epoch:{epoch + 1} - auc:{auc_roc} - loss:{loss_val}")           
+        best_net_list.append(net.state_dict())
 
-    return net, loss_hist, val_acc_hist, val_auc_hist
+            #val_acc_hist.extend(accuracy)
+        val_auc_hist.extend([auc_roc])
 
 
-def val_csnn(net, device, val_loader, loss_type, loss_fn, num_steps, dtype):
+    return net, loss_hist, val_acc_hist, val_auc_hist, best_net_list
+
+
+def val_csnn(net, device, val_loader, train_config):
+    eval_batch = iter(val_loader)
+    accuracy = 0
+    auc_roc = 0
     all_preds = []
     all_targets = []
-    mean_loss = 0
-    net.eval()
-    # Minibatch training loop
-    i = 0
-    for data, targets in val_loader:
-        i+=1
+    batch_size = train_config['batch_size']
+    for data, targets in eval_batch:
         data = data.to(device).unsqueeze(1)
-        if data.shape[0] < 32:
+        if data.shape[0] < batch_size:
             continue
         targets = targets.to(device)
 
         spk_rec, mem_rec = net(data)
-
-        loss_val = compute_loss(loss_type=loss_type, loss_fn=loss_fn, spk_rec=spk_rec, mem_rec=mem_rec,num_steps=num_steps, targets=targets, dtype=dtype) 
         _, predicted = spk_rec.sum(dim=0).max(1)
-            
+
         all_preds.extend(predicted.cpu().numpy())
         all_targets.extend(targets.cpu().numpy())
 
-        # Store loss history
-        mean_loss += loss_val
+        #loss_val = compute_loss(loss_type, loss_fn, spk_rec, mem_rec, targets, dtype, device) 
+        # Store loss
+        #mean_loss += loss_val
+    ## accuracy and roc-auc
+    accuracy = accuracy_score(all_targets, all_preds)
+    auc_roc = roc_auc_score(all_targets, all_preds)
     
-    return mean_loss/i, accuracy_score(all_targets, all_preds), roc_auc_score(all_targets, all_preds)
+    return accuracy, auc_roc
 
 
-def test_csnn(net,  device, test_loader):
+def test_csnn(net,  device, test_loader, train_config):
     all_preds = []
     all_targets = []
-    print("test dataset size:", len(test_loader.dataset))
+    batch_size = train_config['batch_size']
     # Testing Set Loss
     with torch.no_grad():
         net.eval()
         for data, targets in test_loader:
             data = data.to(device).unsqueeze(1)
-            targets = targets.to(device)
-            if data.shape[0] < 32:
+            if data.shape[0] < batch_size:
                 continue
+            targets = targets.to(device)
             # forward pass
             #test_spk, _ = net(data.view(data.size(0), -1))
             test_spk, _ = net(data)
@@ -176,10 +189,8 @@ def test_csnn(net,  device, test_loader):
             # based on the times they spiked in the 10 time step interval
             
             _, predicted = test_spk.sum(dim=0).max(1)
-            
             all_preds.extend(predicted.cpu().numpy())
             all_targets.extend(targets.cpu().numpy())
 
-    print(len(all_preds), len(all_targets))
     return all_preds, all_targets
     

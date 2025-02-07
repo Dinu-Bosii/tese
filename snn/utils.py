@@ -128,6 +128,7 @@ def fp_generator(fp_type, fp_size=1024, radius=2):
 
 def smile_to_fp(df, fp_config, target_name):
     fp_type, num_bits = fp_config["fp_type"], fp_config["num_bits"]
+    radius = fp_config["radius"]
     num_rows = len(df)
     fp_array = np.zeros((num_rows, num_bits))
     target_array = np.zeros((num_rows, 1))
@@ -135,7 +136,7 @@ def smile_to_fp(df, fp_config, target_name):
 
     img = None
     # Smile to Fingerprint of size {num_bits}
-    fp_gen = fp_generator(fp_type, fp_size=num_bits, radius=2)
+    fp_gen = fp_generator(fp_type, fp_size=num_bits, radius=radius)
 
     for idx, row in df.iterrows():
         mol = Chem.MolFromSmiles(row['smiles'])
@@ -167,7 +168,7 @@ def get_spiking_net(net_type, net_config):
     num_hidden = net_config["num_hidden"]
     time_steps = net_config["time_steps"]
     spike_grad = net_config["spike_grad"]
-
+    num_hidden_l2 = net_config["num_hidden_l2"]
     if net_type == "SNN":
         net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, use_l2=False)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
@@ -177,7 +178,7 @@ def get_spiking_net(net_type, net_config):
         test_fn = test_snn
         
     elif net_type == "DSNN":
-        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, use_l2=True)
+        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, use_l2=True, num_hidden_l2=num_hidden_l2)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters DSNN: {num_params}")
         train_fn = train_snn
@@ -192,6 +193,31 @@ def get_spiking_net(net_type, net_config):
 
     return net, train_fn, val_fn, test_fn
 
+
+def make_filename(dirname, target, net_type, fp_type, lr, wd, optim_type, net_config, train_config, net):
+    results_dir = f"results\\{dirname}\\"
+
+    params = [
+        None if dirname == 'BBBP' else target, 
+        net_type, 
+        fp_type,
+        net_config['input_size'],
+        None if net_type == "CSNN" else f"l1{net_config['num_hidden']}",
+        None if net_type != "DSNN" else f"l2{net_config['num_hidden_l2']}",
+        None if net_type != "CSNN" else f"out-{net.conv1.out_channels}-{net.conv1.out_channels}",
+        None if net_type != "CSNN" else f"kernel-{net.conv_kernel}",
+        None if net_type != "CSNN" else f"stride-{net.conv_stride}",
+        f"t{net_config['time_steps']}",
+        f"e{train_config['num_epochs']}",
+        f"b{train_config['batch_size']}",
+        f"lr{lr}",
+        train_config['loss_type'],
+        optim_type,
+        f"wd{wd}"
+    ]
+
+    filename = results_dir + "_".join(str(p) for p in params if p is not None) + ".csv"
+    return filename
 
 
 
