@@ -204,8 +204,9 @@ def get_spiking_net(net_type, net_config):
     spike_grad = net_config["spike_grad"]
     num_hidden_l2 = net_config["num_hidden_l2"]
     beta = net_config["beta"]
+    num_outputs = net_config['num_outputs']
     if net_type == "SNN":
-        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, beta=beta, use_l2=False)
+        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, beta=beta, use_l2=False, num_outputs=num_outputs)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters SNN: {num_params}")
         train_fn = train_snn
@@ -213,7 +214,7 @@ def get_spiking_net(net_type, net_config):
         test_fn = test_snn
         
     elif net_type == "DSNN":
-        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad,beta=beta, use_l2=True, num_hidden_l2=num_hidden_l2)
+        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad,beta=beta, use_l2=True, num_hidden_l2=num_hidden_l2, num_outputs=num_outputs)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters DSNN: {num_params}")
         train_fn = train_snn
@@ -221,7 +222,7 @@ def get_spiking_net(net_type, net_config):
         test_fn = test_snn
         
     elif net_type == "CSNN":
-        net = CSNNet(input_size=input_size, num_steps=time_steps, spike_grad=spike_grad, beta=beta)
+        net = CSNNet(input_size=input_size, num_steps=time_steps, spike_grad=spike_grad, beta=beta, num_outputs=num_outputs)
         train_fn = train_csnn
         val_fn = val_csnn
         test_fn = test_csnn
@@ -235,9 +236,9 @@ def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_
     params = [
         None if dirname == 'BBBP' else target, 
         net_type, 
-        f"beta-{net_config['input_size']}",
+        f"beta-{net_config['beta']}",
         fp_config['fp_type'],
-        None if fp_config['fp_type'] != 'morgan' else 'r-' + {fp_config['radius']},
+        None if fp_config['fp_type'] != 'morgan' else 'r-' + f"{fp_config['radius']}",
         fp_config['fp_type_2'] if fp_config['mix'] else None,
         net_config['input_size'],
         None if net_type == "CSNN" else f"l1{net_config['num_hidden']}",
@@ -251,7 +252,8 @@ def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_
         f"lr{lr}",
         train_config['loss_type'],
         optim_type,
-        f"wd{wd}"
+        f"wd{wd}",
+        None if net_config['out_num'] == 2 else "pop",
     ]
 
     filename = results_dir + "_".join(str(p) for p in params if p is not None) + ".csv"

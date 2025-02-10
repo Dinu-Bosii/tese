@@ -8,15 +8,12 @@ from sklearn.metrics import roc_auc_score, accuracy_score
 import numpy as np
 import copy
 
-# Neurons Count
-num_outputs = 2
-
 # Temporal Dynamics
 #num_steps = 10
 
 # NN Architecture
 class CSNNet(nn.Module):
-    def __init__(self, input_size,num_steps, beta, spike_grad=None):
+    def __init__(self, input_size,num_steps, beta, spike_grad=None, num_outputs=2):
         super().__init__()
         self.num_steps = num_steps
         self.max_pool_size = 2
@@ -27,9 +24,9 @@ class CSNNet(nn.Module):
         #trocar out channels - diminuir - 
         self.conv1 = nn.Conv1d(in_channels=1, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride, padding=1)
         torch.nn.init.xavier_uniform_(self.conv1.weight)
-        self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_beta=True)
-        self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride,groups=self.conv_groups, padding=1)
-        self.lif2 = snn.Leaky(beta=beta, spike_grad=spike_grad)
+        self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad, threshold=1.5, learn_threshold=True)
+        #self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride,groups=self.conv_groups, padding=1)
+        #self.lif2 = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_threshold=True)
 
         # The formula below for calculating output size of conv doesn't always give the correct output
         # n_out = ((n_in  + 2 * padding - kernel_size) // stride) + 1
@@ -42,16 +39,16 @@ class CSNNet(nn.Module):
         lin_size = self.calculate_lin_size(input_size)
 
         #evitar embeddings pequenos a entrar na linear
-        self.fc_out = nn.Linear(lin_size * self.conv2.out_channels, num_outputs)
-        #self.fc_out = nn.Linear(lin_size * self.conv1.out_channels, num_outputs)
+        #self.fc_out = nn.Linear(lin_size * self.conv2.out_channels, num_outputs)
+        self.fc_out = nn.Linear(lin_size * self.conv1.out_channels, num_outputs)
         torch.nn.init.xavier_uniform_(self.fc_out.weight)
-        self.lif_out = snn.Leaky(beta=beta, spike_grad=spike_grad)
+        self.lif_out = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_threshold=True)
     
 
     def calculate_lin_size(self, input_size):
         x = torch.zeros(1, 1, input_size)
         x = F.max_pool1d(self.conv1(x), kernel_size=self.max_pool_size)
-        x = F.max_pool1d(self.conv2(x), kernel_size=self.max_pool_size)
+        #x = F.max_pool1d(self.conv2(x), kernel_size=self.max_pool_size)
         lin_size = x.shape[2]
         print(lin_size)
         return lin_size
@@ -68,7 +65,7 @@ class CSNNet(nn.Module):
     def forward_rate(self, x):
         # Initialize hidden states at t=0
         mem1 = self.lif1.reset_mem()
-        mem2 = self.lif2.reset_mem()
+        #mem2 = self.lif2.reset_mem()
         mem_out = self.lif_out.reset_mem()
         #utils.reset(self)
 
@@ -83,8 +80,8 @@ class CSNNet(nn.Module):
             #print("1st layer out: ", spk.shape) # deve ser mais de 150/200
             #print("1st layer out (flat): ",spk.flatten().shape)
 
-            cur2 = F.max_pool1d(self.conv2(spk), kernel_size=self.max_pool_size)
-            spk, mem2 = self.lif2(cur2, mem2)
+            #cur2 = F.max_pool1d(self.conv2(spk), kernel_size=self.max_pool_size)
+            #spk, mem2 = self.lif2(cur2, mem2)
             #print("2nd layer out: ", spk.shape) # deve ser mais de 150/200
             
             spk = spk.view(spk.size()[0], -1)
@@ -195,6 +192,7 @@ def val_csnn(net, device, val_loader, train_config):
     all_preds = []
     all_targets = []
     batch_size = train_config['batch_size']
+    prediction_fn = train_config['prediction_fn']
     net.eval()
     for data, targets in eval_batch:
         data = data.to(device, non_blocking=True).unsqueeze(1)
@@ -203,36 +201,21 @@ def val_csnn(net, device, val_loader, train_config):
             last_sample = data[-1].unsqueeze(0)
             num_repeat = batch_size - data.shape[0]
             repeated_samples = last_sample.repeat(num_repeat, *[1] * (data.dim() - 1))
-            #print(num_repeat, repeated_samples.size())
 
             data = torch.cat([data, repeated_samples], dim=0)
-            #print(data.size())
-
         targets = targets.to(device, non_blocking=True)
 
         spk_rec, mem_rec = net(data)
-        #print("spk_rec 1,", spk_rec.size())
+
         spk_rec = spk_rec[:, :data_size]
-        #print("spk_rec 2,", spk_rec.size())
         mem_rec = mem_rec[:, :data_size]
 
-        #rate
-        _, predicted = spk_rec.sum(dim=0).max(1)
+        predicted = prediction_fn(spk_rec)
 
-        #population coding - wip
-        #_, predicted = spk_rec.sum(dim=0)
-        #predicted_c1 = predicted[:5].mean()
-        #predicted_c1 = predicted[5:].mean()
-        #temporal
-        #predicted = spk_rec.argmax(dim=0).min(1).indices  # Get first spike time for each neuron
-
-        #print(predicted.size())
         all_preds.extend(predicted.cpu().numpy())
         all_targets.extend(targets.cpu().numpy())
 
-        #loss_val = compute_loss(loss_type, loss_fn, spk_rec, mem_rec, targets, dtype, device) 
-        # Store loss
-        #mean_loss += loss_val
+
     ## accuracy and roc-auc
     accuracy = accuracy_score(all_targets, all_preds)
     auc_roc = roc_auc_score(all_targets, all_preds)
@@ -244,6 +227,7 @@ def test_csnn(net,  device, test_loader, train_config):
     all_preds = []
     all_targets = []
     batch_size = train_config['batch_size']
+    prediction_fn = train_config['prediction_fn']
     # Testing Set Loss
     with torch.no_grad():
         net.eval()
@@ -265,13 +249,65 @@ def test_csnn(net,  device, test_loader, train_config):
             # calculate total accuracy
             # max(1) -> gives the index (either 0 or 1) for either output neuron 
             # based on the times they spiked in the 10 time step interval
-            _, predicted = test_spk.sum(dim=0).max(1)
 
-            #temporal
-            #predicted = test_spk.argmax(dim=0).min(1).indices  # Get first spike time for each neuron
+            predicted = prediction_fn(test_spk)
 
             all_preds.extend(predicted.cpu().numpy())
             all_targets.extend(targets.cpu().numpy())
 
     return all_preds, all_targets
     
+
+def prediction_spk_rate_pop(spk_rec):
+    spk_sum = spk_rec.sum(dim=0)
+
+    population_c0 = spk_sum[:,:spk_rec.shape[2]//2].mean(dim=1)
+    population_c1 = spk_sum[:,spk_rec.shape[2]//2:].mean(dim=1)
+
+    predicted = torch.stack([population_c0, population_c1], dim=1)
+    _, predicted = predicted.max(1)
+    return predicted
+
+
+def prediction_spk_rate(spk_rec):
+    _, predicted = spk_rec.sum(dim=0).max(1)
+    return predicted
+
+
+def prediction_spk_ttfs(spk_rec):
+    return spk_rec.argmax(dim=0).min(1).indices
+
+
+def get_prediction_fn(encoding='rate', pop_coding=False):
+    if encoding == 'rate':
+        if pop_coding:
+            return prediction_spk_rate_pop
+        else:
+            return prediction_spk_rate
+    elif encoding == 'ttfs':
+        #no support for pop_coding yet
+        return prediction_spk_ttfs
+    else:
+        raise ValueError('Invalid spike prediction fn.')
+
+    
+
+"""        #rate
+        #_, predicted = spk_rec.sum(dim=0).max(1)
+        #print("spk_rec", spk_rec.size())
+        #population coding - wip
+        predicted = spk_rec.sum(dim=0)
+        #print("pred_sum:", predicted.size())
+        predicted_c0 = predicted[:,:5]
+        #print("predicted c0:", predicted_c0.size())
+        predicted_c0 = predicted_c0.mean(dim=1)  # 5 should be dynamic (spk_rec.shape[2]//2)
+        #print("predicted c0 mean:", predicted_c0.size())
+
+        predicted_c1 = predicted[:,5:].mean(dim=1)
+        predicted = torch.stack([predicted_c0, predicted_c1], dim=1)
+        #.argmax(dim=0)
+        _, predicted = predicted.max(1)
+        #print("predicted:", predicted.size())
+        #temporal
+        #predicted = spk_rec.argmax(dim=0).min(1).indices  # Get first spike time for each neuron
+"""

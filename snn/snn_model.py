@@ -10,7 +10,7 @@ num_outputs = 2
 
 # NN Architecture
 class SNNet(nn.Module):
-    def __init__(self, input_size,num_hidden, num_steps, spike_grad=None, use_l2=False, beta=0.95, num_hidden_l2=256):
+    def __init__(self, input_size,num_hidden, num_steps, spike_grad=None, use_l2=False, beta=0.95, num_hidden_l2=256, num_outputs=2):
         super().__init__()
         self.l2 = use_l2
         self.num_steps = num_steps
@@ -30,7 +30,6 @@ class SNNet(nn.Module):
 
     def forward(self, x):
         # Initialize hidden states at t=0
-
         mem1 = self.lif1.reset_mem()
         if self.l2:
             mem2 = self.lif2.reset_mem()
@@ -171,8 +170,8 @@ def test_snn(net,  device, test_loader, train_config):
 # ver binary cross entropy, bcewithlogits
 def get_loss_fn(loss_type, class_weights=None):
     loss_dict = {
-        "rate_loss": ce_rate_loss(weight=class_weights),   #, population_code=True, num_classes=2),
-        "count_loss": ce_count_loss(weight=class_weights),
+        "rate_loss": ce_rate_loss(weight=class_weights),
+        "count_loss": ce_count_loss(weight=class_weights, population_code=True, num_classes=2),
         "temporal_loss": ce_temporal_loss(weight=class_weights),
         "ce_mem": nn.CrossEntropyLoss(weight=class_weights),
         "bce_loss": nn.BCEWithLogitsLoss(weight=class_weights[1])
