@@ -9,9 +9,10 @@ from torch.utils.data import random_split, TensorDataset
 import deepchem as dc
 from deepchem.splits.splitters import ScaffoldSplitter
 import numpy as np
+from csnn_model import CSNNet, train_csnn, val_csnn, test_csnn
+from snn_model import SNNet, train_snn, val_snn, test_snn
 #from mordred import Calculator, descriptors
-from rdkit.ML.Descriptors import MoleculeDescriptors
-from rdkit.Chem import Descriptors
+
 
 def load_dataset_df(filename):
     file_path = os.path.join('..', 'data', filename)
@@ -32,8 +33,8 @@ def load_dataset_df(filename):
 
 def data_splitter(df, target_name, dataset, split, seed, fp_config, dtype):
     if split == 'random':
-        # No need to convert to fp everytime - takes in fp torch dataset
-        generator = torch.Generator().manual_seed(seed)
+        # Must be a torch dataset
+        generator = torch.Generator().manual_seed(int(seed))
         train, val, test = random_split(dataset, [0.8, 0.1, 0.1], generator=generator)
 
     elif split == 'scaffold':
@@ -106,28 +107,28 @@ def fp_generator(fp_type, fp_size=1024, radius=2):
         
         fn = pubchem_fp
 
-            
-    elif fp_type == 'descriptor':
-        desc_names = [desc[0] for desc in Descriptors._descList]
-        calculator = MoleculeDescriptors.MolecularDescriptorCalculator(desc_names)
+        """     
+        elif fp_type == 'mordred':
+        calc = Calculator(descriptors, ignore_3D=True)
 
-        def descriptors(mol, **kwargs):
+        def mordred_descriptors(mol, **kwargs):
             try:
-                result = calculator.CalcDescriptors(mol)
+                result = calc(mol)
                 if result.isnull.any():
                     return None  # Handle cases with missing values
-                return list(result)
+                return list(result.values)
             except Exception as e:
-                print(f"Error calculating Descriptors: {e}")
+                print(f"Error calculating Mordred descriptors: {e}")
                 return None
 
-        fn = descriptors
+        fn = mordred_descriptors """
 
     return fn
 
 
 def smile_to_fp(df, fp_config, target_name):
     fp_type, num_bits = fp_config["fp_type"], fp_config["num_bits"]
+    radius = fp_config["radius"]
     num_rows = len(df)
     fp_array = np.zeros((num_rows, num_bits))
     target_array = np.zeros((num_rows, 1))
@@ -135,7 +136,7 @@ def smile_to_fp(df, fp_config, target_name):
 
     img = None
     # Smile to Fingerprint of size {num_bits}
-    fp_gen = fp_generator(fp_type, fp_size=num_bits, radius=2)
+    fp_gen = fp_generator(fp_type, fp_size=num_bits, radius=radius)
 
     for idx, row in df.iterrows():
         mol = Chem.MolFromSmiles(row['smiles'])
@@ -160,6 +161,40 @@ def smile_to_fp(df, fp_config, target_name):
 
     return fp_array, target_array
 
+def smile_to_fp_mix(df, fp_config, target_name):
+    fp_type, num_bits = fp_config["fp_type"], fp_config["num_bits"]
+    fp_type_2, num_bits_2 = fp_config["fp_type_2"], fp_config["num_bits_2"]
+    radius = fp_config["radius"]
+    num_rows = len(df)
+    fp_array = np.zeros((num_rows, num_bits + num_bits_2))
+    target_array = np.zeros((num_rows, 1))
+    i = 0
+
+    img = None
+    # Smile to Fingerprint of size {num_bits}
+    fp_gen = fp_generator(fp_type, fp_size=num_bits, radius=radius)
+    fp_gen_2 = fp_generator(fp_type_2, fp_size=num_bits_2, radius=radius)
+
+    for idx, row in df.iterrows():
+        mol = Chem.MolFromSmiles(row['smiles'])
+        
+        if mol is None:
+            continue
+        
+
+        fingerprint = np.array(fp_gen(mol))
+        fingerprint_2 = np.array(fp_gen_2(mol))
+
+        fp_array[i] = np.concatenate([fingerprint, fingerprint_2])
+        target_array[i] = row[target_name]
+        i += 1
+
+    target_array = target_array.ravel()
+    fp_array = fp_array[0:i]
+    target_array = target_array[0:i]
+
+    return fp_array, target_array
+
 
 def get_spiking_net(net_type, net_config):
     #later on make spike_grad a input parameter
@@ -167,29 +202,65 @@ def get_spiking_net(net_type, net_config):
     num_hidden = net_config["num_hidden"]
     time_steps = net_config["time_steps"]
     spike_grad = net_config["spike_grad"]
-
+    num_hidden_l2 = net_config["num_hidden_l2"]
+    beta = net_config["beta"]
+    num_outputs = net_config['out_num']
     if net_type == "SNN":
-    
-        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, use_l2=False)
+        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, beta=beta, use_l2=False, num_outputs=num_outputs)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters SNN: {num_params}")
         train_fn = train_snn
+        val_fn = val_snn
         test_fn = test_snn
-
+        
     elif net_type == "DSNN":
-        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, use_l2=True)
+        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad,beta=beta, use_l2=True, num_hidden_l2=num_hidden_l2, num_outputs=num_outputs)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters DSNN: {num_params}")
         train_fn = train_snn
+        val_fn = val_snn
         test_fn = test_snn
         
     elif net_type == "CSNN":
-        net = CSNNet(input_size=input_size, num_steps=time_steps, spike_grad=spike_grad)
+        net = CSNNet(input_size=input_size, num_steps=time_steps, spike_grad=spike_grad, beta=beta, num_outputs=num_outputs)
         train_fn = train_csnn
+        val_fn = val_csnn
         test_fn = test_csnn
 
-    return net, train_fn, test_fn
+    return net, train_fn, val_fn, test_fn
 
+
+def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_config, train_config, net, model = False):
+    results_dir = f"results\\{dirname}\\"
+    if model:
+        results_dir = results_dir + f"models\\"
+
+    csnn_channels = f"out-{net.conv1.out_channels}" + (f"-{net.conv2.out_channels}" if hasattr(net, "conv2") else "")
+    params = [
+        None if dirname == 'BBBP' else target, 
+        net_type, 
+        f"beta-{net_config['beta']}",
+        fp_config['fp_type'],
+        None if fp_config['fp_type'] != 'morgan' else 'r-' + f"{fp_config['radius']}",
+        fp_config['fp_type_2'] if fp_config['mix'] else None,
+        net_config['input_size'],
+        None if net_type == "CSNN" else f"l1{net_config['num_hidden']}",
+        None if net_type != "DSNN" else f"l2{net_config['num_hidden_l2']}",
+        None if net_type != "CSNN" else csnn_channels,
+        None if net_type != "CSNN" else f"kernel-{net.conv_kernel}",
+        None if net_type != "CSNN" else f"stride-{net.conv_stride}",
+        f"t{net_config['time_steps']}",
+        f"e{train_config['num_epochs']}",
+        f"b{train_config['batch_size']}",
+        f"lr{lr}",
+        train_config['loss_type'],
+        optim_type,
+        f"wd{wd}",
+        None if net_config['out_num'] == 2 else f"pop-{net_config['out_num']}",
+    ]
+
+    filename = results_dir + "_".join(str(p) for p in params if p is not None) + ".csv"
+    return filename
 
 
 
@@ -205,3 +276,12 @@ result = calc(mol)
 # Print descriptor names and values
 for name, value in result.items():
     print(value) """
+
+
+"""
+    splitter = ScaffoldSplitter()
+    train, val, test = dc.molnet.load_bbbp(splitter=splitter)
+    _, train_label = train[:]
+    _, val_label = val[:]
+    _, test_label = test[:]
+"""

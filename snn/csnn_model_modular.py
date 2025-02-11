@@ -10,37 +10,49 @@ import copy
 
 # Temporal Dynamics
 #num_steps = 10
-
+out_channels = [8, 8]
+thresholds = [1.5, 1, 1]
 # NN Architecture
 class CSNNet(nn.Module):
-    def __init__(self, input_size,num_steps, beta, spike_grad=None, num_outputs=2):
+    def __init__(self, input_size,num_steps, beta, spike_grad=None, num_outputs=2, num_conv=2):
         super().__init__()
         self.num_steps = num_steps
         self.max_pool_size = 2
-        self.conv_kernel = 3 #5, -6
+        self.conv_kernel = 3 #5, 7
         self.conv_stride = 1 #1
         self.conv_groups = 1 #
-        
-        self.conv1 = nn.Conv1d(in_channels=1, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride, padding=1)
-        torch.nn.init.xavier_uniform_(self.conv1.weight)
-        self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad, threshold=1.5, learn_threshold=True)
-        #self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride,groups=self.conv_groups, padding=1)
-        #self.lif2 = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_threshold=True)
+        self.num_conv = num_conv
+
+        self.layers = nn.ModuleList()
+
+        for i in range(self.num_conv):
+            conv_layer = nn.Conv1d(in_channels=1, 
+                                   out_channels=out_channels[i], 
+                                   kernel_size=self.conv_kernel, 
+                                   stride=self.conv_stride, 
+                                   padding=1)
+            self.layers.append(conv_layer)
+            torch.nn.init.xavier_uniform_(conv_layer.weight)
+
+            lif_layer = snn.Leaky(beta=beta, spike_grad=spike_grad, threshold=thresholds[i], learn_threshold=True)
+            self.layers.append(lif_layer)
 
         lin_size = self.calculate_lin_size(input_size)
 
-        #self.fc_out = nn.Linear(lin_size * self.conv2.out_channels, num_outputs)
-        self.fc_out = nn.Linear(lin_size * self.conv1.out_channels, num_outputs)
+        self.fc_out = nn.Linear(lin_size * out_channels[self.num_conv - 1], num_outputs)
         torch.nn.init.xavier_uniform_(self.fc_out.weight)
+        self.layers.append(self.fc_out)
+
         self.lif_out = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_threshold=True)
-    
+        self.layers.append(self.lif_out)
 
     def calculate_lin_size(self, input_size):
         x = torch.zeros(1, 1, input_size)
-        x = F.max_pool1d(self.conv1(x), kernel_size=self.max_pool_size)
-        #x = F.max_pool1d(self.conv2(x), kernel_size=self.max_pool_size)
-        lin_size = x.shape[2]
-        return lin_size
+        for i in range(0, len(self.layers), 2):
+            conv = self.layers[i]
+            x = conv(x)
+            x = F.max_pool1d(x, kernel_size=self.max_pool_size)
+        return x.shape[2]
 
     def forward(self, x, input_encoding="rate"):
         if input_encoding == "rate":
@@ -52,71 +64,63 @@ class CSNNet(nn.Module):
 
     def forward_rate(self, x):
         # Initialize hidden states at t=0
-        mem1 = self.lif1.reset_mem()
-        #mem2 = self.lif2.reset_mem()
-        mem_out = self.lif_out.reset_mem()
-        #utils.reset(self)
+        membranes = []
+        for layer in self.layer:
+            mem = layer.reset_mem() if isinstance(layer, snn.Leaky) else None
+            membranes.append(mem)
 
         # Record the final layer
         spk_out_rec = []
         mem_out_rec = []
 
-        for _ in range(self.num_steps): #adicionar prints
-            cur1 = F.max_pool1d(self.conv1(x), kernel_size=self.max_pool_size)
-            spk, mem1 = self.lif1(cur1, mem1) 
+        for _ in range(self.num_steps):
+            spk = x
+            for i in range(0, len(self.layers) - 1, 2):
+                conv = self.layers[i]
+                lif = self.layers[i+1]
 
-            #print("1st layer out: ", spk.shape) # deve ser mais de 150/200
-            #print("1st layer out (flat): ",spk.flatten().shape)
+                cur = F.max_pool1d(conv(spk), kernel_size=self.max_pool_size)
+                spk, membranes[i] = self.lif(cur, membranes[i]) 
 
-            #cur2 = F.max_pool1d(self.conv2(spk), kernel_size=self.max_pool_size)
-            #spk, mem2 = self.lif2(cur2, mem2)
-            #print("2nd layer out: ", spk.shape) # deve ser mais de 150/200
-            
+
             spk = spk.view(spk.size()[0], -1)
-            #print("2nd layer out (flat): ", spk.shape)
-            #print(self.lif_out)
+
             cur_out = self.fc_out(spk)
-            spk_out, mem_out = self.lif_out(cur_out, mem_out)
-            #print(spk_out.size())
+            spk_out, membranes[-2] = self.lif_out(cur_out, membranes[-2])
+
             spk_out_rec.append(spk_out)
-            mem_out_rec.append(mem_out)
+            mem_out_rec.append(membranes[-2])
 
         return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
     
     def forward_ttfs(self, x):
-        # Initialize hidden states at t=0
-        mem1 = self.lif1.reset_mem()
-        mem2 = self.lif2.reset_mem()
-        mem_out = self.lif_out.reset_mem()
-        #utils.reset(self)
+        in_spikes = spikegen.latency(x, num_steps=self.num_steps, linear=True)
+        membranes = []
+        for layer in self.layer:
+            mem = layer.reset_mem() if isinstance(layer, snn.Leaky) else None
+            membranes.append(mem)
 
         # Record the final layer
         spk_out_rec = []
         mem_out_rec = []
 
-        in_spikes = spikegen.latency(x, num_steps=self.num_steps, linear=True)
-        #print(in_spikes.size())
+        for x_in in in_spikes:
+            spk = x_in
+            for i in range(0, len(self.layers) - 1, 2):
+                conv = self.layers[i]
+                lif = self.layers[i+1]
 
-        for x_in in in_spikes: #adicionar prints
-            cur1 = F.max_pool1d(self.conv1(x_in), kernel_size=self.max_pool_size)
-            spk, mem1 = self.lif1(cur1, mem1) 
+                cur = F.max_pool1d(conv(spk), kernel_size=self.max_pool_size)
+                spk, membranes[i] = self.lif1(cur, membranes[i]) 
 
-            #print("1st layer out: ", spk.shape) # deve ser mais de 150/200
-            #print("1st layer out (flat): ",spk.flatten().shape)
 
-            cur2 = F.max_pool1d(self.conv2(spk), kernel_size=self.max_pool_size)
-            spk, mem2 = self.lif2(cur2, mem2)
-            #print("2nd layer out: ", spk.shape) # deve ser mais de 150/200
-            
             spk = spk.view(spk.size()[0], -1)
-            #print("2nd layer out (flat): ", spk.shape)
-            #print(self.lif_out)
+
             cur_out = self.fc_out(spk)
             spk_out, mem_out = self.lif_out(cur_out, mem_out)
-            #print(spk_out.size())
+
             spk_out_rec.append(spk_out)
             mem_out_rec.append(mem_out)
-
 
         return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
     

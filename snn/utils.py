@@ -204,7 +204,7 @@ def get_spiking_net(net_type, net_config):
     spike_grad = net_config["spike_grad"]
     num_hidden_l2 = net_config["num_hidden_l2"]
     beta = net_config["beta"]
-    num_outputs = net_config['num_outputs']
+    num_outputs = net_config['out_num']
     if net_type == "SNN":
         net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, beta=beta, use_l2=False, num_outputs=num_outputs)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
@@ -230,8 +230,11 @@ def get_spiking_net(net_type, net_config):
     return net, train_fn, val_fn, test_fn
 
 
-def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_config, train_config, net):
+def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_config, train_config, net, model = False):
     results_dir = f"results\\{dirname}\\"
+    if model:
+        results_dir = results_dir + f"models\\"
+
     csnn_channels = f"out-{net.conv1.out_channels}" + (f"-{net.conv2.out_channels}" if hasattr(net, "conv2") else "")
     params = [
         None if dirname == 'BBBP' else target, 
@@ -253,7 +256,7 @@ def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_
         train_config['loss_type'],
         optim_type,
         f"wd{wd}",
-        None if net_config['out_num'] == 2 else "pop",
+        None if net_config['out_num'] == 2 else f"pop-{net_config['out_num']}",
     ]
 
     filename = results_dir + "_".join(str(p) for p in params if p is not None) + ".csv"

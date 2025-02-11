@@ -168,10 +168,10 @@ def test_snn(net,  device, test_loader, train_config):
     return all_preds, all_targets
 
 # ver binary cross entropy, bcewithlogits
-def get_loss_fn(loss_type, class_weights=None):
+def get_loss_fn(loss_type, class_weights=None, pop_coding=False):
     loss_dict = {
         "rate_loss": ce_rate_loss(weight=class_weights),
-        "count_loss": ce_count_loss(weight=class_weights, population_code=True, num_classes=2),
+        "count_loss": ce_count_loss(weight=class_weights, population_code=pop_coding, num_classes=2),
         "temporal_loss": ce_temporal_loss(weight=class_weights),
         "ce_mem": nn.CrossEntropyLoss(weight=class_weights),
         "bce_loss": nn.BCEWithLogitsLoss(weight=class_weights[1])
