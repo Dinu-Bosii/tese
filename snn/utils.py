@@ -231,9 +231,9 @@ def get_spiking_net(net_type, net_config):
 
 
 def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_config, train_config, net, model = False):
-    results_dir = f"results\\{dirname}\\"
+    results_dir = os.path.join("results", dirname, "")
     if model:
-        results_dir = results_dir + f"models\\"
+        results_dir = os.path.join(results_dir, "models", "")
 
     csnn_channels = f"out-{net.conv1.out_channels}" + (f"-{net.conv2.out_channels}" if hasattr(net, "conv2") else "")
     params = [
