@@ -74,14 +74,14 @@ df = df[[target_name, 'smiles']].dropna()
 
 
 fp_types = [['morgan', 1024], ['maccs', 167], ['RDKit', 1024], ['pubchem', 881]]
-fp_type, num_bits = fp_types[1]
+fp_type, num_bits = fp_types[0]
 #num_bits = 2048
 fp_config = {"fp_type": fp_type,
              "num_bits": num_bits,
              "radius": 2,
              "fp_type_2": fp_types[0][0],
              "num_bits_2": 1024 - num_bits,
-             "mix": True,
+             "mix": False,
              }
 
 print(fp_type, '-', num_bits)

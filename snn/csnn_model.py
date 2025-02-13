@@ -48,7 +48,7 @@ class CSNNet(nn.Module):
         elif input_encoding == "ttfs":
             return self.forward_ttfs(x)
         else:
-            raise ValueError(f"Error in input encoding type.")
+            raise ValueError("Error in input encoding type.")
 
     def forward_rate(self, x):
         # Initialize hidden states at t=0

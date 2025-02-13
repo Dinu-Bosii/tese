@@ -134,7 +134,6 @@ def smile_to_fp(df, fp_config, target_name):
     target_array = np.zeros((num_rows, 1))
     i = 0
 
-    img = None
     # Smile to Fingerprint of size {num_bits}
     fp_gen = fp_generator(fp_type, fp_size=num_bits, radius=radius)
 
@@ -170,7 +169,6 @@ def smile_to_fp_mix(df, fp_config, target_name):
     target_array = np.zeros((num_rows, 1))
     i = 0
 
-    img = None
     # Smile to Fingerprint of size {num_bits}
     fp_gen = fp_generator(fp_type, fp_size=num_bits, radius=radius)
     fp_gen_2 = fp_generator(fp_type_2, fp_size=num_bits_2, radius=radius)
