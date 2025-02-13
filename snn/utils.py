@@ -134,7 +134,6 @@ def smile_to_fp(df, fp_config, target_name):
     target_array = np.zeros((num_rows, 1))
     i = 0
 
-    img = None
     # Smile to Fingerprint of size {num_bits}
     fp_gen = fp_generator(fp_type, fp_size=num_bits, radius=radius)
 
@@ -170,7 +169,6 @@ def smile_to_fp_mix(df, fp_config, target_name):
     target_array = np.zeros((num_rows, 1))
     i = 0
 
-    img = None
     # Smile to Fingerprint of size {num_bits}
     fp_gen = fp_generator(fp_type, fp_size=num_bits, radius=radius)
     fp_gen_2 = fp_generator(fp_type_2, fp_size=num_bits_2, radius=radius)
@@ -231,9 +229,9 @@ def get_spiking_net(net_type, net_config):
 
 
 def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_config, train_config, net, model = False):
-    results_dir = f"results\\{dirname}\\"
+    results_dir = os.path.join("results", dirname, "")
     if model:
-        results_dir = results_dir + f"models\\"
+        results_dir = os.path.join(results_dir, "models", "")
 
     csnn_channels = f"out-{net.conv1.out_channels}" + (f"-{net.conv2.out_channels}" if hasattr(net, "conv2") else "")
     params = [
