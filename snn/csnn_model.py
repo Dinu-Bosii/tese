@@ -24,13 +24,13 @@ class CSNNet(nn.Module):
         self.conv1 = nn.Conv1d(in_channels=1, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride, padding=1)
         torch.nn.init.xavier_uniform_(self.conv1.weight)
         self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad, threshold=1.5, learn_threshold=True)
-        #self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride,groups=self.conv_groups, padding=1)
-        #self.lif2 = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_threshold=True)
+        self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride,groups=self.conv_groups, padding=1)
+        self.lif2 = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_threshold=True)
 
         lin_size = self.calculate_lin_size(input_size)
 
-        #self.fc_out = nn.Linear(lin_size * self.conv2.out_channels, num_outputs)
-        self.fc_out = nn.Linear(lin_size * self.conv1.out_channels, num_outputs)
+        self.fc_out = nn.Linear(lin_size * self.conv2.out_channels, num_outputs)
+        #self.fc_out = nn.Linear(lin_size * self.conv1.out_channels, num_outputs)
         torch.nn.init.xavier_uniform_(self.fc_out.weight)
         self.lif_out = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_threshold=True)
     
@@ -38,7 +38,7 @@ class CSNNet(nn.Module):
     def calculate_lin_size(self, input_size):
         x = torch.zeros(1, 1, input_size)
         x = F.max_pool1d(self.conv1(x), kernel_size=self.max_pool_size)
-        #x = F.max_pool1d(self.conv2(x), kernel_size=self.max_pool_size)
+        x = F.max_pool1d(self.conv2(x), kernel_size=self.max_pool_size)
         lin_size = x.shape[2]
         return lin_size
 
@@ -53,7 +53,7 @@ class CSNNet(nn.Module):
     def forward_rate(self, x):
         # Initialize hidden states at t=0
         mem1 = self.lif1.reset_mem()
-        #mem2 = self.lif2.reset_mem()
+        mem2 = self.lif2.reset_mem()
         mem_out = self.lif_out.reset_mem()
         #utils.reset(self)
 
@@ -68,8 +68,8 @@ class CSNNet(nn.Module):
             #print("1st layer out: ", spk.shape) # deve ser mais de 150/200
             #print("1st layer out (flat): ",spk.flatten().shape)
 
-            #cur2 = F.max_pool1d(self.conv2(spk), kernel_size=self.max_pool_size)
-            #spk, mem2 = self.lif2(cur2, mem2)
+            cur2 = F.max_pool1d(self.conv2(spk), kernel_size=self.max_pool_size)
+            spk, mem2 = self.lif2(cur2, mem2)
             #print("2nd layer out: ", spk.shape) # deve ser mais de 150/200
             
             spk = spk.view(spk.size()[0], -1)
@@ -159,15 +159,15 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
             optimizer.step()
 
             # Store loss history for future plotting
-            loss_hist.append(loss_val.item())
-        _, auc_roc = val_fn(net, device, val_loader, train_config)
+            #loss_hist.append(loss_val.item())
+       # _, auc_roc = val_fn(net, device, val_loader, train_config)
         #if auc_roc > best_auc_roc:
         #    best_auc_roc = auc_roc
         #print(f"Epoch:{epoch + 1} - auc:{auc_roc} - loss:{loss_val}")           
         best_net_list.append(copy.deepcopy(net.state_dict()))
 
             #val_acc_hist.extend(accuracy)
-        val_auc_hist.extend([auc_roc])
+        #val_auc_hist.extend([auc_roc])
 
 
     return net, loss_hist, val_acc_hist, val_auc_hist, best_net_list

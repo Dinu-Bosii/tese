@@ -9,8 +9,8 @@ from torch.utils.data import random_split, TensorDataset
 import deepchem as dc
 from deepchem.splits.splitters import ScaffoldSplitter
 import numpy as np
-from csnn_model import CSNNet, train_csnn, val_csnn, test_csnn
-from snn_model import SNNet, train_snn, val_snn, test_snn
+#from csnn_model import CSNNet, train_csnn, val_csnn, test_csnn
+#from snn_model import SNNet, train_snn, val_snn, test_snn
 #from mordred import Calculator, descriptors
 
 
@@ -81,14 +81,17 @@ def fp_generator(fp_type, fp_size=1024, radius=2):
 
     if fp_type == 'morgan':
         gen = GetMorganGenerator(radius=radius, fpSize=fp_size)
-        fn = lambda mol, **kwargs: gen.GetFingerprint(mol, **kwargs)
+        def fn(mol, **kwargs):
+            return gen.GetFingerprint(mol, **kwargs)
 
     elif fp_type == 'rdkit':
         gen = GetRDKitFPGenerator(fpSize=fp_size)
-        fn = lambda mol, **kwargs: gen.GetFingerprint(mol, **kwargs)
+        def fn(mol, **kwargs):
+            return gen.GetFingerprint(mol, **kwargs)
 
     elif fp_type == 'maccs':
-        fn = lambda mol, **kwargs: MACCSkeys.GenMACCSKeys(mol, **kwargs)
+        def fn(mol, **kwargs):
+            return MACCSkeys.GenMACCSKeys(mol, **kwargs)
 
     elif fp_type == "pubchem": #TODO: this doesn't work and requires internet access
         def pubchem_fp(smiles, **kwargs):
@@ -134,7 +137,6 @@ def smile_to_fp(df, fp_config, target_name):
     target_array = np.zeros((num_rows, 1))
     i = 0
 
-    img = None
     # Smile to Fingerprint of size {num_bits}
     fp_gen = fp_generator(fp_type, fp_size=num_bits, radius=radius)
 
@@ -170,7 +172,6 @@ def smile_to_fp_mix(df, fp_config, target_name):
     target_array = np.zeros((num_rows, 1))
     i = 0
 
-    img = None
     # Smile to Fingerprint of size {num_bits}
     fp_gen = fp_generator(fp_type, fp_size=num_bits, radius=radius)
     fp_gen_2 = fp_generator(fp_type_2, fp_size=num_bits_2, radius=radius)
@@ -194,94 +195,3 @@ def smile_to_fp_mix(df, fp_config, target_name):
     target_array = target_array[0:i]
 
     return fp_array, target_array
-
-
-def get_spiking_net(net_type, net_config):
-    #later on make spike_grad a input parameter
-    input_size = net_config["input_size"]
-    num_hidden = net_config["num_hidden"]
-    time_steps = net_config["time_steps"]
-    spike_grad = net_config["spike_grad"]
-    num_hidden_l2 = net_config["num_hidden_l2"]
-    beta = net_config["beta"]
-    num_outputs = net_config['out_num']
-    if net_type == "SNN":
-        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, beta=beta, use_l2=False, num_outputs=num_outputs)
-        #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
-        #print(f"Number of trainable parameters SNN: {num_params}")
-        train_fn = train_snn
-        val_fn = val_snn
-        test_fn = test_snn
-        
-    elif net_type == "DSNN":
-        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad,beta=beta, use_l2=True, num_hidden_l2=num_hidden_l2, num_outputs=num_outputs)
-        #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
-        #print(f"Number of trainable parameters DSNN: {num_params}")
-        train_fn = train_snn
-        val_fn = val_snn
-        test_fn = test_snn
-        
-    elif net_type == "CSNN":
-        net = CSNNet(input_size=input_size, num_steps=time_steps, spike_grad=spike_grad, beta=beta, num_outputs=num_outputs)
-        train_fn = train_csnn
-        val_fn = val_csnn
-        test_fn = test_csnn
-
-    return net, train_fn, val_fn, test_fn
-
-
-def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_config, train_config, net, model = False):
-    results_dir = f"results\\{dirname}\\"
-    if model:
-        results_dir = results_dir + f"models\\"
-
-    csnn_channels = f"out-{net.conv1.out_channels}" + (f"-{net.conv2.out_channels}" if hasattr(net, "conv2") else "")
-    params = [
-        None if dirname == 'BBBP' else target, 
-        net_type, 
-        f"beta-{net_config['beta']}",
-        fp_config['fp_type'],
-        None if fp_config['fp_type'] != 'morgan' else 'r-' + f"{fp_config['radius']}",
-        fp_config['fp_type_2'] if fp_config['mix'] else None,
-        net_config['input_size'],
-        None if net_type == "CSNN" else f"l1{net_config['num_hidden']}",
-        None if net_type != "DSNN" else f"l2{net_config['num_hidden_l2']}",
-        None if net_type != "CSNN" else csnn_channels,
-        None if net_type != "CSNN" else f"kernel-{net.conv_kernel}",
-        None if net_type != "CSNN" else f"stride-{net.conv_stride}",
-        f"t{net_config['time_steps']}",
-        f"e{train_config['num_epochs']}",
-        f"b{train_config['batch_size']}",
-        f"lr{lr}",
-        train_config['loss_type'],
-        optim_type,
-        f"wd{wd}",
-        None if net_config['out_num'] == 2 else f"pop-{net_config['out_num']}",
-    ]
-
-    filename = results_dir + "_".join(str(p) for p in params if p is not None) + ".csv"
-    return filename
-
-
-
-""" from mordred import Calculator, descriptors
-mol = Chem.MolFromSmiles("CCO")
-
-# Initialize Mordred descriptor calculator
-calc = Calculator(descriptors)
-
-# Calculate descriptors for the molecule
-result = calc(mol)
-
-# Print descriptor names and values
-for name, value in result.items():
-    print(value) """
-
-
-"""
-    splitter = ScaffoldSplitter()
-    train, val, test = dc.molnet.load_bbbp(splitter=splitter)
-    _, train_label = train[:]
-    _, val_label = val[:]
-    _, test_label = test[:]
-"""
