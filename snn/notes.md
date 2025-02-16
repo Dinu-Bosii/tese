@@ -1,7 +1,7 @@
 ##  Data
-- [x] BBBP / Cider
+- [x] BBBP / Cider / Tox21
 - [x] Fingerprints 
-- [ ] Calcular Shannon entropy to quantify how unbalanced a dataset is
+- [ ] Calculate Shannon entropy to quantify how unbalanced a dataset is
 
 ## Network
 - [x] Metrics 

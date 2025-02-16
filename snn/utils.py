@@ -232,7 +232,8 @@ def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_
     results_dir = os.path.join("results", dirname, "")
     if model:
         results_dir = os.path.join(results_dir, "models", "")
-
+    spike_grad = net_config['spike_grad']
+    
     csnn_channels = f"out-{net.conv1.out_channels}" + (f"-{net.conv2.out_channels}" if hasattr(net, "conv2") else "")
     params = [
         None if dirname == 'BBBP' else target, 
@@ -254,6 +255,7 @@ def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_
         train_config['loss_type'],
         optim_type,
         f"wd{wd}",
+        None if spike_grad is None else f"sig-{net_config['slope']}",
         None if net_config['out_num'] == 2 else f"pop-{net_config['out_num']}",
     ]
 

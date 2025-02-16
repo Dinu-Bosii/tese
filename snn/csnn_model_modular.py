@@ -60,7 +60,7 @@ class CSNNet(nn.Module):
         elif input_encoding == "ttfs":
             return self.forward_ttfs(x)
         else:
-            raise ValueError(f"Error in input encoding type.")
+            raise ValueError("Error in input encoding type.")
 
     def forward_rate(self, x):
         # Initialize hidden states at t=0
@@ -111,16 +111,16 @@ class CSNNet(nn.Module):
                 lif = self.layers[i+1]
 
                 cur = F.max_pool1d(conv(spk), kernel_size=self.max_pool_size)
-                spk, membranes[i] = self.lif1(cur, membranes[i]) 
+                spk, membranes[i] = lif(cur, membranes[i]) 
 
 
             spk = spk.view(spk.size()[0], -1)
 
             cur_out = self.fc_out(spk)
-            spk_out, mem_out = self.lif_out(cur_out, mem_out)
+            spk_out, membranes[-2] = self.lif_out(cur_out, membranes[-2])
 
             spk_out_rec.append(spk_out)
-            mem_out_rec.append(mem_out)
+            mem_out_rec.append(membranes[-1])
 
         return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
     

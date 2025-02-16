@@ -21,9 +21,9 @@ class CSNNet(nn.Module):
         self.conv_stride = 1 #1
         self.conv_groups = 1 #
         
-        self.conv1 = nn.Conv1d(in_channels=1, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride, padding=1)
+        self.conv1 = nn.Conv1d(in_channels=1, out_channels=16, kernel_size=self.conv_kernel, stride=self.conv_stride, padding=1)
         torch.nn.init.xavier_uniform_(self.conv1.weight)
-        self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad, threshold=1.5, learn_threshold=True)
+        self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad )#, threshold=1.5, learn_threshold=True)
         self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride,groups=self.conv_groups, padding=1)
         self.lif2 = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_threshold=True)
 
@@ -32,7 +32,7 @@ class CSNNet(nn.Module):
         self.fc_out = nn.Linear(lin_size * self.conv2.out_channels, num_outputs)
         #self.fc_out = nn.Linear(lin_size * self.conv1.out_channels, num_outputs)
         torch.nn.init.xavier_uniform_(self.fc_out.weight)
-        self.lif_out = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_threshold=True)
+        self.lif_out = snn.Leaky(beta=beta, spike_grad=spike_grad)#, learn_threshold=True)
     
 
     def calculate_lin_size(self, input_size):
@@ -64,7 +64,6 @@ class CSNNet(nn.Module):
         for _ in range(self.num_steps): #adicionar prints
             cur1 = F.max_pool1d(self.conv1(x), kernel_size=self.max_pool_size)
             spk, mem1 = self.lif1(cur1, mem1) 
-
             #print("1st layer out: ", spk.shape) # deve ser mais de 150/200
             #print("1st layer out (flat): ",spk.flatten().shape)
 
@@ -133,9 +132,11 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
     best_net_list = []
     auc_roc = 0
     loss_val = 0
+    print("Epoch:", end='')
     for epoch in range(num_epochs):
         net.train()
-        #if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}")
+        if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}")
+        #if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}")
 
         # Minibatch training loop
         for data, targets in train_loader:
@@ -159,15 +160,15 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
             optimizer.step()
 
             # Store loss history for future plotting
-            #loss_hist.append(loss_val.item())
-       # _, auc_roc = val_fn(net, device, val_loader, train_config)
+            loss_hist.append(loss_val.item())
+        _, auc_roc = val_fn(net, device, val_loader, train_config)
         #if auc_roc > best_auc_roc:
         #    best_auc_roc = auc_roc
         #print(f"Epoch:{epoch + 1} - auc:{auc_roc} - loss:{loss_val}")           
         best_net_list.append(copy.deepcopy(net.state_dict()))
 
             #val_acc_hist.extend(accuracy)
-        #val_auc_hist.extend([auc_roc])
+        val_auc_hist.extend([auc_roc])
 
 
     return net, loss_hist, val_acc_hist, val_auc_hist, best_net_list
