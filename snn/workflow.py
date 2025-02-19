@@ -18,25 +18,9 @@ from sklearn.metrics import confusion_matrix, roc_auc_score, accuracy_score, f1_
 from csnn_model import CSNNet, get_prediction_fn
 
 
-# In[2]:
-
-
-#!pip install pandas numpy rdkit torch snntorch matplotlib scikit-learn deepchem pubchempy
-
-
-# In[3]:
-
-
-#https://github.com/chainer/chainer-chemistry/blob/master/chainer_chemistry/dataset/splitters/scaffold_splitter.py
-
-#splitter = ScaffoldSplitter()
-#tasks, datasets, transformers = dc.molnet.load_bbbp(splitter=splitter, featurizer="ECFP", reload=True)
-#train, val, test = datasets
-
-
 # #### Load DataFrame
 
-# In[4]:
+# In[2]:
 
 
 files = ['tox21.csv','sider.csv', 'BBBP.csv']
@@ -66,6 +50,7 @@ else:
     target_name = targets[0]
     
 df = df[[target_name, 'smiles']].dropna()
+print(target_name)
 
 
 # #### SMILE to Fingerprint
@@ -74,14 +59,14 @@ df = df[[target_name, 'smiles']].dropna()
 
 
 fp_types = [['morgan', 1024], ['maccs', 167], ['RDKit', 1024], ['pubchem', 881]]
-fp_type, num_bits = fp_types[0]
+fp_type, num_bits = fp_types[1]
 #num_bits = 2048
 fp_config = {"fp_type": fp_type,
              "num_bits": num_bits,
              "radius": 2,
              "fp_type_2": fp_types[0][0],
              "num_bits_2": 1024 - num_bits,
-             "mix": False,
+             "mix": True,
              }
 
 print(fp_type, '-', num_bits)
@@ -144,7 +129,7 @@ net_config = {"input_size": 1024 if fp_config['mix'] else num_bits,
               "spike_grad": spike_grad,
               "beta": beta,
               "encoding": 'rate',
-              "out_num": 20
+              "out_num": 2
               }
 pop_coding = net_config['out_num'] > 2
 
@@ -163,9 +148,9 @@ pop_coding = net_config['out_num'] > 2
 # In[11]:
 
 
-lr=1e-6 #1e-6 default for 1000 epochs. csnn requires higher
-iterations = 1
-weight_decay = 1e-4 # 1e-5
+lr=1e-4 #1e-6 default for 1000 epochs. csnn requires higher
+iterations = 30
+weight_decay = 0 # 1e-5
 optim_type = 'Adam'
 #optim_type = 'SGD'
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -189,7 +174,6 @@ results = [[], [], [], [], [], []]
 
 # In[12]:
 
-
 from rdkit import RDLogger
 
 # Disable RDKit logging for the scaffold meeting
@@ -209,7 +193,7 @@ def calc_metrics(metrics_list, all_targets, all_preds):
     f1 = f1_score(all_targets, all_preds)
     precision = precision_score(all_targets, all_preds)
     
-    print(accuracy, auc_roc)
+    print(accuracy, auc_roc, sensitivity, specificity, f1, precision)
     metrics_list[0].append(accuracy)
     metrics_list[1].append(auc_roc)
     metrics_list[2].append(sensitivity)
@@ -221,11 +205,13 @@ def calc_metrics(metrics_list, all_targets, all_preds):
 
 # In[14]:
 
+import time
+
+start_time = time.time()
 
 for iter in range(iterations):
     print(f"Iteration:{iter + 1}/{iterations}")
-    seed = random.randint(1, 30)
-    # seed = iter + 1
+    seed = iter + 1
     print(f"Seed:{seed}")
     random.seed(seed)
 
@@ -259,6 +245,7 @@ for iter in range(iterations):
 
 
     # TRAINING
+    print('Training...')
     net, loss_hist, val_acc_hist, val_auc_hist, net_list = train_net(net=net, optimizer=optimizer, train_loader=train_loader, val_loader=val_loader, train_config=train_config, net_config=net_config)
     
     # TESTING
@@ -280,75 +267,9 @@ for iter in range(iterations):
     all_preds, all_targets = test_net(model, device, test_loader, train_config)
     calc_metrics(results, all_preds=all_preds, all_targets=all_targets)
 
-
-# In[15]:
-
-
-#Save the best model
-#torch.save(model.state_dict(), models//)
-# se for preciso, continuar o treino
-print('best val set auc:', max(val_auc_hist))
-print(model.lif1.threshold)
-print(model.lif_out.threshold)
-
-
-# #### Smoothed Loss
-
-# In[16]:
-
-
-#from scipy.signal import savgol_filter
-from scipy.ndimage import gaussian_filter1d
-#from statsmodels.nonparametric.smoothers_lowess import lowess
-
-#print(loss_hist[len(loss_hist) - 5:len(loss_hist)])
-
-fig = plt.figure(facecolor="w", figsize=(10, 5))
-#plt.plot(np.convolve(loss_hist, np.ones(30)/30, mode='valid'))
-#plt.plot(savgol_filter(loss_hist, window_length=100, polyorder=3))
-#plt.plot(lowess(loss_hist, np.arange(len(loss_hist)), frac=0.1)[:, 1])
-plt.plot(gaussian_filter1d(loss_hist, sigma=6))
-#plt.plot(loss_hist)
-#plt.axhline(y=1, color='r', linestyle='--', label='y = 1')
-plt.title("Loss Curve")
-plt.xlabel("Iteration")
-plt.ylabel("Loss")
-plt.legend()
-plt.show()
-
-
-# In[17]:
-
-
-num_epochs = train_config['num_epochs']
-num_minibatches_per_epoch = len(loss_hist) // num_epochs
-
-# Create x-axis values in terms of epochs
-epochs = np.linspace(1, num_epochs, len(loss_hist))
-epoch_losses = np.array(loss_hist).reshape(num_epochs, num_minibatches_per_epoch).mean(axis=1)
-
-plt.plot(range(1, num_epochs + 1), epoch_losses, label="Loss per Epoch")
-plt.xlabel("Epochs")
-plt.ylabel("Loss")
-plt.title("Training Loss Over Epochs")
-plt.legend()
-plt.show()
-
-
-# In[18]:
-
-
-# Validation Set
-fig = plt.figure(facecolor="w", figsize=(10, 5))
-
-#plt.plot(gaussian_filter1d(val_auc_hist, sigma=6))
-plt.plot(val_auc_hist)
-plt.title("ROC AUC on Validation Set")
-plt.xlabel("Iteration")
-plt.ylabel("ROC-AUC")
-plt.legend()
-plt.show()
-
+end_time = time.time()
+elapsed_time = end_time - start_time
+print(f"Time taken: {elapsed_time:.6f} seconds")
 
 # #### Save Metrics
 
@@ -386,13 +307,4 @@ if save: df_metrics.to_csv(filename, index=False)
 print(filename)
 
 
-# In[20]:
-
-
-#from torchsummary import summary
-#summary(net, input_size=(1, 1024),  batch_size=32)
-
-#from torchinfo import summary
-
-#summary(net, input_size=(batch_size, 1, 1024), verbose=0)
 

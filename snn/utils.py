@@ -11,6 +11,7 @@ from deepchem.splits.splitters import ScaffoldSplitter
 import numpy as np
 from csnn_model import CSNNet, train_csnn, val_csnn, test_csnn
 from snn_model import SNNet, train_snn, val_snn, test_snn
+#from csnn_model_modular import CSNNet, train_csnn, val_csnn, test_csnn
 #from mordred import Calculator, descriptors
 
 
@@ -220,6 +221,10 @@ def get_spiking_net(net_type, net_config):
         test_fn = test_snn
         
     elif net_type == "CSNN":
+        # Add num_conv parameter if using CSNNet from csnn_model_modular
+        #num_conv = net_config['num_conv']
+        #net = CSNNet(input_size=input_size, num_steps=time_steps, spike_grad=spike_grad, beta=beta, num_outputs=num_outputs, num_conv=num_conv)
+
         net = CSNNet(input_size=input_size, num_steps=time_steps, spike_grad=spike_grad, beta=beta, num_outputs=num_outputs)
         train_fn = train_csnn
         val_fn = val_csnn
@@ -256,6 +261,7 @@ def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_
         optim_type,
         f"wd{wd}",
         None if spike_grad is None else f"sig-{net_config['slope']}",
+        None if not net_config['bias'] else "bias",
         None if net_config['out_num'] == 2 else f"pop-{net_config['out_num']}",
     ]
 

@@ -10,7 +10,7 @@ import copy
 
 # Temporal Dynamics
 #num_steps = 10
-
+bias = False
 # NN Architecture
 class CSNNet(nn.Module):
     def __init__(self, input_size,num_steps, beta, spike_grad=None, num_outputs=2):
@@ -21,18 +21,18 @@ class CSNNet(nn.Module):
         self.conv_stride = 1 #1
         self.conv_groups = 1 #
         
-        self.conv1 = nn.Conv1d(in_channels=1, out_channels=16, kernel_size=self.conv_kernel, stride=self.conv_stride, padding=1)
+        self.conv1 = nn.Conv1d(in_channels=1, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride, padding=1, bias=bias)
         torch.nn.init.xavier_uniform_(self.conv1.weight)
-        self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad )#, threshold=1.5, learn_threshold=True)
-        self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride,groups=self.conv_groups, padding=1)
+        self.lif1 = snn.Leaky(beta=beta, spike_grad=spike_grad, threshold=1.5, learn_threshold=True)
+        self.conv2 = nn.Conv1d(in_channels=self.conv1.out_channels, out_channels=8, kernel_size=self.conv_kernel, stride=self.conv_stride,groups=self.conv_groups, padding=1, bias=bias)
         self.lif2 = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_threshold=True)
 
         lin_size = self.calculate_lin_size(input_size)
 
-        self.fc_out = nn.Linear(lin_size * self.conv2.out_channels, num_outputs)
+        self.fc_out = nn.Linear(lin_size * self.conv2.out_channels, num_outputs, bias=bias)
         #self.fc_out = nn.Linear(lin_size * self.conv1.out_channels, num_outputs)
         torch.nn.init.xavier_uniform_(self.fc_out.weight)
-        self.lif_out = snn.Leaky(beta=beta, spike_grad=spike_grad)#, learn_threshold=True)
+        self.lif_out = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_threshold=True)
     
 
     def calculate_lin_size(self, input_size):

@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import snntorch as snn
 import torch.nn.functional as F
-from snntorch import utils, spikegen
+from snntorch import spikegen
 from snn_model import compute_loss
 from sklearn.metrics import roc_auc_score, accuracy_score
 import numpy as np
@@ -11,10 +11,13 @@ import copy
 # Temporal Dynamics
 #num_steps = 10
 out_channels = [8, 8]
-thresholds = [1.5, 1, 1]
-# NN Architecture
+in_channels = [1, out_channels[0]]
+groups = [1, 1]
+thresholds = torch.tensor([1.5, 1.0, 1.0], dtype=torch.float32)
+learn_th = [True, True, True]
+
 class CSNNet(nn.Module):
-    def __init__(self, input_size,num_steps, beta, spike_grad=None, num_outputs=2, num_conv=2):
+    def __init__(self, input_size, num_steps, beta, spike_grad=None, num_outputs=2, num_conv=2):
         super().__init__()
         self.num_steps = num_steps
         self.max_pool_size = 2
@@ -23,10 +26,11 @@ class CSNNet(nn.Module):
         self.conv_groups = 1 #
         self.num_conv = num_conv
 
+        # even -> Conv | odd -> lif
         self.layers = nn.ModuleList()
 
         for i in range(self.num_conv):
-            conv_layer = nn.Conv1d(in_channels=1, 
+            conv_layer = nn.Conv1d(in_channels=in_channels[i], 
                                    out_channels=out_channels[i], 
                                    kernel_size=self.conv_kernel, 
                                    stride=self.conv_stride, 
@@ -34,24 +38,22 @@ class CSNNet(nn.Module):
             self.layers.append(conv_layer)
             torch.nn.init.xavier_uniform_(conv_layer.weight)
 
-            lif_layer = snn.Leaky(beta=beta, spike_grad=spike_grad, threshold=thresholds[i], learn_threshold=True)
+            lif_layer = snn.Leaky(beta=beta, spike_grad=spike_grad, threshold=thresholds[i], learn_threshold=learn_th[i])
             self.layers.append(lif_layer)
 
         lin_size = self.calculate_lin_size(input_size)
-
         self.fc_out = nn.Linear(lin_size * out_channels[self.num_conv - 1], num_outputs)
         torch.nn.init.xavier_uniform_(self.fc_out.weight)
         self.layers.append(self.fc_out)
 
-        self.lif_out = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_threshold=True)
+        self.lif_out = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_threshold=learn_th[-1])
         self.layers.append(self.lif_out)
 
     def calculate_lin_size(self, input_size):
         x = torch.zeros(1, 1, input_size)
         for i in range(0, len(self.layers), 2):
             conv = self.layers[i]
-            x = conv(x)
-            x = F.max_pool1d(x, kernel_size=self.max_pool_size)
+            x = F.max_pool1d(conv(x), kernel_size=self.max_pool_size)
         return x.shape[2]
 
     def forward(self, x, input_encoding="rate"):
@@ -65,7 +67,7 @@ class CSNNet(nn.Module):
     def forward_rate(self, x):
         # Initialize hidden states at t=0
         membranes = []
-        for layer in self.layer:
+        for layer in self.layers:
             mem = layer.reset_mem() if isinstance(layer, snn.Leaky) else None
             membranes.append(mem)
 
@@ -75,12 +77,13 @@ class CSNNet(nn.Module):
 
         for _ in range(self.num_steps):
             spk = x
-            for i in range(0, len(self.layers) - 1, 2):
+
+            for i in range(0, self.num_conv * 2 - 1, 2):
                 conv = self.layers[i]
                 lif = self.layers[i+1]
 
                 cur = F.max_pool1d(conv(spk), kernel_size=self.max_pool_size)
-                spk, membranes[i] = self.lif(cur, membranes[i]) 
+                spk, membranes[i] = lif(cur, membranes[i]) 
 
 
             spk = spk.view(spk.size()[0], -1)
@@ -96,7 +99,7 @@ class CSNNet(nn.Module):
     def forward_ttfs(self, x):
         in_spikes = spikegen.latency(x, num_steps=self.num_steps, linear=True)
         membranes = []
-        for layer in self.layer:
+        for layer in self.layers:
             mem = layer.reset_mem() if isinstance(layer, snn.Leaky) else None
             membranes.append(mem)
 
@@ -106,7 +109,7 @@ class CSNNet(nn.Module):
 
         for x_in in in_spikes:
             spk = x_in
-            for i in range(0, len(self.layers) - 1, 2):
+            for i in range(0, self.num_conv * 2 - 1, 2):
                 conv = self.layers[i]
                 lif = self.layers[i+1]
 
@@ -128,7 +131,6 @@ class CSNNet(nn.Module):
 def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_config):
     device, num_epochs, num_steps = train_config['device'],  train_config['num_epochs'], train_config['num_steps']
     loss_type, loss_fn, dtype = train_config['loss_type'], train_config['loss_fn'], train_config['dtype']
-    batch_size = train_config['batch_size']
     val_fn = train_config['val_net']
     loss_hist = []
     val_acc_hist = []
@@ -139,7 +141,7 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
     loss_val = 0
     for epoch in range(num_epochs):
         net.train()
-        #if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}")
+        if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}")
 
         # Minibatch training loop
         for data, targets in train_loader:
@@ -149,6 +151,7 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
 
             targets = targets.to(device, non_blocking=True)
             #print(targets.size(), targets.unsqueeze(1).size())
+
             # forward pass
             spk_rec, mem_rec = net(data)
             #print(spk_rec, mem_rec)
