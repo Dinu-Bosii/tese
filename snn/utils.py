@@ -82,14 +82,17 @@ def fp_generator(fp_type, fp_size=1024, radius=2):
 
     if fp_type == 'morgan':
         gen = GetMorganGenerator(radius=radius, fpSize=fp_size)
-        fn = lambda mol, **kwargs: gen.GetFingerprint(mol, **kwargs)
+        def fn(mol, **kwargs):
+            return gen.GetFingerprint(mol, **kwargs)
 
     elif fp_type == 'rdkit':
         gen = GetRDKitFPGenerator(fpSize=fp_size)
-        fn = lambda mol, **kwargs: gen.GetFingerprint(mol, **kwargs)
+        def fn(mol, **kwargs):
+            return gen.GetFingerprint(mol, **kwargs)
 
     elif fp_type == 'maccs':
-        fn = lambda mol, **kwargs: MACCSkeys.GenMACCSKeys(mol, **kwargs)
+        def fn(mol, **kwargs):
+            return MACCSkeys.GenMACCSKeys(mol, **kwargs)
 
     elif fp_type == "pubchem": #TODO: this doesn't work and requires internet access
         def pubchem_fp(smiles, **kwargs):
@@ -128,72 +131,46 @@ def fp_generator(fp_type, fp_size=1024, radius=2):
 
 
 def smile_to_fp(df, fp_config, target_name):
-    fp_type, num_bits = fp_config["fp_type"], fp_config["num_bits"]
-    radius = fp_config["radius"]
+    radius = fp_config['radius']
+    mix = fp_config['mix']
+
+    fp1_type, fp1_size = fp_config["fp_type"], fp_config["num_bits"]
+    fp1_gen = fp_generator(fp1_type, fp_size=fp1_size, radius=radius)
+    array_size = fp1_size
+
+    if mix:
+        fp2_type, fp2_size = fp_config["fp_type_2"], fp_config['num_bits_2']
+        fp2_gen = fp_generator(fp2_type, fp_size=fp2_size, radius=radius)
+        array_size += fp2_size
+
     num_rows = len(df)
-    fp_array = np.zeros((num_rows, num_bits))
+
+    fp_array = np.zeros((num_rows, array_size))
     target_array = np.zeros((num_rows, 1))
-    i = 0
 
-    # Smile to Fingerprint of size {num_bits}
-    fp_gen = fp_generator(fp_type, fp_size=num_bits, radius=radius)
-
+    valid_mols = 0
     for idx, row in df.iterrows():
         mol = Chem.MolFromSmiles(row['smiles'])
         
         if mol is None:
             continue
-        
-        if fp_type == "pubchem":
-            fingerprint = fp_gen(row['smiles'])
-            if fingerprint is None:
-                continue
-        else:
-            fingerprint = fp_gen(mol)
 
-        fp_array[i] = np.array(fingerprint)
-        target_array[i] = row[target_name]
-        i += 1
+        # Additional checks may be required for Pubchem fp
+        fingerprint = np.array(fp1_gen(mol))
+        if mix:
+            fingerprint_2 = np.array(fp2_gen(mol))
+            fingerprint = np.concatenate([fingerprint, fingerprint_2])
 
-    target_array = target_array.ravel()
-    fp_array = fp_array[0:i]
-    target_array = target_array[0:i]
 
-    return fp_array, target_array
-
-def smile_to_fp_mix(df, fp_config, target_name):
-    fp_type, num_bits = fp_config["fp_type"], fp_config["num_bits"]
-    fp_type_2, num_bits_2 = fp_config["fp_type_2"], fp_config["num_bits_2"]
-    radius = fp_config["radius"]
-    num_rows = len(df)
-    fp_array = np.zeros((num_rows, num_bits + num_bits_2))
-    target_array = np.zeros((num_rows, 1))
-    i = 0
-
-    # Smile to Fingerprint of size {num_bits}
-    fp_gen = fp_generator(fp_type, fp_size=num_bits, radius=radius)
-    fp_gen_2 = fp_generator(fp_type_2, fp_size=num_bits_2, radius=radius)
-
-    for idx, row in df.iterrows():
-        mol = Chem.MolFromSmiles(row['smiles'])
-        
-        if mol is None:
-            continue
-        
-
-        fingerprint = np.array(fp_gen(mol))
-        fingerprint_2 = np.array(fp_gen_2(mol))
-
-        fp_array[i] = np.concatenate([fingerprint, fingerprint_2])
-        target_array[i] = row[target_name]
-        i += 1
+        fp_array[valid_mols] = fingerprint
+        target_array[valid_mols] = row[target_name]
+        valid_mols += 1
 
     target_array = target_array.ravel()
-    fp_array = fp_array[0:i]
-    target_array = target_array[0:i]
+    fp_array = fp_array[0:valid_mols]
+    target_array = target_array[0:valid_mols]
 
     return fp_array, target_array
-
 
 def get_spiking_net(net_type, net_config):
     #later on make spike_grad a input parameter
@@ -261,33 +238,10 @@ def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_
         optim_type,
         f"wd{wd}",
         None if spike_grad is None else f"sig-{net_config['slope']}",
-        None if not net_config['bias'] else "bias",
+        "no-bias" if not net_config['bias'] else "bias",
         None if net_config['out_num'] == 2 else f"pop-{net_config['out_num']}",
     ]
 
     filename = results_dir + "_".join(str(p) for p in params if p is not None) + ".csv"
     return filename
 
-
-
-""" from mordred import Calculator, descriptors
-mol = Chem.MolFromSmiles("CCO")
-
-# Initialize Mordred descriptor calculator
-calc = Calculator(descriptors)
-
-# Calculate descriptors for the molecule
-result = calc(mol)
-
-# Print descriptor names and values
-for name, value in result.items():
-    print(value) """
-
-
-"""
-    splitter = ScaffoldSplitter()
-    train, val, test = dc.molnet.load_bbbp(splitter=splitter)
-    _, train_label = train[:]
-    _, val_label = val[:]
-    _, test_label = test[:]
-"""
