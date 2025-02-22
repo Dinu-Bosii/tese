@@ -27,7 +27,9 @@ class SNNet(nn.Module):
 
 
         self.fc_out = nn.Linear(layer_sizes, num_outputs)
+        self.layers.append(self.fc_out)
         self.lif_out = snn.Leaky(beta=beta, output=True)
+        self.layers.append(self.lif_out)
 
 
     def forward(self, x):
@@ -49,11 +51,8 @@ class SNNet(nn.Module):
                 cur = fc(x)
                 spk, membranes[i] = lif(cur, spk)
 
-
-            cur_out = self.fc_out(spk)
-            spk_out, mem_out = self.lif_out(cur_out, mem_out)
-            spk_out_rec.append(spk_out)
-            mem_out_rec.append(mem_out)
+            spk_out_rec.append(spk)
+            mem_out_rec.append(membranes[-1])
 
         return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
     
