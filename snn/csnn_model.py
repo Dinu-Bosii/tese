@@ -132,11 +132,11 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
     best_net_list = []
     auc_roc = 0
     loss_val = 0
-    print("Epoch:", end='')
+    print("Epoch:", end ='', flush=True)
     for epoch in range(num_epochs):
         net.train()
-        if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}")
-        #if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}")
+        #if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}")
+        if (epoch + 1) % 100 == 0: print(f"-{epoch + 1}", end='', flush=True)
 
         # Minibatch training loop
         for data, targets in train_loader:
@@ -161,14 +161,14 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
 
             # Store loss history for future plotting
             loss_hist.append(loss_val.item())
-        _, auc_roc = val_fn(net, device, val_loader, train_config)
+        #_, auc_roc = val_fn(net, device, val_loader, train_config)
         #if auc_roc > best_auc_roc:
         #    best_auc_roc = auc_roc
         #print(f"Epoch:{epoch + 1} - auc:{auc_roc} - loss:{loss_val}")           
         best_net_list.append(copy.deepcopy(net.state_dict()))
 
             #val_acc_hist.extend(accuracy)
-        val_auc_hist.extend([auc_roc])
+        #val_auc_hist.extend([auc_roc])
 
 
     return net, loss_hist, val_acc_hist, val_auc_hist, best_net_list

@@ -66,14 +66,15 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
     loss_hist = []
     num_steps = net.num_steps
     best_auc_roc = 0
-    #patience = 10
-    #patience_counter = 0
+    best_epoch = 0
     best_net_list = []
     #epoch_list = []
+    print("Epoch:", end ='', flush=True)
     for epoch in range(num_epochs):
         net.train()
         #print(f"Epoch:{epoch + 1}")
-        if epoch % 10 == 0: print(f"Epoch:{epoch + 1}")
+        #if epoch % 10 == 0: print(f"Epoch:{epoch}")
+        if (epoch + 1) % 100 == 0: print(f"-{epoch + 1}", end='', flush=True)
         train_batch = iter(train_loader)
 
         # Minibatch training loop
@@ -101,12 +102,13 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
         
         _, auc_roc = val_fn(net, device, val_loader, loss_type, loss_fn, dtype)
         if auc_roc > best_auc_roc:
-            best_auc_roc = auc_roc   
+            best_auc_roc, best_epoch = auc_roc, epoch   
         
         best_net_list.append(net.state_dict())
 
             #val_acc_hist.extend(accuracy)
         val_auc_hist.extend([auc_roc])
+    print("best auc:", best_auc_roc, "at epoch", best_epoch)
 
     return net, loss_hist, val_acc_hist, val_auc_hist, best_net_list#, epoch_list
 
