@@ -13,18 +13,18 @@ import torch
 from torch.utils.data import TensorDataset, DataLoader
 from snntorch import spikegen, surrogate
 import matplotlib.pyplot as plt
-from utils import load_dataset_df, smile_to_fp_mix, smile_to_fp, data_splitter, get_spiking_net, make_filename
+from utils import load_dataset_df, smile_to_fp, data_splitter, get_spiking_net, make_filename
 from sklearn.metrics import confusion_matrix, roc_auc_score, accuracy_score, f1_score, precision_score
-from csnn_model import CSNNet, get_prediction_fn
+from csnn_model import CSNNet, get_prediction_fn, bias
 
 
 # #### Load DataFrame
 
-# In[2]:
+# In[4]:
 
 
 files = ['tox21.csv','sider.csv', 'BBBP.csv']
-dt_file = files[1]
+dt_file = files[0]
 dirname = dt_file.removesuffix('.csv')
 
 df, targets = load_dataset_df(filename=dt_file)
@@ -50,7 +50,6 @@ else:
     target_name = targets[0]
     
 df = df[[target_name, 'smiles']].dropna()
-print(target_name)
 
 
 # #### SMILE to Fingerprint
@@ -59,20 +58,24 @@ print(target_name)
 
 
 fp_types = [['morgan', 1024], ['maccs', 167], ['RDKit', 1024], ['pubchem', 881]]
-fp_type, num_bits = fp_types[1]
-#num_bits = 2048
+mix = True
+fp_type, num_bits = fp_types[2]
+if mix and fp_type == 'RDKit':
+    num_bits = 512
 fp_config = {"fp_type": fp_type,
              "num_bits": num_bits,
              "radius": 2,
              "fp_type_2": fp_types[0][0],
              "num_bits_2": 1024 - num_bits,
-             "mix": True,
+             "mix": mix,
              }
 
 print(fp_type, '-', num_bits)
+if mix:
+   print(fp_config['fp_type_2'], '-', fp_config['num_bits_2']) 
 
 
-# In[7]:
+# In[8]:
 
 
 dtype = torch.float32
@@ -81,10 +84,8 @@ dataset = None
 
 if dirname != 'BBBP':
     split = "random"
-    if fp_config['mix']:
-        fp_array, target_array = smile_to_fp_mix(df, fp_config=fp_config, target_name=target_name)
-    else:
-        fp_array, target_array = smile_to_fp(df, fp_config=fp_config, target_name=target_name)
+
+    fp_array, target_array = smile_to_fp(df, fp_config=fp_config, target_name=target_name)
     # Create Torch Dataset
     fp_tensor = torch.tensor(fp_array, dtype=dtype)
     target_tensor = torch.tensor(target_array, dtype=dtype).long()
@@ -92,7 +93,7 @@ if dirname != 'BBBP':
     dataset = TensorDataset(fp_tensor, target_tensor)
 
 
-# In[8]:
+# In[ ]:
 
 
 print(fp_array.shape)
@@ -100,7 +101,7 @@ print(fp_array.shape)
 
 # #### Loss Function
 
-# In[9]:
+# In[ ]:
 
 
 from sklearn.utils.class_weight import compute_class_weight
@@ -112,12 +113,13 @@ print(loss_type)
 
 # #### Train Loop
 
-# In[10]:
+# In[ ]:
 
 
 net_types = ["SNN", "DSNN", "CSNN"]
 net_type = net_types[2]
-#spike_grad = surrogate.sigmoid(slope=25)
+slope = 10
+#spike_grad = surrogate.fast_sigmoid(slope=slope)
 spike_grad = None
 beta = 0.95 #experimentar 0.7
 
@@ -127,25 +129,16 @@ net_config = {"input_size": 1024 if fp_config['mix'] else num_bits,
               "use_l2": net_type == "DSNN",
               "time_steps": 10,
               "spike_grad": spike_grad,
+              "slope": None if not spike_grad else slope, #spike_grad.__closure__[0].cell_contents,
               "beta": beta,
               "encoding": 'rate',
+              "bias": bias,
               "out_num": 2
               }
 pop_coding = net_config['out_num'] > 2
 
 
-# fast sigmoid / sigmoid
-# lr = 1e-5 ou -6, com 500-1000 epochs
-# batch size 16
-# batches devem incluir pos e neg samples
-# Adamax
-# 
-# experimentar com Tox21 NR-AR
-# temporal coding se não aumentar com rate coding
-# 
-# ver oversampling 
-
-# In[11]:
+# In[ ]:
 
 
 lr=1e-4 #1e-6 default for 1000 epochs. csnn requires higher
@@ -172,7 +165,16 @@ save = True
 results = [[], [], [], [], [], []]
 
 
-# In[12]:
+# In[ ]:
+
+
+print("-----Configuration-----")
+print(net_config)
+print(train_config)
+
+
+# In[ ]:
+
 
 from rdkit import RDLogger
 
@@ -180,7 +182,7 @@ from rdkit import RDLogger
 RDLogger.DisableLog('rdApp.*')
 
 
-# In[13]:
+# In[ ]:
 
 
 def calc_metrics(metrics_list, all_targets, all_preds):
@@ -193,7 +195,7 @@ def calc_metrics(metrics_list, all_targets, all_preds):
     f1 = f1_score(all_targets, all_preds)
     precision = precision_score(all_targets, all_preds)
     
-    print(accuracy, auc_roc, sensitivity, specificity, f1, precision)
+    print(accuracy, auc_roc)
     metrics_list[0].append(accuracy)
     metrics_list[1].append(auc_roc)
     metrics_list[2].append(sensitivity)
@@ -203,11 +205,14 @@ def calc_metrics(metrics_list, all_targets, all_preds):
     
 
 
-# In[14]:
+# In[ ]:
 
-import time
 
-start_time = time.time()
+# The worst and best iterations (with maccs only): 16, 29
+
+
+# In[ ]:
+
 
 for iter in range(iterations):
     print(f"Iteration:{iter + 1}/{iterations}")
@@ -245,7 +250,6 @@ for iter in range(iterations):
 
 
     # TRAINING
-    print('Training...')
     net, loss_hist, val_acc_hist, val_auc_hist, net_list = train_net(net=net, optimizer=optimizer, train_loader=train_loader, val_loader=val_loader, train_config=train_config, net_config=net_config)
     
     # TESTING
@@ -262,18 +266,16 @@ for iter in range(iterations):
 
     print(best_epoch, best_test_auc)
     model.load_state_dict(net_list[best_epoch])
-    filename = make_filename(dirname, target_name, net_type, fp_config, lr, weight_decay, optim_type, net_config, train_config, model)
-    torch.save(model.state_dict(), filename.removesuffix('csv') + 'pth')
+    filename = make_filename(dirname, target_name, net_type, fp_config, lr, weight_decay, optim_type, net_config, train_config, model, model = True)
+    model_name = filename.removesuffix('.csv') + f"seed-{seed}" +'.pth'
+    torch.save(model.state_dict(), model_name)
     all_preds, all_targets = test_net(model, device, test_loader, train_config)
     calc_metrics(results, all_preds=all_preds, all_targets=all_targets)
 
-end_time = time.time()
-elapsed_time = end_time - start_time
-print(f"Time taken: {elapsed_time:.6f} seconds")
 
 # #### Save Metrics
 
-# In[19]:
+# In[ ]:
 
 
 metrics_np = np.zeros(12)
@@ -300,11 +302,10 @@ num_hidden = net_config['num_hidden']
 time_steps = train_config['num_steps']
 num_epochs = train_config['num_epochs']
 
-
+# TODO: Add neuron thresholds to name
 filename = make_filename(dirname, target_name, net_type, fp_config, lr, weight_decay, optim_type, net_config, train_config, model)
 if save: df_metrics.to_csv(filename, index=False)
 
 print(filename)
-
 
 
