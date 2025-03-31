@@ -25,12 +25,24 @@ class CSNNet(nn.Module):
         self.conv_stride = 1 #1
         self.conv_groups = 1 #
         self.num_conv = num_conv
+        self.flatten = nn.Flatten()
 
+        if len(input_size) == 1:
+            self.max_pool = F.max_pool1d
+        else:
+            self.max_pool = F.max_pool2d
         # even -> Conv | odd -> lif
         self.layers = nn.ModuleList()
 
         for i in range(self.num_conv):
-            conv_layer = nn.Conv1d(in_channels=in_channels[i], 
+            if len(input_size) == 1:
+                conv_layer = nn.Conv1d(in_channels=in_channels[i], 
+                                   out_channels=out_channels[i], 
+                                   kernel_size=self.conv_kernel, 
+                                   stride=self.conv_stride, 
+                                   padding=1)
+            else:
+                conv_layer = nn.Conv2d(in_channels=in_channels[i], 
                                    out_channels=out_channels[i], 
                                    kernel_size=self.conv_kernel, 
                                    stride=self.conv_stride, 
@@ -42,7 +54,8 @@ class CSNNet(nn.Module):
             self.layers.append(lif_layer)
 
         lin_size = self.calculate_lin_size(input_size)
-        self.fc_out = nn.Linear(lin_size * out_channels[self.num_conv - 1], num_outputs)
+        #self.fc_out = nn.Linear(lin_size * out_channels[self.num_conv - 1], num_outputs)
+        self.fc_out = nn.Linear(lin_size, num_outputs)
         torch.nn.init.xavier_uniform_(self.fc_out.weight)
         self.layers.append(self.fc_out)
 
@@ -50,12 +63,14 @@ class CSNNet(nn.Module):
         self.layers.append(self.lif_out)
 
     def calculate_lin_size(self, input_size):
-        x = torch.zeros(1, 1, input_size)
+        x = torch.zeros(1, 1, *input_size)
         for i in range(0, len(self.layers), 2):
             conv = self.layers[i]
-            x = F.max_pool1d(conv(x), kernel_size=self.max_pool_size)
-        return x.shape[2]
-
+            #x = F.max_pool1d(conv(x), kernel_size=self.max_pool_size)
+            x = self.max_pool(conv(x), kernel_size=self.max_pool_size)
+        x = self.flatten(x)
+        return x.shape[1]
+    
     def forward(self, x, input_encoding="rate"):
         if input_encoding == "rate":
             return self.forward_rate(x)
@@ -82,12 +97,17 @@ class CSNNet(nn.Module):
                 conv = self.layers[i]
                 lif = self.layers[i+1]
 
-                cur = F.max_pool1d(conv(spk), kernel_size=self.max_pool_size)
+                #cur = F.max_pool1d(conv(spk), kernel_size=self.max_pool_size)
+                cur = self.max_pool(conv(spk), kernel_size=self.max_pool_size)
+
                 spk, membranes[i] = lif(cur, membranes[i]) 
 
 
-            spk = spk.view(spk.size()[0], -1)
-
+            #spk = spk.view(spk.size()[0], -1)
+            #spk = nn.Flatten(spk, start_dim=0)
+            #print("before flat", spk.size())
+            spk = self.flatten(spk)
+            #print("after flat", spk.size())
             cur_out = self.fc_out(spk)
             spk_out, membranes[-2] = self.lif_out(cur_out, membranes[-2])
 
@@ -139,6 +159,7 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
     best_net_list = []
     auc_roc = 0
     loss_val = 0
+    print("Epoch:", end ='', flush=True)
     for epoch in range(num_epochs):
         net.train()
         if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}")

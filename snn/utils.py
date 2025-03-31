@@ -9,9 +9,9 @@ from torch.utils.data import random_split, TensorDataset
 import deepchem as dc
 from deepchem.splits.splitters import ScaffoldSplitter
 import numpy as np
-from csnn_model import CSNNet, train_csnn, val_csnn, test_csnn
-from snn_model import SNNet, train_snn, val_snn, test_snn
-#from csnn_model_modular import CSNNet, train_csnn, val_csnn, test_csnn
+#from csnn_model import CSNNet, train_csnn, val_csnn, test_csnn
+from snn_model_modular import SNNet, train_snn, val_snn, test_snn
+from csnn_model_modular import CSNNet, train_csnn, val_csnn, test_csnn
 #from mordred import Calculator, descriptors
 
 
@@ -172,17 +172,18 @@ def smile_to_fp(df, fp_config, target_name):
 
     return fp_array, target_array
 
+
 def get_spiking_net(net_type, net_config):
     #later on make spike_grad a input parameter
     input_size = net_config["input_size"]
     num_hidden = net_config["num_hidden"]
     time_steps = net_config["time_steps"]
     spike_grad = net_config["spike_grad"]
-    num_hidden_l2 = net_config["num_hidden_l2"]
     beta = net_config["beta"]
     num_outputs = net_config['out_num']
     if net_type == "SNN":
-        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad, beta=beta, use_l2=False, num_outputs=num_outputs)
+        layer_sizes = [input_size, num_hidden, num_outputs]
+        net = SNNet(layer_sizes=layer_sizes, num_steps=time_steps, spike_grad=spike_grad, beta=beta)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters SNN: {num_params}")
         train_fn = train_snn
@@ -190,7 +191,9 @@ def get_spiking_net(net_type, net_config):
         test_fn = test_snn
         
     elif net_type == "DSNN":
-        net = SNNet(input_size=input_size,num_hidden=num_hidden, num_steps=time_steps, spike_grad=spike_grad,beta=beta, use_l2=True, num_hidden_l2=num_hidden_l2, num_outputs=num_outputs)
+        num_hidden_l2 = net_config["num_hidden_l2"]
+        layer_sizes = [input_size, num_hidden, num_hidden_l2, num_outputs]
+        net = SNNet(layer_sizes=layer_sizes, num_steps=time_steps, spike_grad=spike_grad, beta=beta)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters DSNN: {num_params}")
         train_fn = train_snn
@@ -201,7 +204,10 @@ def get_spiking_net(net_type, net_config):
         # Add num_conv parameter if using CSNNet from csnn_model_modular
         #num_conv = net_config['num_conv']
         #net = CSNNet(input_size=input_size, num_steps=time_steps, spike_grad=spike_grad, beta=beta, num_outputs=num_outputs, num_conv=num_conv)
-
+        if net_config["2d"] and input_size == 1024:
+            input_size = [32, 32]
+        else:
+            input_size = [input_size]
         net = CSNNet(input_size=input_size, num_steps=time_steps, spike_grad=spike_grad, beta=beta, num_outputs=num_outputs)
         train_fn = train_csnn
         val_fn = val_csnn
@@ -214,9 +220,7 @@ def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_
     results_dir = os.path.join("results", dirname, "")
     if model:
         results_dir = os.path.join(results_dir, "models", "")
-    spike_grad = net_config['spike_grad']
-    
-    csnn_channels = f"out-{net.conv1.out_channels}" + (f"-{net.conv2.out_channels}" if hasattr(net, "conv2") else "")
+
     params = [
         None if dirname == 'BBBP' else target, 
         net_type, 
@@ -224,10 +228,11 @@ def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_
         fp_config['fp_type'],
         None if fp_config['fp_type'] != 'morgan' else 'r-' + f"{fp_config['radius']}",
         fp_config['fp_type_2'] if fp_config['mix'] else None,
+        "2D" if net_config['2D'],
         net_config['input_size'],
         None if net_type == "CSNN" else f"l1{net_config['num_hidden']}",
         None if net_type != "DSNN" else f"l2{net_config['num_hidden_l2']}",
-        None if net_type != "CSNN" else csnn_channels,
+        None if net_type != "CSNN" else f"out-{net.conv1.out_channels}" + (f"-{net.conv2.out_channels}" if hasattr(net, "conv2") else ""),
         None if net_type != "CSNN" else f"kernel-{net.conv_kernel}",
         None if net_type != "CSNN" else f"stride-{net.conv_stride}",
         f"t{net_config['time_steps']}",
@@ -237,7 +242,7 @@ def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_
         train_config['loss_type'],
         optim_type,
         f"wd{wd}",
-        None if spike_grad is None else f"sig-{net_config['slope']}",
+        None if net_config['spike_grad'] is None else f"sig-{net_config['slope']}",
         "no-bias" if not net_config['bias'] else "bias",
         None if net_config['out_num'] == 2 else f"pop-{net_config['out_num']}",
     ]
