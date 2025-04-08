@@ -228,7 +228,7 @@ def make_filename(dirname, target, net_type, fp_config, lr, wd, optim_type, net_
         fp_config['fp_type'],
         None if fp_config['fp_type'] != 'morgan' else 'r-' + f"{fp_config['radius']}",
         fp_config['fp_type_2'] if fp_config['mix'] else None,
-        "2D" if net_config['2D'],
+        None if not net_config['2d'] else "2D",
         net_config['input_size'],
         None if net_type == "CSNN" else f"l1{net_config['num_hidden']}",
         None if net_type != "DSNN" else f"l2{net_config['num_hidden_l2']}",
