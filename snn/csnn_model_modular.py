@@ -81,6 +81,7 @@ class CSNNet(nn.Module):
 
     def forward_rate(self, x):
         # Initialize hidden states at t=0
+        in_spikes = spikegen.rate(x, num_steps=self.num_steps)
         membranes = []
         for layer in self.layers:
             mem = layer.reset_mem() if isinstance(layer, snn.Leaky) else None
@@ -90,8 +91,8 @@ class CSNNet(nn.Module):
         spk_out_rec = []
         mem_out_rec = []
 
-        for _ in range(self.num_steps):
-            spk = x
+        for x_in in in_spikes:
+            spk = x_in
 
             for i in range(0, self.num_conv * 2 - 1, 2):
                 conv = self.layers[i]

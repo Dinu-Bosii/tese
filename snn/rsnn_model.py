@@ -3,10 +3,10 @@ import torch.nn as nn
 import snntorch as snn
 from snntorch.functional import ce_rate_loss, ce_temporal_loss, ce_count_loss
 from sklearn.metrics import roc_auc_score, accuracy_score
-from snntorch import spikegen
+
 
 # NN Architecture
-class SNNet(nn.Module):
+class RSNNet(nn.Module):
     """
     layer sizes = [#in, #h, #h2.., #out]
     """
@@ -19,28 +19,29 @@ class SNNet(nn.Module):
         self.layers = nn.ModuleList()
 
         for i in range(self.num_layers - 1):
-            print(layer_sizes[i], layer_sizes[i+1])
             fc_layer = nn.Linear(layer_sizes[i], layer_sizes[i+1])
             self.layers.append(fc_layer)
-            lif = snn.Leaky(beta=beta, spike_grad=spike_grad)
+            lif = snn.RLeaky(beta=beta, spike_grad=spike_grad, all_to_all=False)
             self.layers.append(lif)
 
         #print(self.layers)
-
-
     def forward(self, x):
-        in_spikes = spikegen.rate(x, num_steps=self.num_steps)
+        # The neuron type should be dynamic as well
+        
+        # Initialize hidden states at t=0
         membranes = [layer.reset_mem() for layer in self.layers[1::2]]
-
-
+        
         # Record the final layer
         spk_out_rec = []
         mem_out_rec = []
+        #print("num layers:", self.num_layers)
+        for _ in range(self.num_steps):
+            spk = x
 
-        for x_in in in_spikes:
-            spk = x_in
+            #cur_1 = self.layers[0](spk)
+
+
             for i in range(0, self.num_layers, 2):
-                print(i)
                 fc = self.layers[i]
                 lif = self.layers[i+1]
               
@@ -58,7 +59,7 @@ class SNNet(nn.Module):
         return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
     
 
-def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_config):
+def train_rsnn(net, optimizer,  train_loader, val_loader, train_config, net_config):
     device, num_epochs = train_config['device'],  train_config['num_epochs']
     loss_type, loss_fn, dtype = train_config['loss_type'], train_config['loss_fn'], train_config['dtype']
     val_fn = train_config['val_net']
@@ -72,12 +73,12 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
     #patience_counter = 0
     best_net_list = []
     #epoch_list = []
+    auc_roc = 0
+    loss_value = 0
     print("Epoch:0", end ='', flush=True)
     for epoch in range(num_epochs):
         net.train()
-        #print(f"Epoch:{epoch + 1}")
-        if (epoch + 1) % 100 == 0: 
-            print(f"-{epoch + 1}", end='', flush=True)
+        if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_value.item()}", flush=True)
 
         train_batch = iter(train_loader)
 
@@ -116,7 +117,7 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
     return net, loss_hist, val_acc_hist, val_auc_hist, best_net_list#, epoch_list
 
 
-def val_snn(net, device, val_loader, train_config):
+def val_rsnn(net, device, val_loader, train_config):
     #mean_loss = 0
     val_batch = iter(val_loader)
     accuracy = 0
@@ -148,7 +149,7 @@ def val_snn(net, device, val_loader, train_config):
     return accuracy, auc_roc
 
 
-def test_snn(net,  device, test_loader, train_config):
+def test_rsnn(net,  device, test_loader, train_config):
     all_preds = []
     all_targets = []
     #all_probs = []
