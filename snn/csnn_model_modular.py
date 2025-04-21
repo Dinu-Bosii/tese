@@ -5,7 +5,6 @@ import torch.nn.functional as F
 from snntorch import spikegen
 from snn_model import compute_loss
 from sklearn.metrics import roc_auc_score, accuracy_score
-import numpy as np
 import copy
 
 # Temporal Dynamics
@@ -14,20 +13,23 @@ out_channels = [8, 8]
 in_channels = [1, out_channels[0]]
 groups = [1, 1]
 thresholds = torch.tensor([1.5, 1.0, 1.0], dtype=torch.float32)
-learn_th = [True, True, True]
-
+#learn_th = [True for _ in range(3)]
+learn_th = [False for _ in range(3)]
 class CSNNet(nn.Module):
-    def __init__(self, input_size, num_steps, beta, spike_grad=None, num_outputs=2, num_conv=2):
+    def __init__(self, net_config, spike_grad=None, num_outputs=2, num_conv=2):
+
         super().__init__()
-        self.num_steps = num_steps
-        self.max_pool_size = 2
-        self.conv_kernel = 3 #5, 7
-        self.conv_stride = 1 #1
-        self.conv_groups = 1 #
+        self.num_steps = net_config["num_steps"]
+        self.pool_size = net_config["pool_size"]
+        self.conv_kernel = net_config["conv_kernel"]
+        self.conv_stride = net_config["conv_stride"]
+        self.conv_groups = net_config["conv_groups"]
         self.num_conv = num_conv
+        self.input_size = net_config["input_size"]
+        self.encoding = net_config['encoding']
         self.flatten = nn.Flatten()
 
-        if len(input_size) == 1:
+        if len(net_config["input_size"]) == 1:
             self.max_pool = F.max_pool1d
         else:
             self.max_pool = F.max_pool2d
@@ -35,53 +37,57 @@ class CSNNet(nn.Module):
         self.layers = nn.ModuleList()
 
         for i in range(self.num_conv):
-            if len(input_size) == 1:
+            if len(net_config["input_size"]) == 1:
                 conv_layer = nn.Conv1d(in_channels=in_channels[i], 
                                    out_channels=out_channels[i], 
                                    kernel_size=self.conv_kernel, 
                                    stride=self.conv_stride, 
-                                   padding=1)
+                                   padding=1,
+                                   bias=net_config['bias'])
             else:
                 conv_layer = nn.Conv2d(in_channels=in_channels[i], 
                                    out_channels=out_channels[i], 
                                    kernel_size=self.conv_kernel, 
                                    stride=self.conv_stride, 
-                                   padding=1)
+                                   padding=1,
+                                   bias=net_config['bias'])
             self.layers.append(conv_layer)
             torch.nn.init.xavier_uniform_(conv_layer.weight)
 
-            lif_layer = snn.Leaky(beta=beta, spike_grad=spike_grad, threshold=thresholds[i], learn_threshold=learn_th[i])
+            lif_layer = snn.Leaky(beta=net_config["beta"], spike_grad=net_config["spike_grad"], threshold=thresholds[i], learn_threshold=learn_th[i])
             self.layers.append(lif_layer)
 
-        lin_size = self.calculate_lin_size(input_size)
+        lin_size = self.calculate_lin_size(self.input_size)
         #self.fc_out = nn.Linear(lin_size * out_channels[self.num_conv - 1], num_outputs)
         self.fc_out = nn.Linear(lin_size, num_outputs)
         torch.nn.init.xavier_uniform_(self.fc_out.weight)
         self.layers.append(self.fc_out)
 
-        self.lif_out = snn.Leaky(beta=beta, spike_grad=spike_grad, learn_threshold=learn_th[-1])
+        self.lif_out = snn.Leaky(beta=net_config["beta"], spike_grad=spike_grad, learn_threshold=learn_th[-1])
         self.layers.append(self.lif_out)
 
+        if self.encoding == "rate":
+            self.forward = self.forward_rate
+        elif self.encoding == "ttfs":
+            self.forward = self.forward_ttfs
+        else:
+            raise ValueError("Error in encoding type.") 
+
     def calculate_lin_size(self, input_size):
+        #print(type(input_size))
         x = torch.zeros(1, 1, *input_size)
         for i in range(0, len(self.layers), 2):
             conv = self.layers[i]
-            #x = F.max_pool1d(conv(x), kernel_size=self.max_pool_size)
-            x = self.max_pool(conv(x), kernel_size=self.max_pool_size)
+            #x = F.max_pool1d(conv(x), kernel_size=self.pool_size)
+            x = self.max_pool(conv(x), kernel_size=self.pool_size)
         x = self.flatten(x)
         return x.shape[1]
     
-    def forward(self, x, input_encoding="rate"):
-        if input_encoding == "rate":
-            return self.forward_rate(x)
-        elif input_encoding == "ttfs":
-            return self.forward_ttfs(x)
-        else:
-            raise ValueError("Error in input encoding type.")
 
     def forward_rate(self, x):
         # Initialize hidden states at t=0
         in_spikes = spikegen.rate(x, num_steps=self.num_steps)
+
         membranes = []
         for layer in self.layers:
             mem = layer.reset_mem() if isinstance(layer, snn.Leaky) else None
@@ -98,10 +104,10 @@ class CSNNet(nn.Module):
                 conv = self.layers[i]
                 lif = self.layers[i+1]
 
-                #cur = F.max_pool1d(conv(spk), kernel_size=self.max_pool_size)
-                cur = self.max_pool(conv(spk), kernel_size=self.max_pool_size)
+                #cur = F.max_pool1d(conv(spk), kernel_size=self.pool_size)
+                cur = self.max_pool(conv(spk), kernel_size=self.pool_size)
 
-                spk, membranes[i] = lif(cur, membranes[i]) 
+                spk, membranes[i+1] = lif(cur, membranes[i+1]) 
 
 
             #spk = spk.view(spk.size()[0], -1)
@@ -110,7 +116,7 @@ class CSNNet(nn.Module):
             spk = self.flatten(spk)
             #print("after flat", spk.size())
             cur_out = self.fc_out(spk)
-            spk_out, membranes[-2] = self.lif_out(cur_out, membranes[-2])
+            spk_out, membranes[-1] = self.lif_out(cur_out, membranes[-1])
 
             spk_out_rec.append(spk_out)
             mem_out_rec.append(membranes[-2])
@@ -119,11 +125,12 @@ class CSNNet(nn.Module):
     
     def forward_ttfs(self, x):
         in_spikes = spikegen.latency(x, num_steps=self.num_steps, linear=True)
+
         membranes = []
         for layer in self.layers:
             mem = layer.reset_mem() if isinstance(layer, snn.Leaky) else None
             membranes.append(mem)
-
+        #print(type(membranes[-1]))
         # Record the final layer
         spk_out_rec = []
         mem_out_rec = []
@@ -134,18 +141,21 @@ class CSNNet(nn.Module):
                 conv = self.layers[i]
                 lif = self.layers[i+1]
 
-                cur = F.max_pool1d(conv(spk), kernel_size=self.max_pool_size)
-                spk, membranes[i] = lif(cur, membranes[i]) 
+                cur = self.max_pool(conv(spk), kernel_size=self.pool_size)
+
+                #print(i ,type(membranes[i+1]))
+                spk, membranes[i+1] = lif(cur, membranes[i+1]) 
+                #if spk.sum().item() != 0: print(spk.sum().item())
 
 
-            spk = spk.view(spk.size()[0], -1)
+            spk = self.flatten(spk)
 
             cur_out = self.fc_out(spk)
-            spk_out, membranes[-2] = self.lif_out(cur_out, membranes[-2])
+            spk_out, membranes[-1] = self.lif_out(cur_out, membranes[-1])
 
             spk_out_rec.append(spk_out)
             mem_out_rec.append(membranes[-1])
-
+            
         return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
     
 

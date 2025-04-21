@@ -6,6 +6,7 @@ from rdkit.Chem import MACCSkeys, Descriptors
 import pubchempy as pcp
 import torch
 from torch.utils.data import random_split, TensorDataset
+import torch.nn as nn
 import deepchem as dc
 from deepchem.splits.splitters import ScaffoldSplitter
 import numpy as np
@@ -306,13 +307,13 @@ def get_spiking_net(net_type, net_config):
     #later on make spike_grad a input parameter
     input_size = net_config["input_size"]
     num_hidden = net_config["num_hidden"]
-    time_steps = net_config["time_steps"]
+    time_steps = net_config["num_steps"]
     spike_grad = net_config["spike_grad"]
     beta = net_config["beta"]
     num_outputs = net_config['out_num']
     if net_type == "SNN":
         layer_sizes = [input_size, num_hidden, num_outputs]
-        net = SNNet(layer_sizes=layer_sizes, num_steps=time_steps, spike_grad=spike_grad, beta=beta)
+        net = SNNet(net_config, layer_sizes=layer_sizes, num_steps=time_steps, spike_grad=spike_grad, beta=beta)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters SNN: {num_params}")
         train_fn = train_snn
@@ -322,7 +323,7 @@ def get_spiking_net(net_type, net_config):
     elif net_type == "DSNN":
         num_hidden_l2 = net_config["num_hidden_l2"]
         layer_sizes = [input_size, num_hidden, num_hidden_l2, num_outputs]
-        net = SNNet(layer_sizes=layer_sizes, num_steps=time_steps, spike_grad=spike_grad, beta=beta)
+        net = SNNet(net_config, layer_sizes=layer_sizes, num_steps=time_steps, spike_grad=spike_grad, beta=beta)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters DSNN: {num_params}")
         train_fn = train_snn
@@ -335,10 +336,11 @@ def get_spiking_net(net_type, net_config):
         #net = CSNNet(input_size=input_size, num_steps=time_steps, spike_grad=spike_grad, beta=beta, num_outputs=num_outputs, num_conv=num_conv)
         if net_config["2d"]:
             if isinstance(input_size, int) and input_size == 1024:
-                input_size = [32, 32]
+                net_config["input_size"]  = [32, 32]
         else:
-            input_size = [input_size]
-        net = CSNNet(input_size=input_size, num_steps=time_steps, spike_grad=spike_grad, beta=beta, num_outputs=num_outputs)
+            net_config["input_size"] = [input_size]
+
+        net = CSNNet(net_config)
         train_fn = train_csnn
         val_fn = val_csnn
         test_fn = test_csnn
@@ -350,8 +352,6 @@ def get_spiking_net(net_type, net_config):
         val_fn = val_rsnn
         test_fn = test_rsnn
         
-
-
     return net, train_fn, val_fn, test_fn
 
 
@@ -381,18 +381,18 @@ def make_filename(dirname, target, net_type, data_config, lr, wd, optim_type, ne
             (
                 [data_config['repr_type']] if data_config["repr_type"] != 'fp' else
                 [data_config['fp_type']] + 
-                (['r-' + f"{data_config['radius']}"] if data_config['fp_type'] == 'morgan' else None) +
-                ([data_config['fp_type_2']] if data_config['mix'] else None) +
-                (["2D"] if net_config['2d'] else None)
+                (['r-' + f"{data_config['radius']}"] if data_config['fp_type'] == 'morgan' else []) +
+                ([data_config['fp_type_2']] if data_config['mix'] else []) +
+                (["2D"] if net_config['2d'] else [])
             )
         ),
         net_config['input_size'],
         None if net_type == "CSNN" else f"l1{net_config['num_hidden']}",
         None if net_type != "DSNN" else f"l2{net_config['num_hidden_l2']}",
-        None if net_type != "CSNN" else f"out-{net.conv1.out_channels}" + (f"-{net.conv2.out_channels}" if hasattr(net, "conv2") else ""),
+        None if net_type != "CSNN" else "out-" + "-".join(str(layer.out_channels) for layer in net.layers if isinstance(layer, (nn.Conv1d, nn.Conv2d))),
         None if net_type != "CSNN" else f"kernel-{net.conv_kernel}",
         None if net_type != "CSNN" else f"stride-{net.conv_stride}",
-        f"t{net_config['time_steps']}",
+        f"t{net_config['num_steps']}",
         f"e{train_config['num_epochs']}",
         f"b{train_config['batch_size']}",
         f"lr{lr}",

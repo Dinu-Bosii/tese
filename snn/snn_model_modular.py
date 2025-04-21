@@ -8,39 +8,50 @@ from snntorch import spikegen
 # NN Architecture
 class SNNet(nn.Module):
     """
-    layer sizes = [#in, #h, #h2.., #out]
+    layer_sizes: [#in, #h, #h2.., #out]
     """
-    def __init__(self, layer_sizes, num_steps, spike_grad=None, beta=0.95):
+    def __init__(self, net_config, layer_sizes, num_steps, spike_grad=None, beta=0.95):
         super().__init__()
-        self.num_layers = len(layer_sizes)
+        self.num_layers = (len(layer_sizes) - 1) * 2
         self.num_steps = num_steps
         self.layer_sizes = layer_sizes
         self.num_outputs = layer_sizes[-1]
+        self.encoding = net_config['encoding']
         self.layers = nn.ModuleList()
-
-        for i in range(self.num_layers - 1):
+        print("self.num_layers:", self.num_layers)
+        for i in range(len(layer_sizes) - 1):
             print(layer_sizes[i], layer_sizes[i+1])
             fc_layer = nn.Linear(layer_sizes[i], layer_sizes[i+1])
             self.layers.append(fc_layer)
             lif = snn.Leaky(beta=beta, spike_grad=spike_grad)
             self.layers.append(lif)
 
-        #print(self.layers)
+        print("len(self.layers):", len(self.layers))
+            #def encoding(self):
+        if self.encoding == "rate":
+            self.forward = self.forward_rate
+        elif self.encoding == "ttfs":
+            self.forward = self.forward_ttfs
+        else:
+            raise ValueError("Error in encoding type.") 
 
-
-    def forward(self, x):
+        
+    def forward_rate(self, x):
         in_spikes = spikegen.rate(x, num_steps=self.num_steps)
-        membranes = [layer.reset_mem() for layer in self.layers[1::2]]
-
+        membranes = []
+        for layer in self.layers:
+            mem = layer.reset_mem() if isinstance(layer, snn.Leaky) else None
+            membranes.append(mem)
 
         # Record the final layer
         spk_out_rec = []
         mem_out_rec = []
 
         for x_in in in_spikes:
+            #print('x')
             spk = x_in
             for i in range(0, self.num_layers, 2):
-                print(i)
+                #print(i)
                 fc = self.layers[i]
                 lif = self.layers[i+1]
               
@@ -50,9 +61,41 @@ class SNNet(nn.Module):
                 #    cur = fc(spk) 
                 cur = fc(spk) 
 
-                spk, membranes[i//2] = lif(cur, spk)
+                spk, membranes[i] = lif(cur, spk)
 
             spk_out_rec.append(spk)
+            mem_out_rec.append(membranes[-1])
+        #print(torch.stack(spk_out_rec, dim=0).size())
+        return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
+    
+    def forward_ttfs(self, x):
+        in_spikes = spikegen.latency(x, num_steps=self.num_steps, linear=True)
+        membranes = []
+        for layer in self.layers:
+            mem = layer.reset_mem() if isinstance(layer, snn.Leaky) else None
+            membranes.append(mem)
+        # Record the final layer
+        spk_out_rec = []
+        mem_out_rec = []
+
+
+        for x_in in in_spikes:
+            spk = x_in
+            for i in range(0, self.num_layers, 2):
+                #print(i)
+                fc = self.layers[i]
+                lif = self.layers[i+1]
+              
+                #if i == 0:
+                #    cur = cur_1
+                #else:
+                #    cur = fc(spk) 
+                cur = fc(spk) 
+
+                spk, membranes[i] = lif(cur, spk)
+
+            spk_out_rec.append(spk)
+            print(spk.sum())
             mem_out_rec.append(membranes[-1])
         #print(torch.stack(spk_out_rec, dim=0).size())
         return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
@@ -61,6 +104,7 @@ class SNNet(nn.Module):
 def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_config):
     device, num_epochs = train_config['device'],  train_config['num_epochs']
     loss_type, loss_fn, dtype = train_config['loss_type'], train_config['loss_fn'], train_config['dtype']
+
     val_fn = train_config['val_net']
     #scheduler = train_config['scheduler']
     val_acc_hist = []
@@ -72,12 +116,13 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
     #patience_counter = 0
     best_net_list = []
     #epoch_list = []
+    auc_roc = 0
+    loss_val = 0
     print("Epoch:0", end ='', flush=True)
     for epoch in range(num_epochs):
         net.train()
         #print(f"Epoch:{epoch + 1}")
-        if (epoch + 1) % 100 == 0: 
-            print(f"-{epoch + 1}", end='', flush=True)
+        if (epoch + 1) % 5 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}")
 
         train_batch = iter(train_loader)
 
@@ -93,15 +138,15 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
             #print(spk_rec, mem_rec)
             #print(spk_rec.size(), mem_rec.size(), targets.size())
             # Compute loss
-            loss_value = compute_loss(loss_type, loss_fn, spk_rec, mem_rec, num_steps, targets, dtype, device) 
+            loss_val = compute_loss(loss_type, loss_fn, spk_rec, mem_rec, num_steps, targets, dtype, device) 
             #print(loss_val.item())
 
             # Gradient calculation + weight update
             optimizer.zero_grad()
-            loss_value.backward()
+            loss_val.backward()
             optimizer.step()
             # Store loss history for future plotting
-            loss_hist.append(loss_value.item())
+            loss_hist.append(loss_val.item())
         #scheduler.step()
         
         _, auc_roc = val_fn(net, device, val_loader, train_config)
@@ -192,7 +237,7 @@ def compute_loss(loss_type, loss_fn, spk_rec, mem_rec, num_steps, targets, dtype
     #targets = targets.unsqueeze(1)
     #print(mem_rec[0].size(), targets.size())
     #print(spk_rec[0].size(), targets.size())
-
+    #print(spk_rec[0].sum().item())
     if loss_type in ["rate_loss", "count_loss"]:
         loss_val = loss_fn(spk_rec, targets)
     elif loss_type in ["ce_mem", "bce_loss"]:
