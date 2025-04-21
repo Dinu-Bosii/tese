@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[4]:
+# In[1]:
 
 
 import pandas as pd
@@ -11,16 +11,15 @@ from rdkit import Chem
 from snn_model import get_loss_fn
 import torch
 from torch.utils.data import TensorDataset, DataLoader
-from snntorch import spikegen, surrogate
 import matplotlib.pyplot as plt
 from utils import load_dataset_df, smile_to_fp,smiles_to_descriptor,smiles_to_onehot, smiles_to_onehot_selfies, data_splitter, get_spiking_net, make_filename
 from sklearn.metrics import confusion_matrix, roc_auc_score, accuracy_score, f1_score, precision_score
-from csnn_model import CSNNet, get_prediction_fn, bias
+from csnn_model_modular import get_prediction_fn
 
 
 # #### Load DataFrame
 
-# In[5]:
+# In[2]:
 
 
 files = ['tox21.csv','sider.csv', 'BBBP.csv']
@@ -36,7 +35,7 @@ for t in targets:
     print(t, class_counts, round(class_sum/class_counts, 2)) 
 
 
-# In[6]:
+# In[3]:
 
 
 if dirname == 'tox21':
@@ -54,26 +53,26 @@ df = df[[target_name, 'smiles']].dropna()
 
 # #### Molecular Representation
 
-# In[7]:
+# In[4]:
 
 
 representations = ["fp", "descriptor", "SELFIES-1hot", "SMILES-1hot"]#, "graph-list"]
 
-repr_type = representations[1]
+repr_type = representations[0]
 
 
-# In[8]:
+# In[5]:
 
 
 if repr_type == "fp":
     fp_types = [['morgan', 1024], ['maccs', 167], ['RDKit', 1024], ['count_morgan', 1024], ['pubchem', 881]]
-    mix = True
-    fp_type, num_bits = fp_types[1]
+    mix = False
+    fp_type, num_bits = fp_types[0]
     if mix and fp_type == 'RDKit':
         num_bits = 512
     data_config = {"fp_type": fp_type,
                 "num_bits": num_bits,
-                "radius": 2,
+                "radius": 4,
                 "fp_type_2": fp_types[0][0],
                 "num_bits_2": 1024 - num_bits,
                 "mix": mix,}
@@ -99,7 +98,7 @@ data_config["repr_type"] = repr_type
 print(repr_type)
 
 
-# In[9]:
+# In[6]:
 
 
 dtype = torch.float32
@@ -144,9 +143,52 @@ if dirname != 'BBBP':
         print(smiles_tensor.size())
 
 
+# In[7]:
+
+
+if repr_type == "SMILES_1hot":
+    longest_smiles = df.loc[df['smiles'].str.len().idxmax(), 'smiles']
+    print(longest_smiles)
+
+    from rdkit import Chem
+
+    mol = Chem.MolFromSmiles(longest_smiles)
+    print("Valid" if mol else "Invalid")
+    cc = df[df['smiles'].str.len() > 256]
+
+    print(len(cc))
+    sample1 = smiles_array[0]
+    print(sample1)
+    print(selfies_tensor.size())
+
+
+# In[8]:
+
+
+if repr_type == "descriptor":
+    from rdkit.Chem import  Descriptors
+    print("desc_array Has NaNs:", np.isnan(desc_array).any())
+    print("desc_array Has Infs:", np.isinf(desc_array).any())
+    print("desc_tensor has nans:", torch.isnan(desc_tensor).any().item())
+    print("desc_tensor has infs:", torch.isinf(desc_tensor).any().item())
+
+    print("Max value in desc_array:", np.max(desc_array))
+
+    # Find the index of the max value in the array
+    max_idx = np.argmax(desc_array)  # Returns the index of the max value in flattened array
+
+    # Find the corresponding row and descriptor index
+    row_idx = max_idx // desc_array.shape[1]  # Row index (which molecule)
+    desc_idx = max_idx % desc_array.shape[1]  # Descriptor index (which descriptor)
+    print(f"Max value at row {row_idx}, descriptor {desc_idx} with value: {desc_array[row_idx, desc_idx]}")
+
+    for k, (nm, fn) in enumerate(Descriptors._descList):
+        print(k, nm)
+
+
 # #### Loss Function
 
-# In[15]:
+# In[9]:
 
 
 from sklearn.utils.class_weight import compute_class_weight
@@ -158,20 +200,20 @@ print(loss_type)
 
 # #### Train Loop
 
-# In[16]:
+# In[10]:
 
 
 net_types = ["SNN", "DSNN", "CSNN", "RSNN"]
-net_type = net_types[2]
+net_type = net_types[0]
 slope = 10
 #spike_grad = surrogate.fast_sigmoid(slope=slope)
 spike_grad = None
 beta = 0.95 
-
+bias = True
 net_config = {
             "num_hidden": 512,
             "num_hidden_l2": 256,
-            "time_steps": 10,
+            "num_steps": 10,
             "spike_grad": spike_grad,
             "slope": None if not spike_grad else slope, #spike_grad.__closure__[0].cell_contents,
             "beta": beta,
@@ -179,6 +221,13 @@ net_config = {
             "bias": bias,
             "out_num": 2
             }
+if net_type == "CSNN":
+    net_config['num_conv'] = 1
+    net_config['stride'] = [1 for _ in range(net_config['num_conv'])]
+    net_config["pool_size"] = 2
+    net_config["conv_kernel"] = 3
+    net_config["conv_stride"] = 1
+    net_config["conv_groups"] = 1
 
 if repr_type == "fp":
     net_config["input_size"] = 1024 if data_config['mix'] else num_bits
@@ -198,7 +247,7 @@ if repr_type == "SMILES-1hot":
 print(net_type)
 
 
-# In[17]:
+# In[11]:
 
 
 pop_coding = net_config['out_num'] > 2
@@ -210,13 +259,13 @@ optim_type = 'Adam'
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 batch_size = 16 #16, 8
-train_config = {"num_epochs": 200,
+train_config = {"num_epochs": 1000,
                 "batch_size": batch_size,
                 "device": device,
                 "loss_type": loss_type,
                 "loss_fn": None,
                 'dtype': dtype,
-                'num_steps': net_config['time_steps'],
+                'num_steps': net_config['num_steps'],
                 'val_net': None,
                 'prediction_fn': get_prediction_fn(encoding=net_config['encoding'], pop_coding=pop_coding),
                 }
@@ -227,7 +276,7 @@ save_models = False
 results = [[], [], [], [], [], []]
 
 
-# In[18]:
+# In[12]:
 
 
 print("-----Configuration-----")
@@ -235,7 +284,7 @@ print(net_config)
 print(train_config)
 
 
-# In[19]:
+# In[13]:
 
 
 from rdkit import RDLogger
@@ -244,7 +293,7 @@ from rdkit import RDLogger
 RDLogger.DisableLog('rdApp.*')
 
 
-# In[20]:
+# In[14]:
 
 
 def calc_metrics(metrics_list, all_targets, all_preds):
@@ -265,7 +314,7 @@ def calc_metrics(metrics_list, all_targets, all_preds):
     
 
 
-# In[ ]:
+# In[15]:
 
 
 def zscore_norm(train_subset, val_subset, test_subset):
@@ -288,11 +337,53 @@ def zscore_norm(train_subset, val_subset, test_subset):
     return train_norm, val_norm, test_norm
 
 
-# In[22]:
+# In[16]:
 
 
 import time
 times = []
+
+
+# In[17]:
+
+
+""" train, val, test = data_splitter(df, target_name, split=split, dataset=dataset, data_config=data_config, seed=1, dtype=dtype)
+train_desc, train_label = train[:]
+_, val_label = val[:]
+_, test_label = test[:]
+train_tensor, _ = train[:]
+mean = train_tensor.mean(dim=0)
+print("train has nans:", torch.isnan(train_tensor).any().item())
+print("train has infs:", torch.isneginf(train_tensor).any().item())
+print("train has infs:", torch.isinf(train_tensor).any().item())
+
+
+print("mean size:", mean.size())
+print("mean has nans:", torch.isnan(mean).any().item())
+print("mean has infs:", torch.isneginf(mean).any().item())
+print("train has infs:", torch.isinf(mean).any().item())
+
+result = train_tensor - mean
+print("train has nans:", torch.isnan(result).any().item())
+print("train has infs:", torch.isneginf(result).any().item())
+
+tensor_cpy = train_tensor.clone()
+
+for i, x in enumerate(train_tensor):
+    tensor_cpy[i] = x - mean
+
+print("train_cpy has nans:", torch.isnan(train_tensor).any().item())
+print("train_cpy has infs:", torch.isneginf(train_tensor).any().item())
+
+
+
+
+train_tensor, _ = train[:]
+print(train_tensor.dtype, mean.dtype)
+print("train_tensor max/min:", train_tensor.max().item(), train_tensor.min().item())
+print("mean max/min:", mean.max().item(), mean.min().item())
+ """
+
 
 # In[ ]:
 
@@ -312,7 +403,7 @@ for iter in range(iterations):
     #scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=train_config['num_epochs'])
     #optimizer = torch.optim.Adamax(params, lr=0.002, betas=(0.9, 0.999), eps=1e-08, weight_decay=0)
     #train_config["scheduler"] = scheduler
-
+    
     # DATA SPLIT
     train, val, test = data_splitter(df, target_name, split=split, dataset=dataset, data_config=data_config, seed=seed, dtype=dtype)
     _, train_label = train[:]
@@ -342,7 +433,6 @@ for iter in range(iterations):
     start_time = time.time()
     net, loss_hist, val_acc_hist, val_auc_hist, net_list = train_net(net=net, optimizer=optimizer, train_loader=train_loader, val_loader=val_loader, train_config=train_config, net_config=net_config)
     end_time = time.time()
-
     train_time = end_time - start_time
     times.append(train_time)
     print()
@@ -371,7 +461,72 @@ for iter in range(iterations):
 
 # In[ ]:
 
+
 print(sum(times)/len(times))
+
+
+# In[ ]:
+
+
+print(net)
+
+
+# #### Smoothed Loss
+
+# In[ ]:
+
+
+#from scipy.signal import savgol_filter
+from scipy.ndimage import gaussian_filter1d
+#from statsmodels.nonparametric.smoothers_lowess import lowess
+
+#print(loss_hist[len(loss_hist) - 5:len(loss_hist)])
+
+fig = plt.figure(facecolor="w", figsize=(10, 5))
+#plt.plot(np.convolve(loss_hist, np.ones(30)/30, mode='valid'))
+#plt.plot(savgol_filter(loss_hist, window_length=100, polyorder=3))
+#plt.plot(lowess(loss_hist, np.arange(len(loss_hist)), frac=0.1)[:, 1])
+plt.plot(gaussian_filter1d(loss_hist, sigma=6))
+#plt.plot(loss_hist)
+#plt.axhline(y=1, color='r', linestyle='--', label='y = 1')
+plt.title("Loss Curve")
+plt.xlabel("Iteration")
+plt.ylabel("Loss")
+plt.legend()
+plt.show()
+
+
+# In[ ]:
+
+
+num_epochs = train_config['num_epochs']
+num_minibatches_per_epoch = len(loss_hist) // num_epochs
+
+# Create x-axis values in terms of epochs
+epochs = np.linspace(1, num_epochs, len(loss_hist))
+epoch_losses = np.array(loss_hist).reshape(num_epochs, num_minibatches_per_epoch).mean(axis=1)
+
+plt.plot(range(1, num_epochs + 1), epoch_losses, label="Loss per Epoch")
+plt.xlabel("Epochs")
+plt.ylabel("Loss")
+plt.title("Training Loss Over Epochs")
+plt.legend()
+plt.show()
+
+
+# In[ ]:
+
+
+# Validation Set
+fig = plt.figure(facecolor="w", figsize=(10, 5))
+
+#plt.plot(gaussian_filter1d(val_auc_hist, sigma=6))
+plt.plot(val_auc_hist)
+plt.title("ROC AUC on Validation Set")
+plt.xlabel("Iteration")
+plt.ylabel("ROC-AUC")
+plt.legend()
+plt.show()
 
 
 # #### Save Metrics
@@ -408,3 +563,14 @@ filename = make_filename(dirname, target_name, net_type, data_config, lr, weight
 if save_csv: df_metrics.to_csv(filename, index=False)
 
 print(filename)
+
+
+# In[ ]:
+
+
+min_auc = np.argmin(results[1])
+print("min auc:", results[1][min_auc], "at", min_auc)
+
+max_auc = np.argmax(results[1])
+print("max auc:", results[1][max_auc], "at", max_auc)
+
