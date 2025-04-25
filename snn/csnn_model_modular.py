@@ -76,6 +76,7 @@ class CSNNet(nn.Module):
     def calculate_lin_size(self, input_size):
         #print(type(input_size))
         x = torch.zeros(1, 1, *input_size)
+
         for i in range(0, len(self.layers), 2):
             conv = self.layers[i]
             #x = F.max_pool1d(conv(x), kernel_size=self.pool_size)
@@ -119,7 +120,7 @@ class CSNNet(nn.Module):
             spk_out, membranes[-1] = self.lif_out(cur_out, membranes[-1])
 
             spk_out_rec.append(spk_out)
-            mem_out_rec.append(membranes[-2])
+            mem_out_rec.append(membranes[-1])
 
         return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
     
@@ -174,7 +175,7 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
     for epoch in range(num_epochs):
         net.train()
         if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}")
-
+        #if (epoch + 1) % 2 == 0:print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}")
         # Minibatch training loop
         for data, targets in train_loader:
             #print(data.size(), data.unsqueeze(1).size())
@@ -187,7 +188,7 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
             # forward pass
             spk_rec, mem_rec = net(data)
             #print(spk_rec, mem_rec)
-
+            #print(mem_rec[:, 0, :])
             # Compute loss
             loss_val = compute_loss(loss_type=loss_type, loss_fn=loss_fn, spk_rec=spk_rec, mem_rec=mem_rec,num_steps=num_steps, targets=targets, dtype=dtype, device=device) 
             #print(loss_val.item())
@@ -230,6 +231,7 @@ def val_csnn(net, device, val_loader, train_config):
             repeated_samples = last_sample.repeat(num_repeat, *[1] * (data.dim() - 1))
 
             data = torch.cat([data, repeated_samples], dim=0)
+        
         targets = targets.to(device, non_blocking=True)
 
         spk_rec, mem_rec = net(data)
@@ -305,6 +307,17 @@ def prediction_spk_ttfs(spk_rec):
     return spk_rec.argmax(dim=0).min(1).indices
 
 
+def prediction_spk_ttfs_pop(spk_rec):
+    spk_times = spk_rec.argmax(dim=0)
+
+    population_c0 = spk_times[:,:spk_rec.shape[2]//2].mean(dim=1)
+    population_c1 = spk_times[:,spk_rec.shape[2]//2:].mean(dim=1)
+
+    predicted = torch.stack([population_c0, population_c1], dim=1)
+    _, predicted = predicted.min(1).indices
+    return predicted
+
+
 def get_prediction_fn(encoding='rate', pop_coding=False):
     if encoding == 'rate':
         if pop_coding:
@@ -312,6 +325,10 @@ def get_prediction_fn(encoding='rate', pop_coding=False):
         else:
             return prediction_spk_rate
     elif encoding == 'ttfs':
+        if pop_coding:
+            return prediction_spk_ttfs_pop
+        else:
+            return prediction_spk_ttfs
         #no support for pop_coding yet
         return prediction_spk_ttfs
     else:

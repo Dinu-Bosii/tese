@@ -338,7 +338,8 @@ def get_spiking_net(net_type, net_config):
             if isinstance(input_size, int) and input_size == 1024:
                 net_config["input_size"]  = [32, 32]
         else:
-            net_config["input_size"] = [input_size]
+            if isinstance(input_size, int):
+                net_config["input_size"] = [input_size]
 
         net = CSNNet(net_config)
         train_fn = train_csnn
