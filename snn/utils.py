@@ -10,9 +10,9 @@ import torch.nn as nn
 import deepchem as dc
 from deepchem.splits.splitters import ScaffoldSplitter
 import numpy as np
-#from csnn_model import CSNNet, train_csnn, val_csnn, test_csnn
-from snn_model_modular import SNNet, train_snn, val_snn, test_snn
-from snn.csnn_model import CSNNet, train_csnn, val_csnn, test_csnn
+
+from snn_model import SNNet, train_snn, val_snn, test_snn
+from csnn_model import CSNNet, train_csnn, val_csnn, test_csnn
 from rsnn_model import RSNNet, train_rsnn, val_rsnn, test_rsnn
 #from mordred import Calculator, descriptors
 import selfies as sf

@@ -3,7 +3,7 @@ import torch.nn as nn
 import snntorch as snn
 import torch.nn.functional as F
 from snntorch import spikegen
-from snn.snn_model import compute_loss
+from snn_model import compute_loss
 from sklearn.metrics import roc_auc_score, accuracy_score
 import copy
 
@@ -171,10 +171,10 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
     best_net_list = []
     auc_roc = 0
     loss_val = 0
-    print("Epoch:", end ='', flush=True)
+    #print("Epoch:", end ='', flush=True)
     for epoch in range(num_epochs):
         net.train()
-        if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}")
+        if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}", flush=True)
         #if (epoch + 1) % 2 == 0:print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}")
         # Minibatch training loop
         for data, targets in train_loader:
