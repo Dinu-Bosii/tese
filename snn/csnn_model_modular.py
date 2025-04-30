@@ -24,7 +24,7 @@ class CSNNet(nn.Module):
         self.conv_kernel = net_config["conv_kernel"]
         self.conv_stride = net_config["conv_stride"]
         self.conv_groups = net_config["conv_groups"]
-        self.num_conv = num_conv
+        self.num_conv = net_config['num_conv']
         self.input_size = net_config["input_size"]
         self.encoding = net_config['encoding']
         self.flatten = nn.Flatten()
