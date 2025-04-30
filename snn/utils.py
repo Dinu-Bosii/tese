@@ -12,7 +12,7 @@ from deepchem.splits.splitters import ScaffoldSplitter
 import numpy as np
 #from csnn_model import CSNNet, train_csnn, val_csnn, test_csnn
 from snn_model_modular import SNNet, train_snn, val_snn, test_snn
-from csnn_model_modular import CSNNet, train_csnn, val_csnn, test_csnn
+from snn.csnn_model import CSNNet, train_csnn, val_csnn, test_csnn
 from rsnn_model import RSNNet, train_rsnn, val_rsnn, test_rsnn
 #from mordred import Calculator, descriptors
 import selfies as sf
@@ -387,7 +387,7 @@ def make_filename(dirname, target, net_type, data_config, lr, wd, optim_type, ne
                 (["2D"] if net_config['2d'] else [])
             )
         ),
-        net_config['input_size'],
+        *net_config['input_size'],
         None if net_type == "CSNN" else f"l1{net_config['num_hidden']}",
         None if net_type != "DSNN" else f"l2{net_config['num_hidden_l2']}",
         None if net_type != "CSNN" else "out-" + "-".join(str(layer.out_channels) for layer in net.layers if isinstance(layer, (nn.Conv1d, nn.Conv2d))),
