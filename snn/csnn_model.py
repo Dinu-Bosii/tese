@@ -167,7 +167,7 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
     loss_hist = []
     val_acc_hist = []
     val_auc_hist = []
-    best_auc_roc = 0
+    best_auc_roc, best_epoch = 0, 0
     best_net_list = []
     auc_roc = 0
     loss_val = 0
@@ -201,15 +201,17 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
             # Store loss history for future plotting
             loss_hist.append(loss_val.item())
         _, auc_roc = val_fn(net, device, val_loader, train_config)
-        #if auc_roc > best_auc_roc:
-        #    best_auc_roc = auc_roc
+        if auc_roc > best_auc_roc:
+            best_auc_roc = auc_roc
+            best_epoch = epoch
         #print(f"Epoch:{epoch + 1} - auc:{auc_roc} - loss:{loss_val}")           
         best_net_list.append(copy.deepcopy(net.state_dict()))
 
             #val_acc_hist.extend(accuracy)
         val_auc_hist.extend([auc_roc])
 
-
+    print("Best Epoch on val set:", best_epoch)
+    print("Best auc on val set:", best_auc_roc)
     return net, loss_hist, val_acc_hist, val_auc_hist, best_net_list
 
 
