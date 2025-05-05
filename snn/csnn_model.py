@@ -59,7 +59,7 @@ class CSNNet(nn.Module):
 
         lin_size = self.calculate_lin_size(self.input_size)
         #self.fc_out = nn.Linear(lin_size * out_channels[self.num_conv - 1], num_outputs)
-        self.fc_out = nn.Linear(lin_size, net_config['num_out'])
+        self.fc_out = nn.Linear(lin_size, net_config['out_num'])
         torch.nn.init.xavier_uniform_(self.fc_out.weight)
         self.layers.append(self.fc_out)
 
