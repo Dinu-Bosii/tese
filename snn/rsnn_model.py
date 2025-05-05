@@ -3,45 +3,52 @@ import torch.nn as nn
 import snntorch as snn
 from snntorch.functional import ce_rate_loss, ce_temporal_loss, ce_count_loss
 from sklearn.metrics import roc_auc_score, accuracy_score
-
+from snntorch import spikegen
 
 # NN Architecture
 class RSNNet(nn.Module):
     """
     layer sizes = [#in, #h, #h2.., #out]
     """
-    def __init__(self, layer_sizes, num_steps, spike_grad=None, beta=0.95):
+    def __init__(self, net_config):
         super().__init__()
-        self.num_layers = len(layer_sizes)
-        self.num_steps = num_steps
-        self.layer_sizes = layer_sizes
-        self.num_outputs = layer_sizes[-1]
+        self.layer_sizes = net_config['layer_sizes']
+        self.num_layers = (len(net_config['layer_sizes']) - 1) * 2
+        self.num_outputs = net_config['layer_sizes'][-1]
+        self.num_steps = net_config['num_steps']
+        self.encoding = net_config['encoding']
         self.layers = nn.ModuleList()
 
         for i in range(self.num_layers - 1):
-            fc_layer = nn.Linear(layer_sizes[i], layer_sizes[i+1])
+            fc_layer = nn.Linear(self.layer_sizes[i], self.layer_sizes[i+1])
             self.layers.append(fc_layer)
-            lif = snn.RLeaky(beta=beta, spike_grad=spike_grad, all_to_all=False)
+            lif = snn.RLeaky(beta=net_config['beta'], spike_grad=net_config['spike_grad'], all_to_all=False)
             self.layers.append(lif)
 
         #print(self.layers)
-    def forward(self, x):
-        # The neuron type should be dynamic as well
-        
-        # Initialize hidden states at t=0
-        membranes = [layer.reset_mem() for layer in self.layers[1::2]]
-        
+        if self.encoding == "rate":
+            self.forward = self.forward_rate
+        elif self.encoding == "ttfs":
+            raise ValueError("Temporal for RSNN?.")
+            #self.forward = self.forward_ttfs
+        else:
+            raise ValueError("Error in encoding type.") 
+    def forward_rate(self, x):
+        in_spikes = spikegen.rate(x, num_steps=self.num_steps)
+        membranes = []
+        for layer in self.layers:
+            mem = layer.reset_mem() if isinstance(layer, snn.Leaky) else None
+            membranes.append(mem)
+
         # Record the final layer
         spk_out_rec = []
         mem_out_rec = []
-        #print("num layers:", self.num_layers)
-        for _ in range(self.num_steps):
-            spk = x
 
-            #cur_1 = self.layers[0](spk)
-
-
+        for x_in in in_spikes:
+            #print('x')
+            spk = x_in
             for i in range(0, self.num_layers, 2):
+                #print(i)
                 fc = self.layers[i]
                 lif = self.layers[i+1]
               
@@ -51,7 +58,7 @@ class RSNNet(nn.Module):
                 #    cur = fc(spk) 
                 cur = fc(spk) 
 
-                spk, membranes[i//2] = lif(cur, spk)
+                spk, membranes[i] = lif(cur, spk)
 
             spk_out_rec.append(spk)
             mem_out_rec.append(membranes[-1])

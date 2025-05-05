@@ -1,0 +1,49 @@
+NR-AR 7265 0.04
+NR-AR-LBD 6758 0.04
+NR-AhR 6549 0.12
+NR-Aromatase 5821 0.05
+NR-ER 6193 0.13
+NR-ER-LBD 6955 0.05
+NR-PPAR-gamma 6450 0.03
+SR-ARE 5832 0.16
+SR-ATAD5 7072 0.04
+SR-HSE 6467 0.06
+SR-MMP 5810 0.16
+SR-p53 6774 0.06
+maccs - 167
+morgan - 857
+fp
+torch.Size([5825, 1024])
+count_loss
+SNN
+cuda
+-----Configuration-----
+{'num_hidden': 512, 'num_hidden_l2': 256, 'num_steps': 10, 'spike_grad': None, 'slope': None, 'beta': 0.95, 'encoding': 'rate', 'bias': True, 'out_num': 2, 'input_size': 1024, '2d': False}
+{'num_epochs': 200, 'batch_size': 16, 'device': device(type='cuda'), 'loss_type': 'count_loss', 'loss_fn': None, 'dtype': torch.float32, 'num_steps': 10, 'val_net': None, 'prediction_fn': <function prediction_spk_rate at 0x00000283E6E9A440>}
+Iteration:1/30
+Seed:1
+1024 512
+512 2
+Epoch:10|auc:0.6087662337662337|loss:0.24738898873329163
+Epoch:20|auc:0.6006915162759318|loss:5.010375753045082e-05
+Epoch:30|auc:0.6199401248102546|loss:0.08252718299627304
+Epoch:40|auc:0.6067633665036262|loss:2.7015305022359826e-05
+Epoch:50|auc:0.6698009782425367|loss:7.319221185753122e-05
+Epoch:60|auc:0.6413813459268005|loss:7.319221185753122e-05
+Epoch:70|auc:0.6249789171867094|loss:2.7015305022359826e-05
+Epoch:80|auc:0.6373123629617136|loss:5.010375753045082e-05
+Epoch:90|auc:0.6373123629617136|loss:5.010375753045082e-05
+Epoch:100|auc:0.6137417777028167|loss:5.010375753045082e-05
+Epoch:110|auc:0.6372491145218419|loss:2.7015305022359826e-05
+Epoch:120|auc:0.6473266992747513|loss:2.7015305022359826e-05
+Epoch:130|auc:0.5893278799122955|loss:2.7015305022359826e-05
+Epoch:140|auc:0.6025678866587957|loss:2.7015305022359826e-05
+Epoch:150|auc:0.599405464665205|loss:2.7015305022359826e-05
+Epoch:160|auc:0.5881683251813121|loss:2.7015305022359826e-05
+Epoch:170|auc:0.5852588969472087|loss:5.010375753045082e-05
+Epoch:180|auc:0.6105793557092257|loss:7.319221185753122e-05
+Epoch:190|auc:0.6034744476302918|loss:7.319221185753122e-05
+Epoch:200|auc:0.6186540731995277|loss:2.7015305022359826e-05
+
+Time: 1060.7146 seconds
+-- best epoch: 0 --best auc: 0.6142627776291143

@@ -10,24 +10,25 @@ class SNNet(nn.Module):
     """
     layer_sizes: [#in, #h, #h2.., #out]
     """
-    def __init__(self, net_config, layer_sizes, num_steps, spike_grad=None, beta=0.95):
+    def __init__(self, net_config):
         super().__init__()
-        self.num_layers = (len(layer_sizes) - 1) * 2
-        self.num_steps = num_steps
-        self.layer_sizes = layer_sizes
-        self.num_outputs = layer_sizes[-1]
+        self.num_layers = (len(net_config['layer_sizes']) - 1) * 2
+        self.num_steps = net_config['num_steps']
+        self.layer_sizes = net_config['layer_sizes']
+        self.num_outputs = net_config['layer_sizes'][-1]
         self.encoding = net_config['encoding']
         self.layers = nn.ModuleList()
-        print("self.num_layers:", self.num_layers)
-        for i in range(len(layer_sizes) - 1):
-            print(layer_sizes[i], layer_sizes[i+1])
-            fc_layer = nn.Linear(layer_sizes[i], layer_sizes[i+1])
+
+        #print("self.num_layers:", self.num_layers)
+        for i in range(len(self.layer_sizes) - 1):
+            print(self.layer_sizes[i], self.layer_sizes[i+1])
+            fc_layer = nn.Linear(self.layer_sizes[i], self.layer_sizes[i+1])
             self.layers.append(fc_layer)
-            lif = snn.Leaky(beta=beta, spike_grad=spike_grad)
+            lif = snn.Leaky(beta=net_config["beta"], spike_grad=net_config['spike_grad'])
             self.layers.append(lif)
 
-        print("len(self.layers):", len(self.layers))
-            #def encoding(self):
+        #print("len(self.layers):", len(self.layers))
+
         if self.encoding == "rate":
             self.forward = self.forward_rate
         elif self.encoding == "ttfs":
@@ -118,11 +119,11 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
     #epoch_list = []
     auc_roc = 0
     loss_val = 0
-    print("Epoch:0", end ='', flush=True)
+    #print("Epoch:0", end ='', flush=True)
     for epoch in range(num_epochs):
         net.train()
         #print(f"Epoch:{epoch + 1}")
-        if (epoch + 1) % 5 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}")
+        if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}", flush=True)
 
         train_batch = iter(train_loader)
 

@@ -312,8 +312,9 @@ def get_spiking_net(net_type, net_config):
     beta = net_config["beta"]
     num_outputs = net_config['out_num']
     if net_type == "SNN":
-        layer_sizes = [input_size, num_hidden, num_outputs]
-        net = SNNet(net_config, layer_sizes=layer_sizes, num_steps=time_steps, spike_grad=spike_grad, beta=beta)
+        #layer_sizes = [input_size, num_hidden, num_outputs]
+        net_config['layer_sizes'] = [input_size, num_hidden, num_outputs]
+        net = SNNet(net_config)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters SNN: {num_params}")
         train_fn = train_snn
@@ -322,8 +323,9 @@ def get_spiking_net(net_type, net_config):
         
     elif net_type == "DSNN":
         num_hidden_l2 = net_config["num_hidden_l2"]
-        layer_sizes = [input_size, num_hidden, num_hidden_l2, num_outputs]
-        net = SNNet(net_config, layer_sizes=layer_sizes, num_steps=time_steps, spike_grad=spike_grad, beta=beta)
+        #layer_sizes = [input_size, num_hidden, num_hidden_l2, num_outputs]
+        net_config['layer_sizes'] = [input_size, num_hidden, num_hidden_l2, num_outputs]
+        net = SNNet(net_config)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters DSNN: {num_params}")
         train_fn = train_snn
@@ -347,8 +349,10 @@ def get_spiking_net(net_type, net_config):
         test_fn = test_csnn
 
     elif net_type == "RSNN":
-        layer_sizes = [input_size, num_hidden, num_outputs]
-        net = RSNNet(layer_sizes=layer_sizes, num_steps=time_steps, spike_grad=spike_grad, beta=beta)
+        #layer_sizes = [input_size, num_hidden, num_outputs]
+        net_config['layer_sizes'] = [input_size, num_hidden, num_outputs]
+
+        net = RSNNet(net_config)
         train_fn = train_rsnn
         val_fn = val_rsnn
         test_fn = test_rsnn
@@ -372,7 +376,7 @@ def make_filename(dirname, target, net_type, data_config, lr, wd, optim_type, ne
             data_str.append(data_config['fp_type_2'])
         if net_config['2d']:
             data_str.append("2D")
-
+    if not isinstance(net_config['input_size'], list): net_config['input_size'] = list(net_config['input_size'])
     params = [
         None if dirname == 'BBBP' else target, 
         net_type, 
