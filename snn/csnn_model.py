@@ -13,8 +13,8 @@ out_channels = [8, 8]
 in_channels = [1, out_channels[0]]
 groups = [1, 1]
 thresholds = torch.tensor([1.5, 1.0, 1.0], dtype=torch.float32)
-#learn_th = [True for _ in range(3)]
-learn_th = [False for _ in range(3)]
+learn_th = [True for _ in range(3)]
+#learn_th = [False for _ in range(3)]
 class CSNNet(nn.Module):
     def __init__(self, net_config):
 
@@ -58,6 +58,7 @@ class CSNNet(nn.Module):
             self.layers.append(lif_layer)
 
         lin_size = self.calculate_lin_size(self.input_size)
+        #print("LINSIZE IS ", lin_size)
         #self.fc_out = nn.Linear(lin_size * out_channels[self.num_conv - 1], num_outputs)
         self.fc_out = nn.Linear(lin_size, net_config['out_num'])
         torch.nn.init.xavier_uniform_(self.fc_out.weight)

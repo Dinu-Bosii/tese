@@ -313,6 +313,7 @@ def get_spiking_net(net_type, net_config):
     num_outputs = net_config['out_num']
     if net_type == "SNN":
         #layer_sizes = [input_size, num_hidden, num_outputs]
+        if isinstance(net_config['input_size'], list) and len(net_config['input_size']) == 1: input_size = net_config['input_size'][0]
         net_config['layer_sizes'] = [input_size, num_hidden, num_outputs]
         net = SNNet(net_config)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
@@ -324,6 +325,8 @@ def get_spiking_net(net_type, net_config):
     elif net_type == "DSNN":
         num_hidden_l2 = net_config["num_hidden_l2"]
         #layer_sizes = [input_size, num_hidden, num_hidden_l2, num_outputs]
+        if isinstance(net_config['input_size'], list) and len(net_config['input_size']) == 1: input_size = net_config['input_size'][0]
+        net_config['layer_sizes'] = [input_size, num_hidden, num_hidden_l2, num_outputs]
         net_config['layer_sizes'] = [input_size, num_hidden, num_hidden_l2, num_outputs]
         net = SNNet(net_config)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
@@ -376,7 +379,11 @@ def make_filename(dirname, target, net_type, data_config, lr, wd, optim_type, ne
             data_str.append(data_config['fp_type_2'])
         if net_config['2d']:
             data_str.append("2D")
-    if not isinstance(net_config['input_size'], list): net_config['input_size'] = list(net_config['input_size'])
+
+    if isinstance(net_config['input_size'], int): 
+        input_size_l = [net_config['input_size']]
+    else:
+        input_size_l = net_config['input_size']
     params = [
         None if dirname == 'BBBP' else target, 
         net_type, 
@@ -391,7 +398,7 @@ def make_filename(dirname, target, net_type, data_config, lr, wd, optim_type, ne
                 (["2D"] if net_config['2d'] else [])
             )
         ),
-        *net_config['input_size'],
+        *input_size_l,
         None if net_type == "CSNN" else f"l1{net_config['num_hidden']}",
         None if net_type != "DSNN" else f"l2{net_config['num_hidden_l2']}",
         None if net_type != "CSNN" else "out-" + "-".join(str(layer.out_channels) for layer in net.layers if isinstance(layer, (nn.Conv1d, nn.Conv2d))),

@@ -1082,10 +1082,15 @@ CSNNet(
   (fc_out): Linear(in_features=4096, out_features=20, bias=True)
   (lif_out): Leaky()
 )
-Accuracy:  0.823 ± 0.018
-AUC ROC: 0.716 ± 0.023
-Sensitivity: 0.560 ± 0.078
-Specificity: 0.872 ± 0.035
+Accuracy:  0.823 ï¿½ 0.018
+AUC ROC: 0.716 ï¿½ 0.023
+Sensitivity: 0.560 ï¿½ 0.078
+Specificity: 0.872 ï¿½ 0.035
 results\tox21\SR-ARE_CSNN_beta-0.95_maccs_morgan_1024_out-8_kernel-3_stride-1_t10_e1000_b16_lr0.0001_count_loss_Adam_wd0_bias_pop-20.csv
 min auc: 0.686058209723457 at 1
 max auc: 0.755754446617841 at 9
+
+
+Mean with 29 iterations 
+Mean: 0.7231
+Standard Deviation: 0.0267

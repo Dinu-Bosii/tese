@@ -4,6 +4,7 @@ import snntorch as snn
 from snntorch.functional import ce_rate_loss, ce_temporal_loss, ce_count_loss
 from sklearn.metrics import roc_auc_score, accuracy_score
 from snntorch import spikegen
+import copy
 
 # NN Architecture
 class SNNet(nn.Module):
@@ -112,7 +113,7 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
     val_auc_hist = []
     loss_hist = []
     num_steps = net.num_steps
-    best_auc_roc = 0
+    best_auc_roc, best_epoch = 0, 0
     #patience = 10
     #patience_counter = 0
     best_net_list = []
@@ -123,21 +124,20 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
     for epoch in range(num_epochs):
         net.train()
         #print(f"Epoch:{epoch + 1}")
-        if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}", flush=True)
 
         train_batch = iter(train_loader)
 
         # Minibatch training loop
         for data, targets in train_batch:
-            data = data.to(device)
-            targets = targets.to(device)
+            data = data.to(device, non_blocking=True)
+            targets = targets.to(device, non_blocking=True)
             #print(data.size(), data.view(batch_size, -1).size())
             #print(data.shape)  # Should be [32, 1, 167]
             # forward pass
             net.train()
             spk_rec, mem_rec = net(data)
             #print(spk_rec, mem_rec)
-            #print(spk_rec.size(), mem_rec.size(), targets.size())
+            print(spk_rec.size(), mem_rec.size(), targets.size())
             # Compute loss
             loss_val = compute_loss(loss_type, loss_fn, spk_rec, mem_rec, num_steps, targets, dtype, device) 
             #print(loss_val.item())
@@ -150,15 +150,19 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
             loss_hist.append(loss_val.item())
         #scheduler.step()
         
-        _, auc_roc = val_fn(net, device, val_loader, train_config)
+        if (epoch + 1) % 10 == 0: 
+            _, auc_roc = val_fn(net, device, val_loader, train_config)
+            print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}", flush=True)
+
         if auc_roc > best_auc_roc:
             best_auc_roc = auc_roc   
-        
-        best_net_list.append(net.state_dict())
+            best_epoch = epoch
+        best_net_list.append(copy.deepcopy(net.state_dict()))
 
             #val_acc_hist.extend(accuracy)
-        val_auc_hist.extend([auc_roc])
+        #val_auc_hist.extend([auc_roc])
 
+    print("Best AUC on val set:", best_auc_roc, "at epoch:", best_epoch)
     return net, loss_hist, val_acc_hist, val_auc_hist, best_net_list#, epoch_list
 
 
