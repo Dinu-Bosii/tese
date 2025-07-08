@@ -1,0 +1,51 @@
+Hepatobiliary disorders 1427 0.52
+Metabolism and nutrition disorders 1427 0.7
+Product issues 1427 0.02
+Eye disorders 1427 0.61
+Investigations 1427 0.81
+Musculoskeletal and connective tissue disorders 1427 0.7
+Gastrointestinal disorders 1427 0.91
+Social circumstances 1427 0.18
+Immune system disorders 1427 0.72
+Reproductive system and breast disorders 1427 0.51
+Neoplasms benign, malignant and unspecified (incl cysts and polyps) 1427 0.26
+General disorders and administration site conditions 1427 0.91
+Endocrine disorders 1427 0.23
+Surgical and medical procedures 1427 0.15
+Vascular disorders 1427 0.78
+Blood and lymphatic system disorders 1427 0.62
+Skin and subcutaneous tissue disorders 1427 0.92
+Congenital, familial and genetic disorders 1427 0.18
+Infections and infestations 1427 0.7
+Respiratory, thoracic and mediastinal disorders 1427 0.74
+Psychiatric disorders 1427 0.71
+Renal and urinary disorders 1427 0.64
+Pregnancy, puerperium and perinatal conditions 1427 0.09
+Ear and labyrinth disorders 1427 0.46
+Cardiac disorders 1427 0.69
+Nervous system disorders 1427 0.91
+Injury, poisoning and procedural complications 1427 0.66
+morgan - 1024
+fp
+torch.Size([1427, 1024])
+count_loss
+CSNN
+cuda
+-----Configuration-----
+{'fp_type': 'morgan', 'num_bits': 1024, 'radius': 2, 'fp_type_2': 'morgan', 'num_bits_2': 0, 'mix': False, 'repr_type': 'fp'}
+{'num_hidden': 1024, 'num_hidden_l2': 256, 'num_steps': 10, 'spike_grad': <function fast_sigmoid.<locals>.inner at 0x000001BFDE7C6F80>, 'slope': 10, 'beta': 0.95, 'encoding': 'rate', 'bias': True, 'out_num': 2, 'num_conv': 1, 'conv_stride': [1], 'pool_size': 2, 'conv_kernel': 3, 'conv_groups': 1, 'input_size': 1024, '2d': False}
+{'num_epochs': 1000, 'batch_size': 16, 'device': device(type='cuda'), 'loss_type': 'count_loss', 'loss_fn': None, 'dtype': torch.float32, 'num_steps': 10, 'val_net': None, 'prediction_fn': <function prediction_spk_rate at 0x000001BF9D1DA4D0>}
+OrderedDict([('bias', [True, False]), ('beta', [0.9, 0.7, 0.5]), ('learning_rate', [0.001, 0.0001, 1e-05]), ('out_num', [2, 10, 20, 50]), ('spike_grad', [None, <function fast_sigmoid.<locals>.inner at 0x000001BF9D249C60>, <function fast_sigmoid.<locals>.inner at 0x000001BF9D249BD0>, <function fast_sigmoid.<locals>.inner at 0x000001BF9D249EA0>]), ('conv_groups', [1, 2]), ('conv_kernel', [3, 5, 7]), ('pool_size', [2, 4]), ('conv_stride', [1, 2]), ('num_steps', [5, 10, 20, 50])])
+
+=== Trial 1/200 ===
+bias : False
+beta : 0.9
+learning_rate : 1e-05
+out_num : 10
+spike_grad: fast_sigmoid - 25
+conv_groups : 2
+conv_kernel : 3
+pool_size : 4
+conv_stride : 2
+num_steps : 20
+Epoch:10|val_auc:0.6139|loss:0.5218698978424072

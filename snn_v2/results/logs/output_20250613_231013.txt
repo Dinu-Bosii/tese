@@ -1,0 +1,989 @@
+NR-AR 7265 0.04
+NR-AR-LBD 6758 0.04
+NR-AhR 6549 0.12
+NR-Aromatase 5821 0.05
+NR-ER 6193 0.13
+NR-ER-LBD 6955 0.05
+NR-PPAR-gamma 6450 0.03
+SR-ARE 5832 0.16
+SR-ATAD5 7072 0.04
+SR-HSE 6467 0.06
+SR-MMP 5810 0.16
+SR-p53 6774 0.06
+maccs - 167
+fp
+torch.Size([5825, 167])
+count_loss
+SNN
+cuda
+-----Configuration-----
+{'fp_type': 'maccs', 'num_bits': 167, 'radius': 2, 'fp_type_2': 'morgan', 'num_bits_2': 857, 'mix': False, 'repr_type': 'fp'}
+{'num_hidden': 1024, 'num_hidden_l2': 256, 'num_steps': 10, 'spike_grad': None, 'slope': None, 'beta': 0.95, 'encoding': 'rate', 'bias': True, 'out_num': 2, 'input_size': 167, '2d': False}
+{'num_epochs': 1000, 'batch_size': 16, 'device': device(type='cuda'), 'loss_type': 'count_loss', 'loss_fn': None, 'dtype': torch.float32, 'num_steps': 10, 'val_net': None, 'prediction_fn': <function prediction_spk_rate at 0x00000207CE8AA560>}
+Iteration:1/30
+Seed:1
+167 1024
+1024 2
+Epoch:10|va_auc:0.5831|train_auc:0.6947|loss:0.6822097897529602
+Epoch:20|va_auc:0.5986|train_auc:0.7416|loss:2.7015305022359826e-05
+Epoch:30|va_auc:0.5729|train_auc:0.8168|loss:0.16495807468891144
+Epoch:40|va_auc:0.6074|train_auc:0.8789|loss:2.7015305022359826e-05
+Epoch:50|va_auc:0.5688|train_auc:0.8853|loss:0.16495807468891144
+Epoch:60|va_auc:0.6220|train_auc:0.9127|loss:2.7015305022359826e-05
+Epoch:70|va_auc:0.6177|train_auc:0.9382|loss:0.08250408619642258
+Epoch:80|va_auc:0.6047|train_auc:0.9013|loss:0.5173017978668213
+Epoch:90|va_auc:0.6259|train_auc:0.9524|loss:2.7015305022359826e-05
+Epoch:100|va_auc:0.6310|train_auc:0.9512|loss:2.7015305022359826e-05
+Epoch:110|va_auc:0.6239|train_auc:0.9497|loss:7.319221185753122e-05
+Epoch:120|va_auc:0.6403|train_auc:0.9593|loss:0.08252718299627304
+Epoch:130|va_auc:0.6434|train_auc:0.9566|loss:0.08252718299627304
+Epoch:140|va_auc:0.6658|train_auc:0.9714|loss:2.7015305022359826e-05
+Epoch:150|va_auc:0.6544|train_auc:0.9764|loss:0.0824810042977333
+Epoch:160|va_auc:0.6555|train_auc:0.9746|loss:2.7015305022359826e-05
+Epoch:170|va_auc:0.6270|train_auc:0.9688|loss:2.7015305022359826e-05
+Epoch:180|va_auc:0.6475|train_auc:0.9635|loss:2.7015305022359826e-05
+Epoch:190|va_auc:0.6249|train_auc:0.9725|loss:2.7015305022359826e-05
+Epoch:200|va_auc:0.6271|train_auc:0.9735|loss:5.010375753045082e-05
+Epoch:210|va_auc:0.6219|train_auc:0.9635|loss:0.16493497788906097
+Epoch:220|va_auc:0.6230|train_auc:0.9745|loss:2.7015305022359826e-05
+Epoch:230|va_auc:0.6321|train_auc:0.9825|loss:5.010375753045082e-05
+Best AUC on val set: 0.6698642266824085 at epoch: 126
+
+Time: 1683.8172 seconds
+AUC on test set: 0.6406002346596406
+Iteration:2/30
+Seed:2
+167 1024
+1024 2
+Epoch:10|va_auc:0.6097|train_auc:0.6617|loss:0.24878595769405365
+Epoch:20|va_auc:0.6374|train_auc:0.7957|loss:2.8979732990264893
+Epoch:30|va_auc:0.6317|train_auc:0.8332|loss:0.5052627921104431
+Epoch:40|va_auc:0.6547|train_auc:0.8667|loss:0.927578866481781
+Epoch:50|va_auc:0.6491|train_auc:0.8620|loss:4.940642975270748e-05
+Epoch:60|va_auc:0.6712|train_auc:0.9189|loss:4.9406437028665096e-05
+Epoch:70|va_auc:0.6480|train_auc:0.9148|loss:2.7167856387677602e-05
+Epoch:80|va_auc:0.6750|train_auc:0.9283|loss:0.5052627921104431
+Epoch:90|va_auc:0.6501|train_auc:0.8861|loss:0.08296900242567062
+Epoch:100|va_auc:0.6526|train_auc:0.9457|loss:2.7167856387677602e-05
+Epoch:110|va_auc:0.6721|train_auc:0.9465|loss:2.7167856387677602e-05
+Epoch:120|va_auc:0.6874|train_auc:0.9527|loss:4.9406437028665096e-05
+Epoch:130|va_auc:0.6643|train_auc:0.9582|loss:1.1963824033737183
+Epoch:140|va_auc:0.6722|train_auc:0.9525|loss:0.0829467698931694
+Epoch:150|va_auc:0.6866|train_auc:0.9643|loss:2.7167856387677602e-05
+Epoch:160|va_auc:0.6808|train_auc:0.9766|loss:4.9406437028665096e-05
+Epoch:170|va_auc:0.6913|train_auc:0.9724|loss:0.5052627921104431
+Epoch:180|va_auc:0.6644|train_auc:0.9644|loss:4.940642975270748e-05
+Epoch:190|va_auc:0.6788|train_auc:0.9812|loss:7.164501585066319e-05
+Epoch:200|va_auc:0.6539|train_auc:0.9620|loss:2.7167856387677602e-05
+Epoch:210|va_auc:0.6615|train_auc:0.9742|loss:0.4223876893520355
+Epoch:220|va_auc:0.6798|train_auc:0.9708|loss:2.7167856387677602e-05
+Epoch:230|va_auc:0.6722|train_auc:0.9539|loss:7.164501585066319e-05
+Best AUC on val set: 0.7107629282826133 at epoch: 163
+
+Time: 1668.6022 seconds
+AUC on test set: 0.6860368486126031
+Iteration:3/30
+Seed:3
+167 1024
+1024 2
+Epoch:10|va_auc:0.6078|train_auc:0.6856|loss:0.921155571937561
+Epoch:20|va_auc:0.5946|train_auc:0.7714|loss:0.5851516127586365
+Epoch:30|va_auc:0.6493|train_auc:0.8482|loss:0.1661221832036972
+Epoch:40|va_auc:0.6369|train_auc:0.8728|loss:0.1661221832036972
+Epoch:50|va_auc:0.6533|train_auc:0.9110|loss:0.41910067200660706
+Epoch:60|va_auc:0.6311|train_auc:0.9271|loss:0.08307469636201859
+Epoch:70|va_auc:0.6086|train_auc:0.9123|loss:0.5021481513977051
+Epoch:80|va_auc:0.6601|train_auc:0.9438|loss:2.7209758627577685e-05
+Epoch:90|va_auc:0.6412|train_auc:0.9469|loss:2.7209758627577685e-05
+Epoch:100|va_auc:0.6905|train_auc:0.9547|loss:0.08307469636201859
+Epoch:110|va_auc:0.6743|train_auc:0.9495|loss:2.7209758627577685e-05
+Epoch:120|va_auc:0.6391|train_auc:0.9305|loss:4.922459993395023e-05
+Epoch:130|va_auc:0.6860|train_auc:0.9602|loss:4.922459993395023e-05
+Epoch:140|va_auc:0.6632|train_auc:0.9530|loss:4.922459993395023e-05
+Epoch:150|va_auc:0.6645|train_auc:0.9730|loss:0.0830967128276825
+Epoch:160|va_auc:0.6493|train_auc:0.9677|loss:4.922459993395023e-05
+Epoch:170|va_auc:0.6255|train_auc:0.9598|loss:0.0831187292933464
+Epoch:180|va_auc:0.6455|train_auc:0.9836|loss:4.922459993395023e-05
+Epoch:190|va_auc:0.6455|train_auc:0.9728|loss:4.922459993395023e-05
+Epoch:200|va_auc:0.6515|train_auc:0.9689|loss:4.9224607209907845e-05
+Epoch:210|va_auc:0.6900|train_auc:0.9721|loss:4.922459993395023e-05
+Epoch:220|va_auc:0.6579|train_auc:0.9841|loss:0.08307469636201859
+Epoch:230|va_auc:0.6687|train_auc:0.9854|loss:4.922459993395023e-05
+Best AUC on val set: 0.7160305701425357 at epoch: 134
+
+Time: 1818.5359 seconds
+AUC on test set: 0.6617706237424547
+Iteration:4/30
+Seed:4
+167 1024
+1024 2
+Epoch:10|va_auc:0.5795|train_auc:0.6703|loss:0.331280380487442
+Epoch:20|va_auc:0.5878|train_auc:0.7216|loss:1.2776848077774048
+Epoch:30|va_auc:0.6171|train_auc:0.8421|loss:7.198822277132422e-05
+Epoch:40|va_auc:0.5968|train_auc:0.8556|loss:0.08286287635564804
+Epoch:50|va_auc:0.6168|train_auc:0.8683|loss:0.08286287635564804
+Epoch:60|va_auc:0.6466|train_auc:0.9134|loss:0.0828404426574707
+Epoch:70|va_auc:0.6158|train_auc:0.9202|loss:2.713303365453612e-05
+Epoch:80|va_auc:0.6356|train_auc:0.9409|loss:0.4251440167427063
+Epoch:90|va_auc:0.6395|train_auc:0.9451|loss:2.713303365453612e-05
+Epoch:100|va_auc:0.5908|train_auc:0.9240|loss:2.713303365453612e-05
+Epoch:110|va_auc:0.6427|train_auc:0.9540|loss:2.713303365453612e-05
+Epoch:120|va_auc:0.6339|train_auc:0.9607|loss:0.08286287635564804
+Epoch:130|va_auc:0.6516|train_auc:0.9678|loss:2.713303365453612e-05
+Epoch:140|va_auc:0.6526|train_auc:0.9696|loss:4.956062912242487e-05
+Epoch:150|va_auc:0.6551|train_auc:0.9612|loss:6.558038234710693
+Epoch:160|va_auc:0.6495|train_auc:0.9762|loss:4.956062912242487e-05
+Epoch:170|va_auc:0.6300|train_auc:0.9757|loss:2.713303365453612e-05
+Epoch:180|va_auc:0.6528|train_auc:0.9691|loss:4.956062912242487e-05
+Epoch:190|va_auc:0.6737|train_auc:0.9757|loss:2.713303365453612e-05
+Epoch:200|va_auc:0.6530|train_auc:0.9713|loss:9.441581642022356e-05
+Epoch:210|va_auc:0.6695|train_auc:0.9784|loss:4.956062912242487e-05
+Epoch:220|va_auc:0.6897|train_auc:0.9747|loss:2.713303365453612e-05
+Epoch:230|va_auc:0.6616|train_auc:0.9821|loss:0.0828404426574707
+Epoch:240|va_auc:0.6683|train_auc:0.9808|loss:2.713303365453612e-05
+Epoch:250|va_auc:0.6614|train_auc:0.9860|loss:0.08288530260324478
+Best AUC on val set: 0.6897302904564315 at epoch: 219
+
+Time: 1999.3329 seconds
+AUC on test set: 0.6785121951219513
+Iteration:5/30
+Seed:5
+167 1024
+1024 2
+Epoch:10|va_auc:0.5701|train_auc:0.6771|loss:0.6755561828613281
+Epoch:20|va_auc:0.6495|train_auc:0.7731|loss:1.2763988971710205
+Epoch:30|va_auc:0.6639|train_auc:0.8419|loss:0.5100991725921631
+Epoch:40|va_auc:0.6608|train_auc:0.8734|loss:0.16550664603710175
+Epoch:50|va_auc:0.6577|train_auc:0.8853|loss:0.4273932874202728
+Epoch:60|va_auc:0.6825|train_auc:0.9191|loss:0.42737075686454773
+Epoch:70|va_auc:0.6897|train_auc:0.9267|loss:6.165416240692139
+Epoch:80|va_auc:0.6897|train_auc:0.9417|loss:4.968576831743121e-05
+Epoch:90|va_auc:0.6887|train_auc:0.9456|loss:4.968576831743121e-05
+Epoch:100|va_auc:0.6701|train_auc:0.9300|loss:0.8547369241714478
+Epoch:110|va_auc:0.6866|train_auc:0.9480|loss:4.968576831743121e-05
+Epoch:120|va_auc:0.6711|train_auc:0.9512|loss:4.968576831743121e-05
+Epoch:130|va_auc:0.6629|train_auc:0.9560|loss:0.08275559544563293
+Epoch:140|va_auc:0.6887|train_auc:0.9660|loss:0.08277817815542221
+Epoch:150|va_auc:0.6495|train_auc:0.9684|loss:2.710523949644994e-05
+Epoch:160|va_auc:0.6495|train_auc:0.9629|loss:4.968576831743121e-05
+Epoch:170|va_auc:0.6412|train_auc:0.9661|loss:1.1936252117156982
+Epoch:180|va_auc:0.6619|train_auc:0.9703|loss:2.710523949644994e-05
+Epoch:190|va_auc:0.6722|train_auc:0.9681|loss:2.710523949644994e-05
+Epoch:200|va_auc:0.6588|train_auc:0.9670|loss:7.22663025953807e-05
+Epoch:210|va_auc:0.6629|train_auc:0.9768|loss:0.08275559544563293
+Epoch:220|va_auc:0.6660|train_auc:0.9777|loss:4.968576831743121e-05
+Epoch:230|va_auc:0.6629|train_auc:0.9796|loss:2.710523949644994e-05
+Best AUC on val set: 0.7226804123711339 at epoch: 91
+
+Time: 1842.2601 seconds
+AUC on test set: 0.6197780158169428
+Iteration:6/30
+Seed:6
+167 1024
+1024 2
+Epoch:10|va_auc:0.5981|train_auc:0.6540|loss:1.1007719039916992
+Epoch:20|va_auc:0.6656|train_auc:0.7617|loss:0.6745558977127075
+Epoch:30|va_auc:0.6823|train_auc:0.8362|loss:0.16559138894081116
+Epoch:40|va_auc:0.6596|train_auc:0.8644|loss:0.08282049745321274
+Epoch:50|va_auc:0.6560|train_auc:0.8830|loss:4.962299863109365e-05
+Epoch:60|va_auc:0.6727|train_auc:0.9059|loss:0.08279799669981003
+Epoch:70|va_auc:0.7112|train_auc:0.9258|loss:2.7119129299535416e-05
+Epoch:80|va_auc:0.6907|train_auc:0.9387|loss:0.08282049745321274
+Epoch:90|va_auc:0.6964|train_auc:0.9409|loss:0.16559138894081116
+Epoch:100|va_auc:0.7009|train_auc:0.9469|loss:2.7119129299535416e-05
+Epoch:110|va_auc:0.6882|train_auc:0.9499|loss:9.463073365623131e-05
+Epoch:120|va_auc:0.7077|train_auc:0.9588|loss:0.08279799669981003
+Epoch:130|va_auc:0.6766|train_auc:0.9291|loss:0.08279799669981003
+Epoch:140|va_auc:0.6971|train_auc:0.9591|loss:0.08279799669981003
+Epoch:150|va_auc:0.7605|train_auc:0.9676|loss:7.212686614366248e-05
+Epoch:160|va_auc:0.7147|train_auc:0.9666|loss:0.08284299820661545
+Epoch:170|va_auc:0.7107|train_auc:0.9689|loss:2.7119129299535416e-05
+Epoch:180|va_auc:0.7549|train_auc:0.9734|loss:0.08279799669981003
+Epoch:190|va_auc:0.7166|train_auc:0.9739|loss:2.7119129299535416e-05
+Epoch:200|va_auc:0.7186|train_auc:0.9722|loss:2.7119129299535416e-05
+Epoch:210|va_auc:0.7413|train_auc:0.9743|loss:1.2770075798034668
+Epoch:220|va_auc:0.7196|train_auc:0.9732|loss:0.4262657165527344
+Epoch:230|va_auc:0.7080|train_auc:0.9667|loss:0.42624321579933167
+Best AUC on val set: 0.760456858799858 at epoch: 149
+
+Time: 1873.6882 seconds
+AUC on test set: 0.6835435096304661
+Iteration:7/30
+Seed:7
+167 1024
+1024 2
+Epoch:10|va_auc:0.5883|train_auc:0.6676|loss:0.24802203476428986
+Epoch:20|va_auc:0.6223|train_auc:0.7801|loss:1.2753965854644775
+Epoch:30|va_auc:0.6174|train_auc:0.8458|loss:1.2753738164901733
+Epoch:40|va_auc:0.6489|train_auc:0.8956|loss:2.708443207666278e-05
+Epoch:50|va_auc:0.6288|train_auc:0.8868|loss:1.1927088499069214
+Epoch:60|va_auc:0.6763|train_auc:0.9326|loss:2.708443207666278e-05
+Epoch:70|va_auc:0.6753|train_auc:0.9322|loss:1.1927088499069214
+Epoch:80|va_auc:0.6570|train_auc:0.9255|loss:1.1927316188812256
+Epoch:90|va_auc:0.6465|train_auc:0.9447|loss:0.5944033861160278
+Epoch:100|va_auc:0.6444|train_auc:0.9433|loss:4.9780683184508234e-05
+Epoch:110|va_auc:0.6254|train_auc:0.9355|loss:4.9780683184508234e-05
+Epoch:120|va_auc:0.6760|train_auc:0.9452|loss:0.16537974774837494
+Epoch:130|va_auc:0.6535|train_auc:0.9601|loss:4.9780683184508234e-05
+Epoch:140|va_auc:0.6690|train_auc:0.9714|loss:1.1927088499069214
+Epoch:150|va_auc:0.6576|train_auc:0.9723|loss:7.24769415683113e-05
+Epoch:160|va_auc:0.6240|train_auc:0.9568|loss:7.24769415683113e-05
+Epoch:170|va_auc:0.6216|train_auc:0.9573|loss:2.708443207666278e-05
+Epoch:180|va_auc:0.6523|train_auc:0.9770|loss:4.9780683184508234e-05
+Epoch:190|va_auc:0.6507|train_auc:0.9706|loss:2.708443207666278e-05
+Epoch:200|va_auc:0.6846|train_auc:0.9748|loss:2.708443207666278e-05
+Epoch:210|va_auc:0.6506|train_auc:0.9780|loss:2.708443207666278e-05
+Epoch:220|va_auc:0.6510|train_auc:0.9741|loss:2.708443207666278e-05
+Epoch:230|va_auc:0.6718|train_auc:0.9764|loss:0.08273746073246002
+Best AUC on val set: 0.6967387559032775 at epoch: 127
+
+Time: 1868.4134 seconds
+AUC on test set: 0.6599071642910729
+Iteration:8/30
+Seed:8
+167 1024
+1024 2
+Epoch:10|va_auc:0.6464|train_auc:0.6695|loss:0.6785942316055298
+Epoch:20|va_auc:0.6815|train_auc:0.7514|loss:0.5959926843643188
+Epoch:30|va_auc:0.6535|train_auc:0.7910|loss:0.9441536068916321
+Epoch:40|va_auc:0.6691|train_auc:0.8688|loss:7.268937770277262e-05
+Epoch:50|va_auc:0.6687|train_auc:0.9100|loss:2.706365739868488e-05
+Epoch:60|va_auc:0.6819|train_auc:0.8868|loss:0.16523019969463348
+Epoch:70|va_auc:0.6967|train_auc:0.9304|loss:0.08265145123004913
+Epoch:80|va_auc:0.6624|train_auc:0.9315|loss:0.16523019969463348
+Epoch:90|va_auc:0.6377|train_auc:0.9174|loss:2.706365739868488e-05
+Epoch:100|va_auc:0.6413|train_auc:0.9454|loss:7.268937770277262e-05
+Epoch:110|va_auc:0.6624|train_auc:0.9422|loss:0.08265144377946854
+Epoch:120|va_auc:0.6697|train_auc:0.9487|loss:0.4307895600795746
+Epoch:130|va_auc:0.6694|train_auc:0.9666|loss:2.706365739868488e-05
+Epoch:140|va_auc:0.6708|train_auc:0.9660|loss:4.9876514822244644e-05
+Epoch:150|va_auc:0.6350|train_auc:0.9337|loss:0.08262863010168076
+Epoch:160|va_auc:0.6887|train_auc:0.9774|loss:4.987652209820226e-05
+Epoch:170|va_auc:0.6901|train_auc:0.9794|loss:2.706365739868488e-05
+Epoch:180|va_auc:0.6623|train_auc:0.9806|loss:4.9876514822244644e-05
+Epoch:190|va_auc:0.6590|train_auc:0.9720|loss:7.268937770277262e-05
+Epoch:200|va_auc:0.6823|train_auc:0.9752|loss:2.706365739868488e-05
+Epoch:210|va_auc:0.6999|train_auc:0.9816|loss:4.9876514822244644e-05
+Epoch:220|va_auc:0.6893|train_auc:0.9856|loss:2.706365739868488e-05
+Epoch:230|va_auc:0.6743|train_auc:0.9730|loss:2.706365739868488e-05
+Best AUC on val set: 0.7298260949576738 at epoch: 21
+
+Time: 1827.9088 seconds
+AUC on test set: 0.6642460572899903
+Iteration:9/30
+Seed:9
+167 1024
+1024 2
+Epoch:10|va_auc:0.5870|train_auc:0.6913|loss:0.33196115493774414
+Epoch:20|va_auc:0.6408|train_auc:0.7712|loss:0.4207156300544739
+Epoch:30|va_auc:0.6604|train_auc:0.8568|loss:7.144137634895742e-05
+Epoch:40|va_auc:0.6496|train_auc:0.8875|loss:0.2489776611328125
+Epoch:50|va_auc:0.6804|train_auc:0.9143|loss:7.144138362491503e-05
+Epoch:60|va_auc:0.6949|train_auc:0.9155|loss:0.08303280919790268
+Epoch:70|va_auc:0.6729|train_auc:0.9229|loss:0.08303280919790268
+Epoch:80|va_auc:0.6178|train_auc:0.9079|loss:4.9315083742840216e-05
+Epoch:90|va_auc:0.6554|train_auc:0.9531|loss:4.931509101879783e-05
+Epoch:100|va_auc:0.6575|train_auc:0.9468|loss:0.08305492997169495
+Epoch:110|va_auc:0.6625|train_auc:0.9568|loss:4.9315083742840216e-05
+Epoch:120|va_auc:0.6618|train_auc:0.9506|loss:4.931509101879783e-05
+Epoch:130|va_auc:0.6621|train_auc:0.9277|loss:2.7188792955712415e-05
+Epoch:140|va_auc:0.6824|train_auc:0.9681|loss:0.08305492997169495
+Epoch:150|va_auc:0.6892|train_auc:0.9739|loss:0.08305492997169495
+Epoch:160|va_auc:0.6838|train_auc:0.9739|loss:2.7188792955712415e-05
+Epoch:170|va_auc:0.6800|train_auc:0.9645|loss:2.7188792955712415e-05
+Epoch:180|va_auc:0.6828|train_auc:0.9780|loss:7.144138362491503e-05
+Epoch:190|va_auc:0.6794|train_auc:0.9766|loss:1.1973265409469604
+Epoch:200|va_auc:0.6760|train_auc:0.9676|loss:4.9315083742840216e-05
+Epoch:210|va_auc:0.7031|train_auc:0.9845|loss:4.931509101879783e-05
+Epoch:220|va_auc:0.6929|train_auc:0.9691|loss:4.9315083742840216e-05
+Epoch:230|va_auc:0.7014|train_auc:0.9788|loss:2.7188792955712415e-05
+Epoch:240|va_auc:0.6866|train_auc:0.9773|loss:0.5037212371826172
+Epoch:250|va_auc:0.6588|train_auc:0.9857|loss:2.7188792955712415e-05
+Best AUC on val set: 0.7158829676071056 at epoch: 217
+
+Time: 1987.0198 seconds
+AUC on test set: 0.6498780912574015
+Iteration:10/30
+Seed:10
+167 1024
+1024 2
+Epoch:10|va_auc:0.5353|train_auc:0.6737|loss:0.24942617118358612
+Epoch:20|va_auc:0.6287|train_auc:0.7979|loss:1.3657491207122803
+Epoch:30|va_auc:0.6355|train_auc:0.8345|loss:2.4820282459259033
+Epoch:40|va_auc:0.6290|train_auc:0.8846|loss:0.08316021412611008
+Epoch:50|va_auc:0.6239|train_auc:0.8945|loss:1.1994612216949463
+Epoch:60|va_auc:0.6090|train_auc:0.9080|loss:0.5000487565994263
+Epoch:70|va_auc:0.6029|train_auc:0.9023|loss:7.097284105839208e-05
+Epoch:80|va_auc:0.6039|train_auc:0.9211|loss:0.08316021412611008
+Epoch:90|va_auc:0.6368|train_auc:0.9475|loss:4.910530333290808e-05
+Epoch:100|va_auc:0.6134|train_auc:0.9483|loss:9.284037514589727e-05
+Epoch:110|va_auc:0.6165|train_auc:0.9520|loss:2.7237769245402887e-05
+Epoch:120|va_auc:0.6138|train_auc:0.9148|loss:0.08318208903074265
+Epoch:130|va_auc:0.6443|train_auc:0.9664|loss:0.41691574454307556
+Epoch:140|va_auc:0.6569|train_auc:0.9666|loss:4.910530333290808e-05
+Epoch:150|va_auc:0.6328|train_auc:0.9715|loss:4.910530333290808e-05
+Epoch:160|va_auc:0.6314|train_auc:0.9681|loss:2.7237769245402887e-05
+Epoch:170|va_auc:0.6256|train_auc:0.9532|loss:4.910530333290808e-05
+Epoch:180|va_auc:0.6470|train_auc:0.9610|loss:2.7237769245402887e-05
+Epoch:190|va_auc:0.6348|train_auc:0.9729|loss:2.7237769245402887e-05
+Epoch:200|va_auc:0.6429|train_auc:0.9823|loss:4.910530333290808e-05
+Epoch:210|va_auc:0.6569|train_auc:0.9763|loss:1.282616138458252
+Epoch:220|va_auc:0.6559|train_auc:0.9786|loss:2.7237769245402887e-05
+Epoch:230|va_auc:0.6409|train_auc:0.9674|loss:4.910530333290808e-05
+Epoch:240|va_auc:0.6294|train_auc:0.9764|loss:7.097284105839208e-05
+Epoch:250|va_auc:0.6290|train_auc:0.9658|loss:7.097284105839208e-05
+Epoch:260|va_auc:0.6280|train_auc:0.9826|loss:4.910530333290808e-05
+Epoch:270|va_auc:0.6141|train_auc:0.9676|loss:4.910530333290808e-05
+Best AUC on val set: 0.6629991126885536 at epoch: 240
+
+Time: 2186.1117 seconds
+AUC on test set: 0.6842603550295858
+Iteration:11/30
+Seed:11
+167 1024
+1024 2
+Epoch:10|va_auc:0.5958|train_auc:0.6645|loss:0.24764180183410645
+Epoch:20|va_auc:0.6216|train_auc:0.7470|loss:0.24766473472118378
+Epoch:30|va_auc:0.6494|train_auc:0.8608|loss:0.432565301656723
+Epoch:40|va_auc:0.6557|train_auc:0.8976|loss:0.1651264876127243
+Epoch:50|va_auc:0.6501|train_auc:0.9057|loss:0.5150576829910278
+Epoch:60|va_auc:0.6366|train_auc:0.9047|loss:6.239675045013428
+Epoch:70|va_auc:0.6543|train_auc:0.9325|loss:2.7042913643526845e-05
+Epoch:80|va_auc:0.6521|train_auc:0.9386|loss:2.7042913643526845e-05
+Epoch:90|va_auc:0.6588|train_auc:0.9519|loss:0.08258822560310364
+Epoch:100|va_auc:0.6614|train_auc:0.9482|loss:1.1909263134002686
+Epoch:110|va_auc:0.6906|train_auc:0.9443|loss:0.08261116594076157
+Epoch:120|va_auc:0.6545|train_auc:0.9592|loss:2.7042913643526845e-05
+Epoch:130|va_auc:0.6831|train_auc:0.9707|loss:1.1909034252166748
+Epoch:140|va_auc:0.6661|train_auc:0.9622|loss:0.08258822560310364
+Epoch:150|va_auc:0.6624|train_auc:0.9654|loss:2.7042913643526845e-05
+Epoch:160|va_auc:0.6630|train_auc:0.9711|loss:4.997327414457686e-05
+Epoch:170|va_auc:0.6718|train_auc:0.9746|loss:0.4325423836708069
+Epoch:180|va_auc:0.6624|train_auc:0.9695|loss:0.43251949548721313
+Epoch:190|va_auc:0.6382|train_auc:0.9527|loss:9.583400242263451e-05
+Epoch:200|va_auc:0.6526|train_auc:0.9712|loss:4.997327414457686e-05
+Epoch:210|va_auc:0.6620|train_auc:0.9790|loss:2.7042913643526845e-05
+Epoch:220|va_auc:0.6705|train_auc:0.9818|loss:4.997327414457686e-05
+Epoch:230|va_auc:0.6573|train_auc:0.9760|loss:4.997327414457686e-05
+Epoch:240|va_auc:0.6905|train_auc:0.9820|loss:4.997327414457686e-05
+Best AUC on val set: 0.6935169699950812 at epoch: 172
+
+Time: 1958.5433 seconds
+AUC on test set: 0.6452199116672801
+Iteration:12/30
+Seed:12
+167 1024
+1024 2
+Epoch:10|va_auc:0.5658|train_auc:0.6511|loss:1.702296495437622
+Epoch:20|va_auc:0.6532|train_auc:0.7918|loss:0.16573873162269592
+Epoch:30|va_auc:0.6225|train_auc:0.8348|loss:0.08288294076919556
+Epoch:40|va_auc:0.6438|train_auc:0.8571|loss:1.2783178091049194
+Epoch:50|va_auc:0.6601|train_auc:0.9116|loss:0.0829276442527771
+Epoch:60|va_auc:0.6489|train_auc:0.8684|loss:0.4240058958530426
+Epoch:70|va_auc:0.6675|train_auc:0.9309|loss:1.1954619884490967
+Epoch:80|va_auc:0.6691|train_auc:0.9259|loss:0.08288294076919556
+Epoch:90|va_auc:0.6567|train_auc:0.9528|loss:7.185035792645067e-05
+Epoch:100|va_auc:0.6793|train_auc:0.9526|loss:2.7146952561452053e-05
+Epoch:110|va_auc:0.6656|train_auc:0.9575|loss:2.7146952561452053e-05
+Epoch:120|va_auc:0.6755|train_auc:0.9631|loss:4.9498656153446063e-05
+Epoch:130|va_auc:0.6693|train_auc:0.9482|loss:0.08288294076919556
+Epoch:140|va_auc:0.6663|train_auc:0.9741|loss:4.9498656153446063e-05
+Epoch:150|va_auc:0.6738|train_auc:0.9742|loss:4.9498656153446063e-05
+Epoch:160|va_auc:0.6736|train_auc:0.9694|loss:4.9498656153446063e-05
+Epoch:170|va_auc:0.6824|train_auc:0.9780|loss:4.9498656153446063e-05
+Epoch:180|va_auc:0.6749|train_auc:0.9767|loss:7.185035792645067e-05
+Epoch:190|va_auc:0.6820|train_auc:0.9717|loss:4.9498656153446063e-05
+Epoch:200|va_auc:0.6744|train_auc:0.9776|loss:0.42405056953430176
+Epoch:210|va_auc:0.6802|train_auc:0.9771|loss:2.7146952561452053e-05
+Epoch:220|va_auc:0.6714|train_auc:0.9679|loss:0.08288294076919556
+Epoch:230|va_auc:0.6661|train_auc:0.9677|loss:2.7146952561452053e-05
+Epoch:240|va_auc:0.6779|train_auc:0.9801|loss:2.7146952561452053e-05
+Epoch:250|va_auc:0.6730|train_auc:0.9769|loss:0.42405056953430176
+Epoch:260|va_auc:0.6898|train_auc:0.9818|loss:2.7146952561452053e-05
+Epoch:270|va_auc:0.7037|train_auc:0.9857|loss:9.420205606147647e-05
+Epoch:280|va_auc:0.6834|train_auc:0.9874|loss:4.9498656153446063e-05
+Epoch:290|va_auc:0.6812|train_auc:0.9778|loss:0.0829276442527771
+Epoch:300|va_auc:0.6935|train_auc:0.9878|loss:7.185035792645067e-05
+Epoch:310|va_auc:0.6810|train_auc:0.9745|loss:4.9498656153446063e-05
+Best AUC on val set: 0.7036972445064527 at epoch: 233
+
+Time: 2464.2453 seconds
+AUC on test set: 0.6563437734433608
+Iteration:13/30
+Seed:13
+167 1024
+1024 2
+Epoch:10|va_auc:0.6763|train_auc:0.6857|loss:1.4443998336791992
+Epoch:20|va_auc:0.6442|train_auc:0.7756|loss:0.6720813512802124
+Epoch:30|va_auc:0.6932|train_auc:0.8400|loss:4.946781700709835e-05
+Epoch:40|va_auc:0.6995|train_auc:0.8754|loss:0.08292651921510696
+Epoch:50|va_auc:0.6768|train_auc:0.8965|loss:2.7153915652888827e-05
+Epoch:60|va_auc:0.6536|train_auc:0.9164|loss:0.08294883370399475
+Epoch:70|va_auc:0.6424|train_auc:0.8915|loss:0.08292651921510696
+Epoch:80|va_auc:0.6829|train_auc:0.9331|loss:0.08290420472621918
+Epoch:90|va_auc:0.6639|train_auc:0.9251|loss:0.08292651921510696
+Epoch:100|va_auc:0.6773|train_auc:0.9318|loss:0.08290420472621918
+Epoch:110|va_auc:0.7041|train_auc:0.9550|loss:0.08292651921510696
+Epoch:120|va_auc:0.6682|train_auc:0.9596|loss:0.08290420472621918
+Epoch:130|va_auc:0.6983|train_auc:0.9646|loss:0.08297114819288254
+Epoch:140|va_auc:0.6738|train_auc:0.9724|loss:4.946781700709835e-05
+Epoch:150|va_auc:0.6720|train_auc:0.9672|loss:4.946781700709835e-05
+Epoch:160|va_auc:0.6697|train_auc:0.9600|loss:4.946781700709835e-05
+Epoch:170|va_auc:0.6636|train_auc:0.9610|loss:2.7153915652888827e-05
+Epoch:180|va_auc:0.6859|train_auc:0.9811|loss:4.946781700709835e-05
+Epoch:190|va_auc:0.6702|train_auc:0.9719|loss:2.7153915652888827e-05
+Epoch:200|va_auc:0.6636|train_auc:0.9648|loss:0.08292651921510696
+Epoch:210|va_auc:0.6692|train_auc:0.9790|loss:4.946781700709835e-05
+Epoch:220|va_auc:0.6788|train_auc:0.9753|loss:2.7153915652888827e-05
+Epoch:230|va_auc:0.6975|train_auc:0.9794|loss:4.946781700709835e-05
+Best AUC on val set: 0.720531695423856 at epoch: 100
+
+Time: 1856.0512 seconds
+AUC on test set: 0.6544297117224092
+Iteration:14/30
+Seed:14
+167 1024
+1024 2
+Epoch:10|va_auc:0.6444|train_auc:0.6908|loss:0.5052627921104431
+Epoch:20|va_auc:0.6760|train_auc:0.7863|loss:1.362221598625183
+Epoch:30|va_auc:0.6664|train_auc:0.8226|loss:0.16591084003448486
+Epoch:40|va_auc:0.6661|train_auc:0.8650|loss:1.1964046955108643
+Epoch:50|va_auc:0.6924|train_auc:0.8449|loss:2.7167856387677602e-05
+Epoch:60|va_auc:0.6657|train_auc:0.8615|loss:4.9406437028665096e-05
+Epoch:70|va_auc:0.6641|train_auc:0.9128|loss:1.6187429428100586
+Epoch:80|va_auc:0.7016|train_auc:0.9314|loss:4.9406437028665096e-05
+Epoch:90|va_auc:0.6739|train_auc:0.9369|loss:0.0829467698931694
+Epoch:100|va_auc:0.6820|train_auc:0.9552|loss:7.164501585066319e-05
+Epoch:110|va_auc:0.6614|train_auc:0.9320|loss:4.9406437028665096e-05
+Epoch:120|va_auc:0.6908|train_auc:0.9598|loss:2.7167856387677602e-05
+Epoch:130|va_auc:0.6712|train_auc:0.9391|loss:0.4223432242870331
+Epoch:140|va_auc:0.6756|train_auc:0.9566|loss:2.7167856387677602e-05
+Epoch:150|va_auc:0.6674|train_auc:0.9379|loss:4.9406437028665096e-05
+Epoch:160|va_auc:0.6789|train_auc:0.9649|loss:2.7167856387677602e-05
+Epoch:170|va_auc:0.6948|train_auc:0.9725|loss:2.7167856387677602e-05
+Epoch:180|va_auc:0.6769|train_auc:0.9419|loss:7.164501585066319e-05
+Epoch:190|va_auc:0.6712|train_auc:0.9591|loss:7.164501585066319e-05
+Epoch:200|va_auc:0.6786|train_auc:0.9709|loss:4.9406437028665096e-05
+Epoch:210|va_auc:0.6834|train_auc:0.9716|loss:2.7167856387677602e-05
+Epoch:220|va_auc:0.6878|train_auc:0.9732|loss:2.7167856387677602e-05
+Epoch:230|va_auc:0.6810|train_auc:0.9771|loss:0.0829467624425888
+Best AUC on val set: 0.7381748519679554 at epoch: 45
+
+Time: 1828.5967 seconds
+AUC on test set: 0.689159891598916
+Iteration:15/30
+Seed:15
+167 1024
+1024 2
+Epoch:10|va_auc:0.5865|train_auc:0.6637|loss:2.5520267486572266
+Epoch:20|va_auc:0.6449|train_auc:0.7835|loss:1.7039365768432617
+Epoch:30|va_auc:0.6052|train_auc:0.8047|loss:0.5933740139007568
+Epoch:40|va_auc:0.6327|train_auc:0.8695|loss:7.233631185954437e-05
+Epoch:50|va_auc:0.6677|train_auc:0.9220|loss:2.709830368985422e-05
+Epoch:60|va_auc:0.6567|train_auc:0.9194|loss:2.709830368985422e-05
+Epoch:70|va_auc:0.6683|train_auc:0.9262|loss:1.1933422088623047
+Epoch:80|va_auc:0.6707|train_auc:0.9382|loss:2.709830368985422e-05
+Epoch:90|va_auc:0.6439|train_auc:0.9181|loss:0.08273441344499588
+Epoch:100|va_auc:0.6811|train_auc:0.9596|loss:0.4279367923736572
+Epoch:110|va_auc:0.6587|train_auc:0.9469|loss:0.08275702595710754
+Epoch:120|va_auc:0.6786|train_auc:0.9578|loss:0.08275701850652695
+Epoch:130|va_auc:0.6951|train_auc:0.9699|loss:4.971730595570989e-05
+Epoch:140|va_auc:0.6827|train_auc:0.9598|loss:4.971730595570989e-05
+Epoch:150|va_auc:0.6683|train_auc:0.9636|loss:2.709830368985422e-05
+Epoch:160|va_auc:0.6721|train_auc:0.9716|loss:0.42798206210136414
+Epoch:170|va_auc:0.6856|train_auc:0.9677|loss:4.971730595570989e-05
+Epoch:180|va_auc:0.6752|train_auc:0.9734|loss:4.971730595570989e-05
+Epoch:190|va_auc:0.7051|train_auc:0.9823|loss:4.971730595570989e-05
+Epoch:200|va_auc:0.6945|train_auc:0.9810|loss:4.971730595570989e-05
+Epoch:210|va_auc:0.6571|train_auc:0.9828|loss:7.233631185954437e-05
+Epoch:220|va_auc:0.6876|train_auc:0.9811|loss:0.08273440599441528
+Epoch:230|va_auc:0.6862|train_auc:0.9852|loss:4.971730595570989e-05
+Best AUC on val set: 0.7167028490857411 at epoch: 138
+
+Time: 1825.0862 seconds
+AUC on test set: 0.6505272633744856
+Iteration:16/30
+Seed:16
+167 1024
+1024 2
+Epoch:10|va_auc:0.6181|train_auc:0.6554|loss:0.41366949677467346
+Epoch:20|va_auc:0.6220|train_auc:0.7688|loss:1.7036972045898438
+Epoch:30|va_auc:0.6363|train_auc:0.8242|loss:0.08277817070484161
+Epoch:40|va_auc:0.6089|train_auc:0.8157|loss:4.968576831743121e-05
+Epoch:50|va_auc:0.6343|train_auc:0.8996|loss:0.08277817815542221
+Epoch:60|va_auc:0.6365|train_auc:0.8955|loss:2.710523949644994e-05
+Epoch:70|va_auc:0.6354|train_auc:0.9179|loss:0.16550666093826294
+Epoch:80|va_auc:0.6689|train_auc:0.9548|loss:0.08280075341463089
+Epoch:90|va_auc:0.6343|train_auc:0.9550|loss:4.968576831743121e-05
+Epoch:100|va_auc:0.6588|train_auc:0.9474|loss:7.22663025953807e-05
+Epoch:110|va_auc:0.6453|train_auc:0.9576|loss:2.710523949644994e-05
+Epoch:120|va_auc:0.6311|train_auc:0.9513|loss:7.22663025953807e-05
+Epoch:130|va_auc:0.6414|train_auc:0.9503|loss:4.968576831743121e-05
+Epoch:140|va_auc:0.6476|train_auc:0.9501|loss:0.08280075341463089
+Epoch:150|va_auc:0.6558|train_auc:0.9378|loss:4.968576831743121e-05
+Epoch:160|va_auc:0.6577|train_auc:0.9659|loss:0.08280075341463089
+Epoch:170|va_auc:0.6781|train_auc:0.9728|loss:0.08275559544563293
+Epoch:180|va_auc:0.6587|train_auc:0.9748|loss:0.08275559544563293
+Epoch:190|va_auc:0.6882|train_auc:0.9773|loss:0.08280075341463089
+Epoch:200|va_auc:0.6679|train_auc:0.9773|loss:1.1936477422714233
+Epoch:210|va_auc:0.6832|train_auc:0.9754|loss:2.710523949644994e-05
+Epoch:220|va_auc:0.6677|train_auc:0.9805|loss:2.710523949644994e-05
+Epoch:230|va_auc:0.6791|train_auc:0.9829|loss:4.968576831743121e-05
+Epoch:240|va_auc:0.6801|train_auc:0.9841|loss:4.968576831743121e-05
+Best AUC on val set: 0.6944046213526733 at epoch: 173
+
+Time: 1919.2241 seconds
+AUC on test set: 0.6730079131394919
+Iteration:17/30
+Seed:17
+167 1024
+1024 2
+Epoch:10|va_auc:0.5534|train_auc:0.6626|loss:0.16546432673931122
+Epoch:20|va_auc:0.5847|train_auc:0.7483|loss:2.709830368985422e-05
+Epoch:30|va_auc:0.6422|train_auc:0.8514|loss:0.08273440599441528
+Epoch:40|va_auc:0.6371|train_auc:0.8795|loss:1.1933422088623047
+Epoch:50|va_auc:0.6422|train_auc:0.9084|loss:0.08275702595710754
+Epoch:60|va_auc:0.6486|train_auc:0.9204|loss:1.1933196783065796
+Epoch:70|va_auc:0.6548|train_auc:0.9309|loss:2.709830368985422e-05
+Epoch:80|va_auc:0.6475|train_auc:0.9369|loss:0.08273440599441528
+Epoch:90|va_auc:0.6422|train_auc:0.9499|loss:2.709830368985422e-05
+Epoch:100|va_auc:0.6569|train_auc:0.9621|loss:4.971730595570989e-05
+Epoch:110|va_auc:0.6463|train_auc:0.9530|loss:2.709830368985422e-05
+Epoch:120|va_auc:0.6525|train_auc:0.9519|loss:2.709830368985422e-05
+Epoch:130|va_auc:0.6861|train_auc:0.9608|loss:4.971730595570989e-05
+Epoch:140|va_auc:0.6515|train_auc:0.9651|loss:4.971730595570989e-05
+Epoch:150|va_auc:0.6172|train_auc:0.9427|loss:1.19331955909729
+Epoch:160|va_auc:0.6089|train_auc:0.9719|loss:2.709830368985422e-05
+Epoch:170|va_auc:0.6829|train_auc:0.9795|loss:0.08275702595710754
+Epoch:180|va_auc:0.6204|train_auc:0.9718|loss:1.1933196783065796
+Epoch:190|va_auc:0.6465|train_auc:0.9798|loss:4.971730595570989e-05
+Epoch:200|va_auc:0.6120|train_auc:0.9721|loss:7.233631185954437e-05
+Epoch:210|va_auc:0.6130|train_auc:0.9734|loss:2.709830368985422e-05
+Epoch:220|va_auc:0.6265|train_auc:0.9658|loss:0.08275701850652695
+Epoch:230|va_auc:0.6465|train_auc:0.9799|loss:4.971730595570989e-05
+Best AUC on val set: 0.6879501028806585 at epoch: 132
+
+Time: 1823.4192 seconds
+AUC on test set: 0.6346881224681633
+Iteration:18/30
+Seed:18
+167 1024
+1024 2
+Epoch:10|va_auc:0.5650|train_auc:0.6500|loss:0.16539937257766724
+Epoch:20|va_auc:0.6279|train_auc:0.7748|loss:0.42852693796157837
+Epoch:30|va_auc:0.6527|train_auc:0.8328|loss:0.16539935767650604
+Epoch:40|va_auc:0.6661|train_auc:0.8703|loss:2.7091364245279692e-05
+Epoch:50|va_auc:0.6584|train_auc:0.8981|loss:0.08273588865995407
+Epoch:60|va_auc:0.6251|train_auc:0.8819|loss:2.7091364245279692e-05
+Epoch:70|va_auc:0.6454|train_auc:0.9064|loss:4.974894909537397e-05
+Epoch:80|va_auc:0.6525|train_auc:0.9218|loss:2.7091364245279692e-05
+Epoch:90|va_auc:0.6643|train_auc:0.9429|loss:1.1930367946624756
+Epoch:100|va_auc:0.6574|train_auc:0.9378|loss:4.974894909537397e-05
+Epoch:110|va_auc:0.6833|train_auc:0.9429|loss:2.7091364245279692e-05
+Epoch:120|va_auc:0.6551|train_auc:0.9597|loss:2.7091364245279692e-05
+Epoch:130|va_auc:0.6204|train_auc:0.9475|loss:7.240652485052124e-05
+Epoch:140|va_auc:0.6407|train_auc:0.9668|loss:0.08275853842496872
+Epoch:150|va_auc:0.6561|train_auc:0.9659|loss:2.7091364245279692e-05
+Epoch:160|va_auc:0.6417|train_auc:0.9630|loss:0.08273588865995407
+Epoch:170|va_auc:0.6401|train_auc:0.9456|loss:2.7091364245279692e-05
+Epoch:180|va_auc:0.6344|train_auc:0.9456|loss:0.16539937257766724
+Epoch:190|va_auc:0.6478|train_auc:0.9474|loss:4.974894909537397e-05
+Epoch:200|va_auc:0.6360|train_auc:0.9566|loss:2.7091364245279692e-05
+Epoch:210|va_auc:0.6704|train_auc:0.9690|loss:2.7091364245279692e-05
+Epoch:220|va_auc:0.6622|train_auc:0.9509|loss:4.974894909537397e-05
+Epoch:230|va_auc:0.6460|train_auc:0.9736|loss:0.08271323144435883
+Best AUC on val set: 0.7091231137283769 at epoch: 161
+
+Time: 1861.9736 seconds
+AUC on test set: 0.6947302904564315
+Iteration:19/30
+Seed:19
+167 1024
+1024 2
+Epoch:10|va_auc:0.6091|train_auc:0.6877|loss:0.1649811714887619
+Epoch:20|va_auc:0.6402|train_auc:0.7909|loss:0.3298429548740387
+Epoch:30|va_auc:0.6342|train_auc:0.8081|loss:1.189664602279663
+Epoch:40|va_auc:0.6289|train_auc:0.8372|loss:0.16495808959007263
+Epoch:50|va_auc:0.6465|train_auc:0.9074|loss:0.5173018574714661
+Epoch:60|va_auc:0.6532|train_auc:0.9234|loss:5.010375753045082e-05
+Epoch:70|va_auc:0.6417|train_auc:0.9148|loss:0.08248099684715271
+Epoch:80|va_auc:0.6597|train_auc:0.9174|loss:1.1897108554840088
+Epoch:90|va_auc:0.6883|train_auc:0.9434|loss:5.010375753045082e-05
+Epoch:100|va_auc:0.6421|train_auc:0.9254|loss:0.5173249244689941
+Epoch:110|va_auc:0.6507|train_auc:0.9591|loss:5.010375753045082e-05
+Epoch:120|va_auc:0.6551|train_auc:0.9572|loss:0.08252718299627304
+Epoch:130|va_auc:0.6590|train_auc:0.9642|loss:2.7015305022359826e-05
+Epoch:140|va_auc:0.6488|train_auc:0.9639|loss:5.010375753045082e-05
+Epoch:150|va_auc:0.6488|train_auc:0.9701|loss:2.7015305022359826e-05
+Epoch:160|va_auc:0.6507|train_auc:0.9777|loss:0.1649811714887619
+Epoch:170|va_auc:0.6379|train_auc:0.9700|loss:2.7015305022359826e-05
+Epoch:180|va_auc:0.6342|train_auc:0.9504|loss:0.08248099684715271
+Epoch:190|va_auc:0.6436|train_auc:0.9741|loss:2.7015305022359826e-05
+Epoch:200|va_auc:0.6467|train_auc:0.9843|loss:2.7015305022359826e-05
+Epoch:210|va_auc:0.6511|train_auc:0.9841|loss:5.010375753045082e-05
+Epoch:220|va_auc:0.6452|train_auc:0.9800|loss:2.7015305022359826e-05
+Epoch:230|va_auc:0.6425|train_auc:0.9847|loss:5.010375753045082e-05
+Best AUC on val set: 0.688304634695848 at epoch: 89
+
+Time: 1826.7836 seconds
+AUC on test set: 0.6745920242083648
+Iteration:20/30
+Seed:20
+167 1024
+1024 2
+Epoch:10|va_auc:0.5555|train_auc:0.6826|loss:1.2799592018127441
+Epoch:20|va_auc:0.6731|train_auc:0.7975|loss:0.08303369581699371
+Epoch:30|va_auc:0.6389|train_auc:0.8250|loss:0.5042041540145874
+Epoch:40|va_auc:0.5947|train_auc:0.8722|loss:0.5871884822845459
+Epoch:50|va_auc:0.6176|train_auc:0.9147|loss:2.71818080364028e-05
+Epoch:60|va_auc:0.6351|train_auc:0.9127|loss:0.4212641417980194
+Epoch:70|va_auc:0.6673|train_auc:0.9403|loss:0.1659737080335617
+Epoch:80|va_auc:0.6248|train_auc:0.9381|loss:2.71818080364028e-05
+Epoch:90|va_auc:0.6506|train_auc:0.9552|loss:6.242919445037842
+Epoch:100|va_auc:0.6524|train_auc:0.9464|loss:0.16595155000686646
+Epoch:110|va_auc:0.6080|train_auc:0.9328|loss:0.16599588096141815
+Epoch:120|va_auc:0.6164|train_auc:0.9472|loss:0.08298936486244202
+Epoch:130|va_auc:0.6219|train_auc:0.9590|loss:7.150906458264217e-05
+Epoch:140|va_auc:0.6269|train_auc:0.9621|loss:2.71818080364028e-05
+Epoch:150|va_auc:0.6060|train_auc:0.9552|loss:4.934543903800659e-05
+Epoch:160|va_auc:0.6198|train_auc:0.9761|loss:0.42124196887016296
+Epoch:170|va_auc:0.6670|train_auc:0.9745|loss:4.934543903800659e-05
+Epoch:180|va_auc:0.6640|train_auc:0.9790|loss:2.71818080364028e-05
+Epoch:190|va_auc:0.6371|train_auc:0.9777|loss:9.367269376525655e-05
+Epoch:200|va_auc:0.6070|train_auc:0.9799|loss:4.934543903800659e-05
+Epoch:210|va_auc:0.6112|train_auc:0.9710|loss:7.150906458264217e-05
+Epoch:220|va_auc:0.6286|train_auc:0.9757|loss:0.42128631472587585
+Epoch:230|va_auc:0.6277|train_auc:0.9750|loss:7.150906458264217e-05
+Best AUC on val set: 0.6854069638500776 at epoch: 24
+
+Time: 1853.3342 seconds
+AUC on test set: 0.663585629577956
+Iteration:21/30
+Seed:21
+167 1024
+1024 2
+Epoch:10|va_auc:0.6206|train_auc:0.6883|loss:0.2496831715106964
+Epoch:20|va_auc:0.6178|train_auc:0.7722|loss:0.5812124609947205
+Epoch:30|va_auc:0.6376|train_auc:0.8215|loss:1.2006971836090088
+Epoch:40|va_auc:0.6878|train_auc:0.8905|loss:0.16646455228328705
+Epoch:50|va_auc:0.6454|train_auc:0.8928|loss:1.6986420154571533
+Epoch:60|va_auc:0.6672|train_auc:0.9111|loss:0.16646455228328705
+Epoch:70|va_auc:0.6662|train_auc:0.9265|loss:0.41475340723991394
+Epoch:80|va_auc:0.6860|train_auc:0.9246|loss:7.070916763041168e-05
+Epoch:90|va_auc:0.6355|train_auc:0.9087|loss:1.2006970643997192
+Epoch:100|va_auc:0.6441|train_auc:0.9476|loss:4.8987498303176835e-05
+Epoch:110|va_auc:0.6414|train_auc:0.9391|loss:2.726583079493139e-05
+Epoch:120|va_auc:0.6771|train_auc:0.9362|loss:2.726583079493139e-05
+Epoch:130|va_auc:0.6710|train_auc:0.9644|loss:4.8987498303176835e-05
+Epoch:140|va_auc:0.6622|train_auc:0.9663|loss:2.726583079493139e-05
+Epoch:150|va_auc:0.6762|train_auc:0.9669|loss:0.08328934758901596
+Epoch:160|va_auc:0.6653|train_auc:0.9679|loss:0.41477513313293457
+Epoch:170|va_auc:0.6920|train_auc:0.9780|loss:1.2007622718811035
+Epoch:180|va_auc:0.6960|train_auc:0.9769|loss:7.070916763041168e-05
+Epoch:190|va_auc:0.6959|train_auc:0.9739|loss:4.8987498303176835e-05
+Epoch:200|va_auc:0.6871|train_auc:0.9606|loss:0.16646455228328705
+Epoch:210|va_auc:0.6533|train_auc:0.9800|loss:0.08326762169599533
+Epoch:220|va_auc:0.6871|train_auc:0.9759|loss:4.8987498303176835e-05
+Epoch:230|va_auc:0.6593|train_auc:0.9705|loss:4.8987498303176835e-05
+Best AUC on val set: 0.710843373493976 at epoch: 192
+
+Time: 1877.2787 seconds
+AUC on test set: 0.7181090671162896
+Iteration:22/30
+Seed:22
+167 1024
+1024 2
+Epoch:10|va_auc:0.5948|train_auc:0.6820|loss:1.441441535949707
+Epoch:20|va_auc:0.6113|train_auc:0.7776|loss:0.16544172167778015
+Epoch:30|va_auc:0.6443|train_auc:0.8199|loss:0.08273440599441528
+Epoch:40|va_auc:0.6711|train_auc:0.8693|loss:6.17356014251709
+Epoch:50|va_auc:0.6608|train_auc:0.8954|loss:4.971730595570989e-05
+Epoch:60|va_auc:0.6866|train_auc:0.8985|loss:7.233631185954437e-05
+Epoch:70|va_auc:0.7031|train_auc:0.9273|loss:0.08273441344499588
+Epoch:80|va_auc:0.6732|train_auc:0.9125|loss:4.971730595570989e-05
+Epoch:90|va_auc:0.6588|train_auc:0.9356|loss:2.709830368985422e-05
+Epoch:100|va_auc:0.6505|train_auc:0.9306|loss:2.709830368985422e-05
+Epoch:110|va_auc:0.6526|train_auc:0.9577|loss:0.08273441344499588
+Epoch:120|va_auc:0.6330|train_auc:0.9561|loss:2.709830368985422e-05
+Epoch:130|va_auc:0.6598|train_auc:0.9738|loss:0.08275702595710754
+Epoch:140|va_auc:0.6227|train_auc:0.9464|loss:1.1933422088623047
+Epoch:150|va_auc:0.6165|train_auc:0.9381|loss:0.08273440599441528
+Epoch:160|va_auc:0.6278|train_auc:0.9694|loss:4.971730595570989e-05
+Epoch:170|va_auc:0.6216|train_auc:0.9681|loss:7.233631185954437e-05
+Epoch:180|va_auc:0.6680|train_auc:0.9785|loss:0.4279367923736572
+Epoch:190|va_auc:0.6423|train_auc:0.9707|loss:7.233631185954437e-05
+Epoch:200|va_auc:0.6711|train_auc:0.9779|loss:4.971730595570989e-05
+Epoch:210|va_auc:0.6495|train_auc:0.9796|loss:0.4279594123363495
+Epoch:220|va_auc:0.6938|train_auc:0.9814|loss:2.709830368985422e-05
+Epoch:230|va_auc:0.6505|train_auc:0.9717|loss:4.971730595570989e-05
+Best AUC on val set: 0.7113402061855669 at epoch: 67
+
+Time: 1855.6710 seconds
+AUC on test set: 0.6745257452574527
+Iteration:23/30
+Seed:23
+167 1024
+1024 2
+Epoch:10|va_auc:0.6305|train_auc:0.6958|loss:0.6720813512802124
+Epoch:20|va_auc:0.6763|train_auc:0.7776|loss:0.08292651921510696
+Epoch:30|va_auc:0.6377|train_auc:0.7886|loss:0.08290420472621918
+Epoch:40|va_auc:0.6406|train_auc:0.8439|loss:2.7153915652888827e-05
+Epoch:50|va_auc:0.6514|train_auc:0.8839|loss:0.16580358147621155
+Epoch:60|va_auc:0.6822|train_auc:0.8962|loss:7.178171654231846e-05
+Epoch:70|va_auc:0.6563|train_auc:0.9233|loss:0.42347249388694763
+Epoch:80|va_auc:0.6822|train_auc:0.9237|loss:4.946781700709835e-05
+Epoch:90|va_auc:0.6751|train_auc:0.9541|loss:2.7153915652888827e-05
+Epoch:100|va_auc:0.6741|train_auc:0.9528|loss:4.946781700709835e-05
+Epoch:110|va_auc:0.6999|train_auc:0.9480|loss:0.08292651921510696
+Epoch:120|va_auc:0.7118|train_auc:0.9597|loss:0.42345020174980164
+Epoch:130|va_auc:0.6999|train_auc:0.9596|loss:1.1958132982254028
+Epoch:140|va_auc:0.6663|train_auc:0.9411|loss:2.7153915652888827e-05
+Epoch:150|va_auc:0.6940|train_auc:0.9678|loss:7.178172381827608e-05
+Epoch:160|va_auc:0.6464|train_auc:0.9656|loss:2.7153915652888827e-05
+Epoch:170|va_auc:0.6821|train_auc:0.9673|loss:2.7153915652888827e-05
+Epoch:180|va_auc:0.6692|train_auc:0.9709|loss:1.1957687139511108
+Epoch:190|va_auc:0.6801|train_auc:0.9738|loss:0.08292651921510696
+Epoch:200|va_auc:0.6672|train_auc:0.9713|loss:0.42347249388694763
+Epoch:210|va_auc:0.6554|train_auc:0.9708|loss:0.42345020174980164
+Epoch:220|va_auc:0.6692|train_auc:0.9764|loss:4.946781700709835e-05
+Epoch:230|va_auc:0.6801|train_auc:0.9771|loss:2.7153915652888827e-05
+Best AUC on val set: 0.7177280550774526 at epoch: 111
+
+Time: 1840.9376 seconds
+AUC on test set: 0.6566194747649412
+Iteration:24/30
+Seed:24
+167 1024
+1024 2
+Epoch:10|va_auc:0.5996|train_auc:0.6640|loss:0.679619312286377
+Epoch:20|va_auc:0.6325|train_auc:0.7671|loss:0.9464147686958313
+Epoch:30|va_auc:0.6425|train_auc:0.8490|loss:0.1651686429977417
+Epoch:40|va_auc:0.6286|train_auc:0.8562|loss:0.16514575481414795
+Epoch:50|va_auc:0.6600|train_auc:0.9004|loss:9.572310955263674e-05
+Epoch:60|va_auc:0.6058|train_auc:0.8476|loss:0.08260928839445114
+Epoch:70|va_auc:0.6674|train_auc:0.9276|loss:1.2737441062927246
+Epoch:80|va_auc:0.6465|train_auc:0.9408|loss:0.4319412410259247
+Epoch:90|va_auc:0.6496|train_auc:0.9437|loss:1.6230989694595337
+Epoch:100|va_auc:0.6820|train_auc:0.9466|loss:0.08258640021085739
+Epoch:110|va_auc:0.6781|train_auc:0.9647|loss:2.704982580326032e-05
+Epoch:120|va_auc:0.6494|train_auc:0.9444|loss:0.08258640021085739
+Epoch:130|va_auc:0.6419|train_auc:0.9606|loss:0.4319641590118408
+Epoch:140|va_auc:0.6429|train_auc:0.9531|loss:7.283201557584107e-05
+Epoch:150|va_auc:0.6797|train_auc:0.9648|loss:4.9940921599045396e-05
+Epoch:160|va_auc:0.6537|train_auc:0.9705|loss:2.704982580326032e-05
+Epoch:170|va_auc:0.6567|train_auc:0.9668|loss:2.382342576980591
+Epoch:180|va_auc:0.6620|train_auc:0.9766|loss:0.08260928839445114
+Epoch:190|va_auc:0.6515|train_auc:0.9782|loss:4.9940921599045396e-05
+Epoch:200|va_auc:0.6410|train_auc:0.9776|loss:7.283201557584107e-05
+Epoch:210|va_auc:0.6589|train_auc:0.9761|loss:0.08258640021085739
+Epoch:220|va_auc:0.6422|train_auc:0.9749|loss:4.9940921599045396e-05
+Epoch:230|va_auc:0.6411|train_auc:0.9812|loss:0.08258640021085739
+Best AUC on val set: 0.6957743434561763 at epoch: 98
+
+Time: 1837.6642 seconds
+AUC on test set: 0.6274546709329318
+Iteration:25/30
+Seed:25
+167 1024
+1024 2
+Epoch:10|va_auc:0.6005|train_auc:0.6922|loss:0.08313881605863571
+Epoch:20|va_auc:0.6366|train_auc:0.7810|loss:0.16625040769577026
+Epoch:30|va_auc:0.6195|train_auc:0.8278|loss:1.6996694803237915
+Epoch:40|va_auc:0.6276|train_auc:0.8455|loss:0.08316072076559067
+Epoch:50|va_auc:0.6648|train_auc:0.8918|loss:0.08318262547254562
+Epoch:60|va_auc:0.6728|train_auc:0.9082|loss:0.08318262547254562
+Epoch:70|va_auc:0.6426|train_auc:0.8963|loss:0.4174324572086334
+Epoch:80|va_auc:0.6718|train_auc:0.9374|loss:0.4174982011318207
+Epoch:90|va_auc:0.6386|train_auc:0.8980|loss:2.7230760679231025e-05
+Epoch:100|va_auc:0.6396|train_auc:0.9185|loss:4.913498560199514e-05
+Epoch:110|va_auc:0.6457|train_auc:0.9290|loss:2.7230760679231025e-05
+Epoch:120|va_auc:0.6637|train_auc:0.9575|loss:2.7230760679231025e-05
+Epoch:130|va_auc:0.6246|train_auc:0.9234|loss:4.913498560199514e-05
+Epoch:140|va_auc:0.6738|train_auc:0.9704|loss:4.913498560199514e-05
+Epoch:150|va_auc:0.6638|train_auc:0.9677|loss:4.913498560199514e-05
+Epoch:160|va_auc:0.6637|train_auc:0.9660|loss:4.913498923997395e-05
+Epoch:170|va_auc:0.6557|train_auc:0.9697|loss:2.7230760679231025e-05
+Epoch:180|va_auc:0.6929|train_auc:0.9747|loss:0.41745445132255554
+Epoch:190|va_auc:0.6677|train_auc:0.9530|loss:2.7230760679231025e-05
+Epoch:200|va_auc:0.6838|train_auc:0.9694|loss:4.913498923997395e-05
+Epoch:210|va_auc:0.6788|train_auc:0.9775|loss:1.1991745233535767
+Epoch:220|va_auc:0.6206|train_auc:0.9731|loss:7.103921234374866e-05
+Epoch:230|va_auc:0.6567|train_auc:0.9659|loss:4.913498923997395e-05
+Best AUC on val set: 0.7039138517999856 at epoch: 85
+
+Time: 1854.6773 seconds
+AUC on test set: 0.6624689312344656
+Iteration:26/30
+Seed:26
+167 1024
+1024 2
+Epoch:10|va_auc:0.5650|train_auc:0.6553|loss:6.497544765472412
+Epoch:20|va_auc:0.6395|train_auc:0.7863|loss:1.2698500156402588
+Epoch:30|va_auc:0.6620|train_auc:0.8330|loss:0.08233391493558884
+Epoch:40|va_auc:0.6447|train_auc:0.8677|loss:5.033619163441472e-05
+Epoch:50|va_auc:0.6726|train_auc:0.8940|loss:2.696712726901751e-05
+Epoch:60|va_auc:0.6659|train_auc:0.8840|loss:5.033619163441472e-05
+Epoch:70|va_auc:0.6493|train_auc:0.9133|loss:0.08233391493558884
+Epoch:80|va_auc:0.6447|train_auc:0.9343|loss:0.08233391493558884
+Epoch:90|va_auc:0.6691|train_auc:0.9388|loss:5.033619163441472e-05
+Epoch:100|va_auc:0.6581|train_auc:0.8995|loss:0.08233391493558884
+Epoch:110|va_auc:0.6525|train_auc:0.9025|loss:0.08233391493558884
+Epoch:120|va_auc:0.6888|train_auc:0.9576|loss:0.43903014063835144
+Epoch:130|va_auc:0.6617|train_auc:0.9612|loss:5.033619163441472e-05
+Epoch:140|va_auc:0.6543|train_auc:0.9646|loss:5.033619163441472e-05
+Epoch:150|va_auc:0.6670|train_auc:0.9705|loss:0.43898341059684753
+Epoch:160|va_auc:0.6754|train_auc:0.9766|loss:2.696712726901751e-05
+Epoch:170|va_auc:0.6606|train_auc:0.9798|loss:0.08235727995634079
+Epoch:180|va_auc:0.6800|train_auc:0.9809|loss:0.08233391493558884
+Epoch:190|va_auc:0.6670|train_auc:0.9806|loss:5.033619163441472e-05
+Epoch:200|va_auc:0.6617|train_auc:0.9778|loss:0.08233391493558884
+Epoch:210|va_auc:0.6486|train_auc:0.9509|loss:0.43898341059684753
+Epoch:220|va_auc:0.6758|train_auc:0.9783|loss:2.696712726901751e-05
+Epoch:230|va_auc:0.6874|train_auc:0.9809|loss:2.696712726901751e-05
+Best AUC on val set: 0.70897259344027 at epoch: 112
+
+Time: 1862.2986 seconds
+AUC on test set: 0.6711340206185566
+Iteration:27/30
+Seed:27
+167 1024
+1024 2
+Epoch:10|va_auc:0.5635|train_auc:0.6772|loss:1.3852112293243408
+Epoch:20|va_auc:0.6132|train_auc:0.7822|loss:0.08250205963850021
+Epoch:30|va_auc:0.6413|train_auc:0.8208|loss:0.9509747624397278
+Epoch:40|va_auc:0.6232|train_auc:0.8547|loss:0.4342864155769348
+Epoch:50|va_auc:0.6372|train_auc:0.8714|loss:1.1899683475494385
+Epoch:60|va_auc:0.6731|train_auc:0.8983|loss:2.702220263017807e-05
+Epoch:70|va_auc:0.6808|train_auc:0.9186|loss:0.08250205963850021
+Epoch:80|va_auc:0.6736|train_auc:0.9289|loss:0.08257120847702026
+Epoch:90|va_auc:0.6747|train_auc:0.9242|loss:5.007098297937773e-05
+Epoch:100|va_auc:0.6653|train_auc:0.9355|loss:0.08250205963850021
+Epoch:110|va_auc:0.6316|train_auc:0.9093|loss:5.007098297937773e-05
+Epoch:120|va_auc:0.6730|train_auc:0.9615|loss:7.311975787160918e-05
+Epoch:130|va_auc:0.6782|train_auc:0.9661|loss:5.007097570342012e-05
+Epoch:140|va_auc:0.6534|train_auc:0.9495|loss:5.007097570342012e-05
+Epoch:150|va_auc:0.6418|train_auc:0.9747|loss:0.08250205963850021
+Epoch:160|va_auc:0.6808|train_auc:0.9596|loss:2.702220263017807e-05
+Epoch:170|va_auc:0.6736|train_auc:0.9635|loss:0.08250205963850021
+Epoch:180|va_auc:0.6926|train_auc:0.9755|loss:5.007097570342012e-05
+Epoch:190|va_auc:0.6854|train_auc:0.9823|loss:2.702220263017807e-05
+Epoch:200|va_auc:0.6544|train_auc:0.9517|loss:2.3799099922180176
+Epoch:210|va_auc:0.6771|train_auc:0.9818|loss:2.702220263017807e-05
+Epoch:220|va_auc:0.6776|train_auc:0.9800|loss:0.08250205963850021
+Epoch:230|va_auc:0.6715|train_auc:0.9733|loss:5.007098297937773e-05
+Best AUC on val set: 0.7020659124446631 at epoch: 87
+
+Time: 1835.0394 seconds
+AUC on test set: 0.6662339696962915
+Iteration:28/30
+Seed:28
+167 1024
+1024 2
+Epoch:10|va_auc:0.5776|train_auc:0.6814|loss:1.2796305418014526
+Epoch:20|va_auc:0.6523|train_auc:0.8068|loss:1.2796305418014526
+Epoch:30|va_auc:0.6529|train_auc:0.8430|loss:0.08301246166229248
+Epoch:40|va_auc:0.6652|train_auc:0.8913|loss:4.9375888920621946e-05
+Epoch:50|va_auc:0.6433|train_auc:0.8831|loss:0.08299025893211365
+Epoch:60|va_auc:0.6951|train_auc:0.9147|loss:2.71748322120402e-05
+Epoch:70|va_auc:0.7003|train_auc:0.9296|loss:0.08296806365251541
+Epoch:80|va_auc:0.6860|train_auc:0.9458|loss:0.16590894758701324
+Epoch:90|va_auc:0.6687|train_auc:0.9450|loss:2.71748322120402e-05
+Epoch:100|va_auc:0.6705|train_auc:0.9470|loss:4.9375888920621946e-05
+Epoch:110|va_auc:0.6764|train_auc:0.9566|loss:4.9375888920621946e-05
+Epoch:120|va_auc:0.6618|train_auc:0.9586|loss:0.42179185152053833
+Epoch:130|va_auc:0.6460|train_auc:0.9641|loss:0.08299025893211365
+Epoch:140|va_auc:0.6599|train_auc:0.9427|loss:0.08299025893211365
+Epoch:150|va_auc:0.7018|train_auc:0.9706|loss:0.5047549605369568
+Epoch:160|va_auc:0.7029|train_auc:0.9559|loss:0.08296806365251541
+Epoch:170|va_auc:0.7166|train_auc:0.9711|loss:4.9375888920621946e-05
+Epoch:180|va_auc:0.6979|train_auc:0.9733|loss:7.157694199122488e-05
+Epoch:190|va_auc:0.6860|train_auc:0.9814|loss:0.42181405425071716
+Epoch:200|va_auc:0.6656|train_auc:0.9790|loss:4.9375888920621946e-05
+Epoch:210|va_auc:0.6755|train_auc:0.9660|loss:4.9375888920621946e-05
+Epoch:220|va_auc:0.6570|train_auc:0.9537|loss:4.9375888920621946e-05
+Epoch:230|va_auc:0.6952|train_auc:0.9792|loss:4.9375888920621946e-05
+Epoch:240|va_auc:0.6892|train_auc:0.9684|loss:4.9375888920621946e-05
+Epoch:250|va_auc:0.6961|train_auc:0.9785|loss:4.9375888920621946e-05
+Epoch:260|va_auc:0.7001|train_auc:0.9704|loss:0.08296806365251541
+Epoch:270|va_auc:0.6735|train_auc:0.9732|loss:4.9375888920621946e-05
+Best AUC on val set: 0.7322049946739259 at epoch: 242
+
+Time: 2191.8165 seconds
+AUC on test set: 0.6747834650074975
+Iteration:29/30
+Seed:29
+167 1024
+1024 2
+Epoch:10|va_auc:0.5874|train_auc:0.7035|loss:1.4462770223617554
+Epoch:20|va_auc:0.6648|train_auc:0.8227|loss:0.08305492997169495
+Epoch:30|va_auc:0.6437|train_auc:0.8564|loss:0.5036991238594055
+Epoch:40|va_auc:0.6587|train_auc:0.8758|loss:4.9315083742840216e-05
+Epoch:50|va_auc:0.6657|train_auc:0.8862|loss:0.08303280919790268
+Epoch:60|va_auc:0.6447|train_auc:0.9059|loss:0.4206934869289398
+Epoch:70|va_auc:0.6617|train_auc:0.9202|loss:6.0691046714782715
+Epoch:80|va_auc:0.6477|train_auc:0.9463|loss:0.08301068842411041
+Epoch:90|va_auc:0.6758|train_auc:0.9309|loss:2.7188792955712415e-05
+Epoch:100|va_auc:0.6457|train_auc:0.9547|loss:4.931509101879783e-05
+Epoch:110|va_auc:0.6577|train_auc:0.9143|loss:0.4207156300544739
+Epoch:120|va_auc:0.6225|train_auc:0.9281|loss:0.16599416732788086
+Epoch:130|va_auc:0.6657|train_auc:0.9684|loss:2.7188792955712415e-05
+Epoch:140|va_auc:0.6637|train_auc:0.9715|loss:0.08301068097352982
+Epoch:150|va_auc:0.6738|train_auc:0.9734|loss:6.15204381942749
+Epoch:160|va_auc:0.6758|train_auc:0.9498|loss:1.1973265409469604
+Epoch:170|va_auc:0.6577|train_auc:0.9583|loss:2.7188792955712415e-05
+Epoch:180|va_auc:0.6416|train_auc:0.9618|loss:7.144138362491503e-05
+Epoch:190|va_auc:0.6989|train_auc:0.9823|loss:2.7188792955712415e-05
+Epoch:200|va_auc:0.6627|train_auc:0.9783|loss:0.08305492997169495
+Epoch:210|va_auc:0.6798|train_auc:0.9752|loss:2.7188792955712415e-05
+Epoch:220|va_auc:0.6728|train_auc:0.9830|loss:2.7188792955712415e-05
+Epoch:230|va_auc:0.6898|train_auc:0.9857|loss:4.9315083742840216e-05
+Best AUC on val set: 0.7169519762416399 at epoch: 162
+
+Time: 1856.0910 seconds
+AUC on test set: 0.6721313309908015
+Iteration:30/30
+Seed:30
+167 1024
+1024 2
+Epoch:10|va_auc:0.6104|train_auc:0.6742|loss:0.6662928462028503
+Epoch:20|va_auc:0.6088|train_auc:0.7742|loss:1.3657491207122803
+Epoch:30|va_auc:0.6572|train_auc:0.8500|loss:1.2826160192489624
+Epoch:40|va_auc:0.6415|train_auc:0.8901|loss:0.1662931889295578
+Epoch:50|va_auc:0.6404|train_auc:0.8879|loss:1.2825942039489746
+Epoch:60|va_auc:0.6471|train_auc:0.9168|loss:0.08316021412611008
+Epoch:70|va_auc:0.6279|train_auc:0.9336|loss:0.08318208903074265
+Epoch:80|va_auc:0.6052|train_auc:0.9088|loss:7.097284105839208e-05
+Epoch:90|va_auc:0.6135|train_auc:0.9341|loss:0.5000268816947937
+Epoch:100|va_auc:0.6275|train_auc:0.9336|loss:4.910530333290808e-05
+Epoch:110|va_auc:0.6408|train_auc:0.9369|loss:0.08316021412611008
+Epoch:120|va_auc:0.6415|train_auc:0.9574|loss:9.284036786993966e-05
+Epoch:130|va_auc:0.6242|train_auc:0.9554|loss:0.1662931889295578
+Epoch:140|va_auc:0.6505|train_auc:0.9745|loss:2.7237769245402887e-05
+Epoch:150|va_auc:0.6518|train_auc:0.9760|loss:9.284037514589727e-05
+Epoch:160|va_auc:0.6455|train_auc:0.9725|loss:0.08316021412611008
+Epoch:170|va_auc:0.6582|train_auc:0.9696|loss:4.910530333290808e-05
+Epoch:180|va_auc:0.6418|train_auc:0.9443|loss:4.910530333290808e-05
+Epoch:190|va_auc:0.6048|train_auc:0.9536|loss:0.08316021412611008
+Epoch:200|va_auc:0.6459|train_auc:0.9810|loss:0.08318208903074265
+Epoch:210|va_auc:0.6232|train_auc:0.9574|loss:2.7237769245402887e-05
+Epoch:220|va_auc:0.6065|train_auc:0.9758|loss:4.910530333290808e-05
+Epoch:230|va_auc:0.6085|train_auc:0.9774|loss:4.910530333290808e-05
+Best AUC on val set: 0.6878224324936456 at epoch: 142
+
+Time: 1831.1851 seconds
+AUC on test set: 0.6419534412955465
+1893.8535670280457
+SNNet(
+  (layers): ModuleList(
+    (0): Linear(in_features=167, out_features=1024, bias=True)
+    (1): Leaky()
+    (2): Linear(in_features=1024, out_features=2, bias=True)
+    (3): Leaky()
+  )
+)
+-- best epoch: 0 --best auc: 0
+Accuracy:  0.837 ± 0.015
+AUC ROC: 0.664 ± 0.021
+Sensitivity: 0.412 ± 0.045
+Specificity: 0.916 ± 0.018
+results\tox21\SR-ARE_SNN_beta-0.95_maccs_167_l11024_t10_e1000_b16_lr0.0001_count_loss_Adam_wd0_bias.csv
