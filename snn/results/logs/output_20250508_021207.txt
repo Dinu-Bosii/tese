@@ -1,0 +1,50 @@
+29 - 0.6785714285714286 in metric  5
+Hepatobiliary disorders 1427 0.52
+Metabolism and nutrition disorders 1427 0.7
+Product issues 1427 0.02
+Eye disorders 1427 0.61
+Investigations 1427 0.81
+Musculoskeletal and connective tissue disorders 1427 0.7
+Gastrointestinal disorders 1427 0.91
+Social circumstances 1427 0.18
+Immune system disorders 1427 0.72
+Reproductive system and breast disorders 1427 0.51
+Neoplasms benign, malignant and unspecified (incl cysts and polyps) 1427 0.26
+General disorders and administration site conditions 1427 0.91
+Endocrine disorders 1427 0.23
+Surgical and medical procedures 1427 0.15
+Vascular disorders 1427 0.78
+Blood and lymphatic system disorders 1427 0.62
+Skin and subcutaneous tissue disorders 1427 0.92
+Congenital, familial and genetic disorders 1427 0.18
+Infections and infestations 1427 0.7
+Respiratory, thoracic and mediastinal disorders 1427 0.74
+Psychiatric disorders 1427 0.71
+Renal and urinary disorders 1427 0.64
+Pregnancy, puerperium and perinatal conditions 1427 0.09
+Ear and labyrinth disorders 1427 0.46
+Cardiac disorders 1427 0.69
+Nervous system disorders 1427 0.91
+Injury, poisoning and procedural complications 1427 0.66
+descriptor
+count_loss
+CSNN
+cpu
+-----Configuration-----
+{'num_hidden': 512, 'num_hidden_l2': 256, 'num_steps': 10, 'spike_grad': None, 'slope': None, 'beta': 0.95, 'encoding': 'rate', 'bias': True, 'out_num': 2, 'num_conv': 1, 'stride': [1], 'pool_size': 2, 'conv_kernel': 3, 'conv_stride': 1, 'conv_groups': 1, 'input_size': 210, '2d': False, 'time_steps': 10}
+{'num_epochs': 1000, 'batch_size': 16, 'device': device(type='cpu'), 'loss_type': 'count_loss', 'loss_fn': None, 'dtype': torch.float32, 'num_steps': 10, 'val_net': None, 'prediction_fn': <function prediction_spk_rate at 0x0000020CE06AF910>}
+CSNNet(
+  (flatten): Flatten(start_dim=1, end_dim=-1)
+  (layers): ModuleList(
+    (0): Conv1d(1, 8, kernel_size=(3,), stride=(1,), padding=(1,))
+    (1): Leaky()
+    (2): Linear(in_features=840, out_features=2, bias=True)
+    (3): Leaky()
+  )
+  (fc_out): Linear(in_features=840, out_features=2, bias=True)
+  (lif_out): Leaky()
+)
+Accuracy:  nan ± nan
+AUC ROC: nan ± nan
+Sensitivity: nan ± nan
+Specificity: nan ± nan

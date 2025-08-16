@@ -9,16 +9,18 @@ import copy
 
 # Temporal Dynamics
 #num_steps = 10
-out_channels = [8, 8]
-in_channels = [1, out_channels[0]]
+#out_channels = [8, 8]
+
 groups = [1, 1]
 thresholds = torch.tensor([1.5, 1.0, 1.0], dtype=torch.float32)
-#learn_th = [True for _ in range(3)]
-learn_th = [False for _ in range(3)]
+learn_th = [True for _ in range(3)]
+#learn_th = [False for _ in range(3)]
 class CSNNet(nn.Module):
     def __init__(self, net_config):
 
         super().__init__()
+        self.out_channels = net_config['out_channels']
+        self.in_channels = [1, self.out_channels[0]]
         self.num_steps = net_config["num_steps"]
         self.pool_size = net_config["pool_size"]
         self.conv_kernel = net_config["conv_kernel"]
@@ -38,15 +40,15 @@ class CSNNet(nn.Module):
 
         for i in range(self.num_conv):
             if len(net_config["input_size"]) == 1:
-                conv_layer = nn.Conv1d(in_channels=in_channels[i], 
-                                   out_channels=out_channels[i], 
+                conv_layer = nn.Conv1d(in_channels=self.in_channels[i], 
+                                   out_channels=self.out_channels[i], 
                                    kernel_size=self.conv_kernel, 
                                    stride=self.conv_stride, 
                                    padding=1,
                                    bias=net_config['bias'])
             else:
-                conv_layer = nn.Conv2d(in_channels=in_channels[i], 
-                                   out_channels=out_channels[i], 
+                conv_layer = nn.Conv2d(in_channels=self.in_channels[i], 
+                                   out_channels=self.out_channels[i], 
                                    kernel_size=self.conv_kernel, 
                                    stride=self.conv_stride, 
                                    padding=1,

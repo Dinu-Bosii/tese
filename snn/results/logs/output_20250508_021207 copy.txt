@@ -1,0 +1,62 @@
+cnn descriptor
+-----Configuration-----
+
+-- best epoch: 773 --best auc: 0.7051741293532338
+
+-- best epoch: 745 --best auc: 0.7149193548387097
+
+-- best epoch: 623 --best auc: 0.704225352112676
+
+-- best epoch: 808 --best auc: 0.7118407960199005
+
+-- best epoch: 131 --best auc: 0.6677585864601945
+
+-- best epoch: 718 --best auc: 0.6681556482032955
+
+-- best epoch: 648 --best auc: 0.7404761904761904
+
+-- best epoch: 857 --best auc: 0.6699186991869919
+
+-- best epoch: 693 --best auc: 0.7144302772718072
+
+-- best epoch: 504 --best auc: 0.653134328358209
+
+-- best epoch: 410 --best auc: 0.7429850746268657
+
+-- best epoch: 965 --best auc: 0.6626794258373206
+
+-- best epoch: 156 --best auc: 0.6563190677114729
+
+-- best epoch: 678 --best auc: 0.6979352789358746
+
+-- best epoch: 991 --best auc: 0.6864035087719298
+
+-- best epoch: 62 --best auc: 0.6808426073131956
+
+-- best epoch: 707 --best auc: 0.6672647527910686
+
+-- best epoch: 363 --best auc: 0.656318407960199
+
+-- best epoch: 326 --best auc: 0.6436507936507936
+
+-- best epoch: 826 --best auc: 0.7373798076923077
+
+-- best epoch: 347 --best auc: 0.7402223545761365
+
+-- best epoch: 688 --best auc: 0.6811507936507935
+
+-- best epoch: 185 --best auc: 0.6404460518384569
+
+-- best epoch: 862 --best auc: 0.6999205087440381
+
+-- best epoch: 73 --best auc: 0.6779761904761904
+
+-- best epoch: 75 --best auc: 0.647952047952048
+
+-- best epoch: 269 --best auc: 0.7346774193548388
+
+-- best epoch: 847 --best auc: 0.7450271247739603
+
+-- best epoch: 567 --best auc: 0.7149889491661643
+
+-- best epoch: 931 --best auc: 0.6785714285714286

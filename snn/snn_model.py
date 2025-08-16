@@ -4,6 +4,7 @@ import snntorch as snn
 from snntorch.functional import ce_rate_loss, ce_temporal_loss, ce_count_loss
 from sklearn.metrics import roc_auc_score, accuracy_score
 from snntorch import spikegen
+import copy
 
 # NN Architecture
 class SNNet(nn.Module):
@@ -154,7 +155,7 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
         if auc_roc > best_auc_roc:
             best_auc_roc = auc_roc   
         
-        best_net_list.append(net.state_dict())
+        best_net_list.append(copy.deepcopy(net.state_dict()))
 
             #val_acc_hist.extend(accuracy)
         val_auc_hist.extend([auc_roc])
