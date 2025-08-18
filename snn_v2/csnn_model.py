@@ -33,6 +33,7 @@ class CSNNet(nn.Module):
             self.max_pool = F.max_pool1d
         else:
             self.max_pool = F.max_pool2d
+        print(len(net_config["input_size"]))
         # even -> Conv | odd -> lif
         self.layers = nn.ModuleList()
 
@@ -176,7 +177,7 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
     #print("Epoch:", end ='', flush=True)
     #patience = 30
     #stop_limit = 0
-    aux_net = copy.deepcopy(net)
+    #aux_net = copy.deepcopy(net)
     aux_auc = 0
     for epoch in range(num_epochs):
         net.train()
@@ -186,12 +187,14 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
             #print(data.size(), data.unsqueeze(1).size())
 
             data = data.to(device, non_blocking=True).unsqueeze(1)
-
+            #print("NaNs:", torch.isnan(data).any().item())
+            #print("Infs:", torch.isinf(data).any().item())
             targets = targets.to(device, non_blocking=True)
             #print(targets.size(), targets.unsqueeze(1).size())
 
             # forward pass
             spk_rec, mem_rec = net(data)
+
             #print(spk_rec, mem_rec)
             #print(mem_rec[:, 0, :])
             # Compute loss
@@ -205,14 +208,17 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
 
             # Store loss history for future plotting
             loss_hist.append(loss_val.item())
-        _, val_auc_roc = val_fn(net, device, val_loader, train_config)
+        val_acc, val_auc_roc = val_fn(net, device, val_loader, train_config)
+        #if (epoch + 1) % 10 == 0: 
+            #test_acc, test_auc_roc = val_fn(net, device, train_config['test_loader'], train_config)
+            #print(f"Epoch:{epoch + 1}|val_acc:{val_acc:.4f}|val_auc:{val_auc_roc:.4f}|test_acc:{test_acc:.4f}|test_auc:{test_auc_roc:.4f}|loss:{loss_val.item()}", flush=True)
         if (epoch + 1) % 10 == 0: 
             print(f"Epoch:{epoch + 1}|val_auc:{val_auc_roc:.4f}|loss:{loss_val.item()}", flush=True)
-
         if val_auc_roc > best_auc_roc:
             best_auc_roc = val_auc_roc
             best_epoch = epoch
             best_val_net = copy.deepcopy(net.state_dict())
+        best_net_list.append(copy.deepcopy(net.state_dict()))
 
 
     print("Best AUC on val set:", best_auc_roc, "at epoch:", best_epoch)

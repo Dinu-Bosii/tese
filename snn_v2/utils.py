@@ -14,6 +14,7 @@ import numpy as np
 from snn_model import SNNet, train_snn, val_snn, test_snn
 from csnn_model import CSNNet, train_csnn, val_csnn, test_csnn
 #from mordred import Calculator, descriptors
+from skfp.fingerprints import MordredFingerprint
 import selfies as sf
 
 
@@ -34,59 +35,34 @@ def load_dataset_df(filename):
     return df, targets
 
 
-def data_splitter(df, target_name, dataset, split, seed, data_config, dtype):
-    if split == 'random':
-        # Must be a torch dataset
-        generator = torch.Generator().manual_seed(int(seed))
-        train, val, test = random_split(dataset, [0.8, 0.1, 0.1], generator=generator)
+def smiles_to_feat(df: pd.DataFrame, repr_type: str, data_config, target_name, dtype):
+    if repr_type == "fp":
+        fp_array, target_array, feat_df = smile_to_fp(df, data_config=data_config, target_name=target_name)
+        feat_tensor = torch.tensor(fp_array, dtype=dtype)
 
-    elif split == 'scaffold':
-        smiles_list = df["smiles"].tolist()
-        labels = df[target_name].values
+        if data_config['dim_2']: 
+            feat_tensor = feat_tensor.view(-1, 32, 32)
 
-        Xs = np.zeros(len(smiles_list))
-        weights = np.zeros(len(smiles_list))
+    elif repr_type == "descriptor":
+        desc_array, target_array, feat_df = smiles_to_desc(df, data_config=data_config, target_name=target_name, missing_val=0)
+        feat_tensor = torch.tensor(desc_array, dtype=dtype)
 
-        # Create a DiskDataset
-        dataset = dc.data.DiskDataset.from_numpy(X=Xs, y=labels, w=weights, ids=smiles_list)
+    
+    target_tensor = torch.tensor(target_array, dtype=dtype).long()
 
-        scaffold_splitter = ScaffoldSplitter()
-        #by default is 0.8 0.1 0.1
-        #print("scaffold splitting..")
-        train, val,  test = scaffold_splitter.train_valid_test_split(dataset, seed=seed)
-
-        train_ids_df = pd.DataFrame({'smiles': train.ids, target_name: train.y})
-        val_ids_df = pd.DataFrame({'smiles': val.ids, target_name: val.y})
-        test_ids_df = pd.DataFrame({'smiles': test.ids, target_name: test.y})
-        #print(len(train_ids_df), len(val_ids_df), len(test_ids_df))
-        #print("featurizing..")
-        fp_train, target_train = smile_to_fp(df=train_ids_df, data_config=data_config, target_name=target_name)
-        fp_val, target_val = smile_to_fp(df=val_ids_df, data_config=data_config, target_name=target_name)
-        fp_test, target_test = smile_to_fp(df=test_ids_df, data_config=data_config, target_name=target_name)
-
-        fp_train_tensor = torch.tensor(fp_train, dtype=dtype)
-        target_train_tensor = torch.tensor(target_train, dtype=dtype).long()
-        fp_val_tensor = torch.tensor(fp_val, dtype=dtype)
-        target_val_tensor = torch.tensor(target_val, dtype=dtype).long()
-        fp_test_tensor = torch.tensor(fp_test, dtype=dtype)
-        target_test_tensor = torch.tensor(target_test, dtype=dtype).long()
+    return feat_tensor, target_tensor, feat_df
 
 
-        train = TensorDataset(fp_train_tensor, target_train_tensor)
-        val = TensorDataset(fp_val_tensor, target_val_tensor)
-        test = TensorDataset(fp_test_tensor, target_test_tensor)
-
-    return train, val, test
-
-
-def fp_generator(fp_type, fp_size=1024, radius=2):
+def fp_generator(fp_type, data_config, fp_size=1024):
     fp_type = fp_type.lower()
 
     if fp_type == 'morgan':
+        radius = data_config['radius']
         gen = GetMorganGenerator(radius=radius, fpSize=fp_size)
         def fn(mol, **kwargs):
             return gen.GetFingerprint(mol, **kwargs)
     if fp_type == 'count_morgan':
+        radius = data_config['radius']
         gen = GetMorganGenerator(radius=radius, fpSize=fp_size, countSimulation=True)
         def fn(mol, **kwargs):
             return gen.GetCountFingerprint(mol, **kwargs)
@@ -99,57 +75,23 @@ def fp_generator(fp_type, fp_size=1024, radius=2):
         def fn(mol, **kwargs):
             return MACCSkeys.GenMACCSKeys(mol, **kwargs)
 
-    elif fp_type == "pubchem": #TODO: this doesn't work and requires internet access
-        def pubchem_fp(smiles, **kwargs):
-            try:
-                compounds = pcp.get_compounds(smiles, 'smiles')
-                if not compounds:
-                    return None
-
-                pubchem_compound = compounds[0]
-            
-                fp = [int(bit) for bit in pubchem_compound.cactvs_fingerprint]
-            except Exception as e:
-                for compound in compounds:
-                    print(compound)
-            return None
-        
-        fn = pubchem_fp
-
-        """     
-        elif fp_type == 'mordred':
-        calc = Calculator(descriptors, ignore_3D=True)
-
-        def mordred_descriptors(mol, **kwargs):
-            try:
-                result = calc(mol)
-                if result.isnull.any():
-                    return None  # Handle cases with missing values
-                return list(result.values)
-            except Exception as e:
-                print(f"Error calculating Mordred descriptors: {e}")
-                return None
-
-        fn = mordred_descriptors """
-
     return fn
 
 
 def smile_to_fp(df, data_config, target_name):
-    radius = data_config['radius']
     mix = data_config['mix']
 
     fp1_type, fp1_size = data_config["fp_type"], data_config["num_bits"]
-    fp1_gen = fp_generator(fp1_type, fp_size=fp1_size, radius=radius)
+    fp1_gen = fp_generator(fp1_type, data_config, fp_size=fp1_size)
     array_size = fp1_size
 
     if mix:
         fp2_type, fp2_size = data_config["fp_type_2"], data_config['num_bits_2']
-        fp2_gen = fp_generator(fp2_type, fp_size=fp2_size, radius=radius)
+        fp2_gen = fp_generator(fp2_type, data_config, fp_size=fp2_size)
         array_size += fp2_size
 
     num_rows = len(df)
-
+    valid_smiles = []
     fp_array = np.zeros((num_rows, array_size))
     target_array = np.zeros((num_rows, 1))
 
@@ -160,55 +102,117 @@ def smile_to_fp(df, data_config, target_name):
         if mol is None:
             continue
 
-        # Additional checks may be required for Pubchem fp
         fingerprint = np.array(fp1_gen(mol))
         if mix:
             fingerprint_2 = np.array(fp2_gen(mol))
             fingerprint = np.concatenate([fingerprint, fingerprint_2])
 
-
         fp_array[valid_mols] = fingerprint
         target_array[valid_mols] = row[target_name]
         valid_mols += 1
+        valid_smiles.append(row['smiles'])
 
     target_array = target_array.ravel()
     fp_array = fp_array[0:valid_mols]
     target_array = target_array[0:valid_mols]
+    feat_df = pd.DataFrame({
+        'smiles': valid_smiles,
+        'fingerprint': list(fp_array),
+        target_name: target_array
+    })
+    return fp_array, target_array, feat_df
 
-    return fp_array, target_array
+
+def get_valid_mols(df):
+    indices = []
+    for i, smi in enumerate(df['smiles']):
+        mol = Chem.MolFromSmiles(smi)
+        if mol:
+            indices.append(i)
+    return indices
+
+
+def get_rdkit_desc(smiles, array_size, missing_val=0):
+    mol = Chem.MolFromSmiles(smiles)
+        
+    if mol is None:
+        return None
+
+    mol_desc = np.zeros(array_size)
+    for k, (nm, fn) in enumerate(Descriptors._descList):
+        if k == 42:
+            mol_desc[k] = missing_val
+            continue
+        try:
+            val = fn(mol)
+            if np.isnan(val):
+                #print(f"NaN in descriptor {nm} for molecule {row['smiles']}")
+                val = missing_val
+            elif np.isinf(val):
+                print(f"Inf in descriptor {nm} for molecule {smiles}")
+                val = missing_val
+        except Exception as e:
+            print(f"Error in descriptor {nm} for {smiles}: {e}")
+            val = missing_val
+        mol_desc[k] = val
+    return mol_desc
+
+
+def get_mordred_desc(smiles_list):
+    #mol_desc = np.zeros(array_size)
+    fp_mordred = MordredFingerprint(n_jobs=-1, batch_size=1, verbose=1)
+    X_mordred = fp_mordred.transform(smiles_list)
+    #mol_desc = X_mordred[0]
+    #mol_desc = X_mordred
+    return X_mordred
+
+
+def smiles_to_desc(df, data_config, target_name, missing_val=0):
+    valid_idx_mols = get_valid_mols(df)
+    valid_df = df.iloc[valid_idx_mols].reset_index(drop=True)
+    target_array = np.array(valid_df[target_name]).ravel()
+
+    if data_config['desc_type'] == 'RDKit':
+        num_rows = len(valid_df)
+        array_size = len(Descriptors._descList)
+        feat_array = np.zeros((num_rows, array_size))
+        print("feat_array shape:", feat_array.shape)
+        print("valid_df shape:", valid_df.shape)
+        for idx, row in valid_df.iterrows():
+            mol_desc = get_rdkit_desc(row['smiles'], array_size=array_size)
+            feat_array[idx]= mol_desc
+
+    elif data_config['desc_type'] == 'Mordred':
+        array_size = 1613
+        feat_array = get_mordred_desc(valid_df['smiles'])
+    
+    feat_df = pd.DataFrame({
+        'smiles': valid_df['smiles'],
+        'feature': list(feat_array),
+        target_name: target_array
+    })
+    return feat_array, target_array, feat_df 
+
+
 
 
 def smiles_to_descriptor(df, data_config, target_name, missing_val=0):
     num_rows = len(df)
-    array_size = len(Descriptors._descList)
+    if data_config['desc_type'] == 'RDKit':
+        array_size = len(Descriptors._descList)
+        get_desc = get_rdkit_desc()
+    elif data_config['desc_type'] == 'Mordred':
+        array_size = 1613
+        get_desc = get_mordred_desc
+    
     desc_array = np.zeros((num_rows, array_size))
     target_array = np.zeros((num_rows, 1))
 
     valid_mols = 0
     for idx, row in df.iterrows():
-        mol = Chem.MolFromSmiles(row['smiles'])
-        
-        if mol is None:
+        mol_desc = get_desc(row['smiles'], missing_val)
+        if mol_desc is None:
             continue
-
-        mol_desc = np.zeros(array_size)
-        for k, (nm, fn) in enumerate(Descriptors._descList):
-            if k == 42:
-                mol_desc[k] = missing_val
-                continue
-            try:
-                val = fn(mol)
-                if np.isnan(val):
-                    #print(f"NaN in descriptor {nm} for molecule {row['smiles']}")
-                    val = missing_val
-                elif np.isinf(val):
-                    print(f"Inf in descriptor {nm} for molecule {row['smiles']}")
-                    val = missing_val
-            except Exception as e:
-                print(f"Error in descriptor {nm} for {row['smiles']}: {e}")
-                val = missing_val
-            mol_desc[k] = val
-
         desc_array[valid_mols]= mol_desc
         target_array[valid_mols] = row[target_name]
         valid_mols += 1
@@ -302,6 +306,52 @@ def smiles_to_selfies(smiles):
     return selfies
 
 
+def data_splitter(df, target_name, dataset, split, seed, data_config, dtype):
+    if split == 'random':
+        # Must be a torch dataset
+        generator = torch.Generator().manual_seed(int(seed))
+        train, val, test = random_split(dataset, [0.8, 0.1, 0.1], generator=generator)
+
+    elif split == 'scaffold':
+        smiles_list = df["smiles"].tolist()
+        labels = df[target_name].values
+
+        Xs = np.zeros(len(smiles_list))
+        weights = np.zeros(len(smiles_list))
+
+        # Create a DiskDataset
+        dataset = dc.data.DiskDataset.from_numpy(X=Xs, y=labels, w=weights, ids=smiles_list)
+
+        scaffold_splitter = ScaffoldSplitter()
+        #by default is 0.8 0.1 0.1
+        train, val,  test = scaffold_splitter.train_valid_test_split(dataset, seed=seed)
+
+        train_df = df[df['smiles'].isin(train.ids)]
+        val_df = df[df['smiles'].isin(val.ids)]
+        test_df = df[df['smiles'].isin(test.ids)]
+
+        feat_train = train_df['feature'].tolist()
+        target_train = train_df[target_name].tolist()
+        feat_val = val_df['feature'].tolist()
+        target_val = val_df[target_name].tolist()
+        feat_test = test_df['feature'].tolist()
+        target_test = test_df[target_name].tolist()
+
+        fp_train_tensor = torch.tensor(feat_train, dtype=dtype)
+        target_train_tensor = torch.tensor(target_train, dtype=dtype).long()
+        fp_val_tensor = torch.tensor(feat_val, dtype=dtype)
+        target_val_tensor = torch.tensor(target_val, dtype=dtype).long()
+        fp_test_tensor = torch.tensor(feat_test, dtype=dtype)
+        target_test_tensor = torch.tensor(target_test, dtype=dtype).long()
+
+
+        train = TensorDataset(fp_train_tensor, target_train_tensor)
+        val = TensorDataset(fp_val_tensor, target_val_tensor)
+        test = TensorDataset(fp_test_tensor, target_test_tensor)
+
+    return train, val, test
+
+
 def get_spiking_net(net_type, net_config):
     #later on make spike_grad a input parameter
     input_size = net_config["input_size"]
@@ -326,7 +376,12 @@ def get_spiking_net(net_type, net_config):
         if isinstance(net_config['input_size'], list) and len(net_config['input_size']) == 1: input_size = net_config['input_size'][0]
         
         #net_config['layer_sizes'] = [input_size, num_hidden, num_hidden_l2, num_outputs]
-        net_config['layer_sizes'] = [input_size, num_hidden, num_hidden_l2, num_outputs]
+        if net_config['num_hidden_layers'] == 3:
+            num_hidden_l3 = net_config["num_hidden_l3"]
+            net_config['layer_sizes'] = [input_size, num_hidden, num_hidden_l2, num_hidden_l3, num_outputs]
+        else:
+            net_config['layer_sizes'] = [input_size, num_hidden, num_hidden_l2, num_outputs]
+
         net = SNNet(net_config)
         #num_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
         #print(f"Number of trainable parameters DSNN: {num_params}")
@@ -336,7 +391,6 @@ def get_spiking_net(net_type, net_config):
         
     elif net_type == "CSNN":
         # Add num_conv parameter if using CSNNet from csnn_model_modular
-        #num_conv = net_config['num_conv']
         #net = CSNNet(input_size=input_size, num_steps=time_steps, spike_grad=spike_grad, beta=beta, num_outputs=num_outputs, num_conv=num_conv)
         if net_config["2d"]:
             if isinstance(input_size, int) and input_size == 1024:
@@ -408,27 +462,3 @@ def make_filename(dirname, target, net_type, data_config, lr, wd, optim_type, ne
 
     filename = results_dir + "_".join(str(p) for p in params if p is not None) + ".csv"
     return filename
-
-
-""" def make_filename2(dirname, target, data_config,  net_config, train_config, net, model = False):
-    results_dir = os.path.join("results", dirname, "")
-    if model:
-        results_dir = os.path.join(results_dir, "models", "")
-    
-    params = []
-    
-    if dirname != 'BBBP':
-        params.append(target)
-    if data_config['repr_type'] == "descriptor":
-        params.append("desc")
-    elif data_config['repr_type'] == "fp":
-        params.append(data_config['fp_type'])
-        if data_config['fp_type'] == 'morgan':
-            params.append(f"r-{data_config['radius']}")
-        if data_config['mix']:
-            params.append(data_config['fp_type_2'])
-    if net_config['2d']:
-        params.append("2D")
-    
-    filename = results_dir + "_".join(str(p) for p in params) + ".csv"
-    return filename """

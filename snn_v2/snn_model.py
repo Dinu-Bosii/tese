@@ -19,7 +19,7 @@ class SNNet(nn.Module):
         self.num_outputs = net_config['layer_sizes'][-1]
         self.encoding = net_config['encoding']
         self.layers = nn.ModuleList()
-
+        #self.bn = nn.BatchNorm1d(net_config['layer_sizes'][0])
         #print("self.num_layers:", self.num_layers)
         for i in range(len(self.layer_sizes) - 1):
             print(self.layer_sizes[i], self.layer_sizes[i+1])
@@ -62,7 +62,9 @@ class SNNet(nn.Module):
                 #else:
                 #    cur = fc(spk) 
                 cur = fc(spk) 
-
+                #cur = torch.relu(cur)  # Remove inhibitory current
+                #if i == 0:
+                    #cur = self.bn(cur)
                 spk, membranes[i+1] = lif(cur, spk)
 
             spk_out_rec.append(spk)
@@ -73,6 +75,9 @@ class SNNet(nn.Module):
     
     def forward_ttfs(self, x):
         in_spikes = spikegen.latency(x, num_steps=self.num_steps, linear=True)
+        #print(in_spikes.sum())
+        #print(x.shape)
+        #print(in_spikes.shape)
         membranes = []
         for layer in self.layers:
             mem = layer.reset_mem() if isinstance(layer, snn.Leaky) else None
@@ -84,6 +89,7 @@ class SNNet(nn.Module):
 
         for x_in in in_spikes:
             spk = x_in
+            #print(spk.sum())
             for i in range(0, self.num_layers, 2):
                 #print(i)
                 fc = self.layers[i]
@@ -94,13 +100,16 @@ class SNNet(nn.Module):
                 #else:
                 #    cur = fc(spk) 
                 cur = fc(spk) 
+                #cur = torch.relu(cur)  # Remove inhibitory current
 
-                spk, membranes[i] = lif(cur, spk)
+                spk, membranes[i+1] = lif(cur, spk)
 
             spk_out_rec.append(spk)
-            print(spk.sum())
+            #print(spk.sum())
             mem_out_rec.append(membranes[-1])
+        #print(spk_out_rec.sum())
         #print(torch.stack(spk_out_rec, dim=0).size())
+
         return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
     
 
@@ -121,7 +130,7 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
     #epoch_list = []
     val_auc_roc, train_auc_roc = 0, 0
     loss_val = 0
-    aux_net = copy.deepcopy(net)
+    #aux_net = copy.deepcopy(net)
     aux_auc = 0
     #print("Epoch:0", end ='', flush=True)
     for epoch in range(num_epochs):
@@ -137,7 +146,6 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
             #print(data.size(), data.view(batch_size, -1).size())
             #print(data.shape)  # Should be [32, 1, 167]
             # forward pass
-            #net.train()
             spk_rec, mem_rec = net(data)
             #print(spk_rec, mem_rec)
             #print(spk_rec.size(), mem_rec.size(), targets.size())
@@ -153,10 +161,11 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
             loss_hist.append(loss_val.item())
         #scheduler.step()
         
-        _, val_auc_roc = val_fn(net, device, val_loader, train_config)
-        if (epoch + 1) % 10 == 0: 
-            print(f"Epoch:{epoch + 1}|val_auc:{val_auc_roc:.4f}|loss:{loss_val.item()}", flush=True)
-
+        val_acc, val_auc_roc = val_fn(net, device, val_loader, train_config)
+        #if (epoch + 1) % 10 == 0: 
+            #print(f"Epoch:{epoch + 1}|val_auc:{val_auc_roc:.4f}|loss:{loss_val.item()}", flush=True)
+        test_acc, test_auc_roc = val_fn(net, device, train_config['test_loader'], train_config)
+        print(f"Epoch:{epoch + 1}|val_acc:{val_acc:.4f}|val_auc:{val_auc_roc:.4f}|test_acc:{test_acc:.4f}|test_auc:{test_auc_roc:.4f}|loss:{loss_val.item()}", flush=True)
         if val_auc_roc > best_auc_roc:
             best_auc_roc = val_auc_roc
             best_epoch = epoch
