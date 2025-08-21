@@ -6,6 +6,7 @@ from snntorch import spikegen
 from snn_model import compute_loss
 from sklearn.metrics import roc_auc_score, accuracy_score
 import copy
+import numpy as np
 
 # Temporal Dynamics
 #num_steps = 10
@@ -165,6 +166,7 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
     device, num_epochs, num_steps = train_config['device'],  train_config['num_epochs'], train_config['num_steps']
     loss_type, loss_fn, dtype = train_config['loss_type'], train_config['loss_fn'], train_config['dtype']
     val_fn = train_config['val_net']
+    scheduler = train_config['scheduler']
     loss_hist = []
     val_acc_hist = []
     val_auc_hist = []
@@ -212,13 +214,14 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
         #if (epoch + 1) % 10 == 0: 
             #test_acc, test_auc_roc = val_fn(net, device, train_config['test_loader'], train_config)
             #print(f"Epoch:{epoch + 1}|val_acc:{val_acc:.4f}|val_auc:{val_auc_roc:.4f}|test_acc:{test_acc:.4f}|test_auc:{test_auc_roc:.4f}|loss:{loss_val.item()}", flush=True)
+        #scheduler.step()
         if (epoch + 1) % 10 == 0: 
             print(f"Epoch:{epoch + 1}|val_auc:{val_auc_roc:.4f}|loss:{loss_val.item()}", flush=True)
         if val_auc_roc > best_auc_roc:
             best_auc_roc = val_auc_roc
             best_epoch = epoch
             best_val_net = copy.deepcopy(net.state_dict())
-        best_net_list.append(copy.deepcopy(net.state_dict()))
+        #best_net_list.append(copy.deepcopy(net.state_dict()))
 
 
     print("Best AUC on val set:", best_auc_roc, "at epoch:", best_epoch)
@@ -252,13 +255,13 @@ def val_csnn(net, device, val_loader, train_config):
         mem_rec = mem_rec[:, :data_size]
 
         predicted = prediction_fn(spk_rec)
-
-        all_preds.extend(predicted.cpu().numpy())
+        #print(predicted, flush=True)
+        all_preds.extend(predicted.cpu().detach().numpy())
         all_targets.extend(targets.cpu().numpy())
 
 
     ## accuracy and roc-auc
-    accuracy = accuracy_score(all_targets, all_preds)
+    accuracy = accuracy_score(all_targets, (np.array(all_preds) >= 0.0).astype(int))
     auc_roc = roc_auc_score(all_targets, all_preds)
     
     return accuracy, auc_roc
@@ -292,8 +295,7 @@ def test_csnn(net,  device, test_loader, train_config):
             # based on the times they spiked in the 10 time step interval
 
             predicted = prediction_fn(test_spk)
-
-            all_preds.extend(predicted.cpu().numpy())
+            all_preds.extend(predicted.cpu().detach().numpy())
             all_targets.extend(targets.cpu().numpy())
 
     return all_preds, all_targets
@@ -310,10 +312,18 @@ def prediction_spk_rate_pop(spk_rec):
     return predicted
 
 
-def prediction_spk_rate(spk_rec):
+""" def prediction_spk_rate(spk_rec):
     _, predicted = spk_rec.sum(dim=0).max(1)
-    return predicted
+    return predicted """
 
+def prediction_spk_rate(spk_rec):
+    spk_counts = spk_rec.sum(dim=0)
+    #print("SPIKE COUNT")   
+    #print(spk_counts, flush=True)
+    c_pos = spk_counts[:, 1].float()
+    c_neg = spk_counts[:, 0].float()
+
+    return (c_pos - c_neg) / spk_rec.shape[0]
 
 def prediction_spk_ttfs(spk_rec):
     return spk_rec.argmax(dim=0).min(1).indices
