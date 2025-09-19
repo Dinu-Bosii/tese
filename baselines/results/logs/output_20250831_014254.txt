@@ -1,0 +1,69 @@
+Index(['Hepatobiliary disorders', 'Metabolism and nutrition disorders',
+       'Product issues', 'Eye disorders', 'Investigations',
+       'Musculoskeletal and connective tissue disorders',
+       'Gastrointestinal disorders', 'Social circumstances',
+       'Immune system disorders', 'Reproductive system and breast disorders',
+       'Neoplasms benign, malignant and unspecified (incl cysts and polyps)',
+       'General disorders and administration site conditions',
+       'Endocrine disorders', 'Surgical and medical procedures',
+       'Vascular disorders', 'Blood and lymphatic system disorders',
+       'Skin and subcutaneous tissue disorders',
+       'Congenital, familial and genetic disorders',
+       'Infections and infestations',
+       'Respiratory, thoracic and mediastinal disorders',
+       'Psychiatric disorders', 'Renal and urinary disorders',
+       'Pregnancy, puerperium and perinatal conditions',
+       'Ear and labyrinth disorders', 'Cardiac disorders',
+       'Nervous system disorders',
+       'Injury, poisoning and procedural complications'],
+      dtype='object')
+Hepatobiliary disorders
+743
+1427
+RDKit - 1024
+fp
+torch.Size([1427, 1024])
+Iterations:
+0/30
+MLP parameter search...
+XGBoost parameter search...
+KNN parameter search...
+SVM parameter search...
+Random Forest parameter search...
+{'weights': 'distance', 'n_neighbors': 8, 'metric': 'minkowski'} {'kernel': 'poly', 'gamma': 'auto', 'degree': 3, 'C': 10} {'n_estimators': 350, 'min_samples_split': 10, 'min_samples_leaf': 4, 'max_depth': 20} {'n_estimators': 100, 'max_depth': 8, 'learning_rate': 0.1}
+0.6353233830845771
+0.653134328358209
+0.6731343283582089
+0.6675621890547263
+0.6582089552238806
+1/30
+0.6711693548387098
+0.7038306451612902
+0.6564516129032258
+0.7004032258064516
+0.7012096774193549
+2/30
+0.6971830985915494
+0.7464788732394365
+0.6901408450704225
+0.6830985915492959
+0.73943661971831
+3/30
+0.651044776119403
+0.717910447761194
+0.674726368159204
+0.6907462686567164
+0.6643781094527363
+4/30
+0.6584276354973198
+0.6673615247170935
+0.6669644629739925
+0.6693468334325987
+0.6624975183641056
+5/30
+0.5948977566011515
+0.6854278340281913
+0.6701409569188009
+0.6621004566210045
+0.6201111772880683
+6/30

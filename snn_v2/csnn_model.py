@@ -13,7 +13,7 @@ import numpy as np
 out_channels = [8, 8]
 in_channels = [1, out_channels[0]]
 groups = [1, 1]
-thresholds = torch.tensor([1.5, 1.0, 1.0], dtype=torch.float32)
+thresholds = torch.tensor([1.0, 1.0, 1.0], dtype=torch.float32)
 learn_th = [True for _ in range(3)]
 #learn_th = [False for _ in range(3)]
 class CSNNet(nn.Module):
@@ -49,7 +49,7 @@ class CSNNet(nn.Module):
             else:
                 conv_layer = nn.Conv2d(in_channels=in_channels[i], 
                                    out_channels=out_channels[i], 
-                                   kernel_size=self.conv_kernel[i], 
+                                   kernel_size=[self.conv_kernel, self.conv_kernel], 
                                    stride=self.conv_stride, 
                                    padding=1,
                                    bias=net_config['bias'])
@@ -76,12 +76,10 @@ class CSNNet(nn.Module):
             raise ValueError("Error in encoding type.") 
 
     def calculate_lin_size(self, input_size):
-        #print(type(input_size))
         x = torch.zeros(1, 1, *input_size)
 
         for i in range(0, len(self.layers), 2):
             conv = self.layers[i]
-            #x = F.max_pool1d(conv(x), kernel_size=self.pool_size)
             x = self.max_pool(conv(x), kernel_size=self.pool_size)
         x = self.flatten(x)
         return x.shape[1]
@@ -107,17 +105,12 @@ class CSNNet(nn.Module):
                 conv = self.layers[i]
                 lif = self.layers[i+1]
 
-                #cur = F.max_pool1d(conv(spk), kernel_size=self.pool_size)
                 cur = self.max_pool(conv(spk), kernel_size=self.pool_size)
 
                 spk, membranes[i+1] = lif(cur, membranes[i+1]) 
 
-
-            #spk = spk.view(spk.size()[0], -1)
-            #spk = nn.Flatten(spk, start_dim=0)
-            #print("before flat", spk.size())
             spk = self.flatten(spk)
-            #print("after flat", spk.size())
+
             cur_out = self.fc_out(spk)
             spk_out, membranes[-1] = self.lif_out(cur_out, membranes[-1])
 
@@ -133,7 +126,6 @@ class CSNNet(nn.Module):
         for layer in self.layers:
             mem = layer.reset_mem() if isinstance(layer, snn.Leaky) else None
             membranes.append(mem)
-        #print(type(membranes[-1]))
         # Record the final layer
         spk_out_rec = []
         mem_out_rec = []
@@ -146,9 +138,7 @@ class CSNNet(nn.Module):
 
                 cur = self.max_pool(conv(spk), kernel_size=self.pool_size)
 
-                #print(i ,type(membranes[i+1]))
                 spk, membranes[i+1] = lif(cur, membranes[i+1]) 
-                #if spk.sum().item() != 0: print(spk.sum().item())
 
 
             spk = self.flatten(spk)
@@ -166,39 +156,25 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
     device, num_epochs, num_steps = train_config['device'],  train_config['num_epochs'], train_config['num_steps']
     loss_type, loss_fn, dtype = train_config['loss_type'], train_config['loss_fn'], train_config['dtype']
     val_fn = train_config['val_net']
-    scheduler = train_config['scheduler']
+    #scheduler = train_config['scheduler']
     loss_hist = []
     val_acc_hist = []
     val_auc_hist = []
     best_auc_roc, best_epoch = 0, 0
     best_net_list = []
     best_val_net = None
-    #auc_roc = 0
     val_auc_roc, train_auc_roc = 0, 0
     loss_val = 0
-    #print("Epoch:", end ='', flush=True)
-    #patience = 30
-    #stop_limit = 0
-    #aux_net = copy.deepcopy(net)
-    aux_auc = 0
+
     for epoch in range(num_epochs):
         net.train()
-        #if (epoch + 1) % 10 == 0: print(f"Epoch:{epoch + 1}|auc:{auc_roc}|loss:{loss_val.item()}", flush=True)
         # Minibatch training loop
         for data, targets in train_loader:
-            #print(data.size(), data.unsqueeze(1).size())
-
             data = data.to(device, non_blocking=True).unsqueeze(1)
-            #print("NaNs:", torch.isnan(data).any().item())
-            #print("Infs:", torch.isinf(data).any().item())
             targets = targets.to(device, non_blocking=True)
-            #print(targets.size(), targets.unsqueeze(1).size())
 
             # forward pass
             spk_rec, mem_rec = net(data)
-
-            #print(spk_rec, mem_rec)
-            #print(mem_rec[:, 0, :])
             # Compute loss
             loss_val = compute_loss(loss_type=loss_type, loss_fn=loss_fn, spk_rec=spk_rec, mem_rec=mem_rec,num_steps=num_steps, targets=targets, dtype=dtype, device=device) 
             #print(loss_val.item())
@@ -211,9 +187,6 @@ def train_csnn(net, optimizer,  train_loader, val_loader, train_config, net_conf
             # Store loss history for future plotting
             loss_hist.append(loss_val.item())
         val_acc, val_auc_roc = val_fn(net, device, val_loader, train_config)
-        #if (epoch + 1) % 10 == 0: 
-            #test_acc, test_auc_roc = val_fn(net, device, train_config['test_loader'], train_config)
-            #print(f"Epoch:{epoch + 1}|val_acc:{val_acc:.4f}|val_auc:{val_auc_roc:.4f}|test_acc:{test_acc:.4f}|test_auc:{test_auc_roc:.4f}|loss:{loss_val.item()}", flush=True)
         #scheduler.step()
         if (epoch + 1) % 10 == 0: 
             print(f"Epoch:{epoch + 1}|val_auc:{val_auc_roc:.4f}|loss:{loss_val.item()}", flush=True)
@@ -255,7 +228,6 @@ def val_csnn(net, device, val_loader, train_config):
         mem_rec = mem_rec[:, :data_size]
 
         predicted = prediction_fn(spk_rec)
-        #print(predicted, flush=True)
         all_preds.extend(predicted.cpu().detach().numpy())
         all_targets.extend(targets.cpu().numpy())
 
@@ -286,13 +258,8 @@ def test_csnn(net,  device, test_loader, train_config):
 
             targets = targets.to(device, non_blocking=True)
             # forward pass
-            #test_spk, _ = net(data.view(data.size(0), -1))
             test_spk, _ = net(data)
             test_spk = test_spk[:, :data_size]
-
-            # calculate total accuracy
-            # max(1) -> gives the index (either 0 or 1) for either output neuron 
-            # based on the times they spiked in the 10 time step interval
 
             predicted = prediction_fn(test_spk)
             all_preds.extend(predicted.cpu().detach().numpy())
@@ -312,14 +279,20 @@ def prediction_spk_rate_pop(spk_rec):
     return predicted
 
 
-""" def prediction_spk_rate(spk_rec):
-    _, predicted = spk_rec.sum(dim=0).max(1)
-    return predicted """
+def prediction_spk_rate_pop_scores(spk_rec):
+    spk_sum = spk_rec.sum(dim=0)
+
+    population_c0 = spk_sum[:,:spk_rec.shape[2]//2].mean(dim=1)
+    population_c1 = spk_sum[:,spk_rec.shape[2]//2:].mean(dim=1)
+
+    return (population_c1 - population_c0)/spk_rec.shape[0]
 
 def prediction_spk_rate(spk_rec):
+    _, predicted = spk_rec.sum(dim=0).max(1)
+    return predicted
+
+def prediction_spk_rate_scores(spk_rec):
     spk_counts = spk_rec.sum(dim=0)
-    #print("SPIKE COUNT")   
-    #print(spk_counts, flush=True)
     c_pos = spk_counts[:, 1].float()
     c_neg = spk_counts[:, 0].float()
 
@@ -340,11 +313,15 @@ def prediction_spk_ttfs_pop(spk_rec):
     return predicted
 
 
-def get_prediction_fn(encoding='rate', pop_coding=False):
+def get_prediction_fn(encoding='rate', pop_coding=False, scores=False):
     if encoding == 'rate':
         if pop_coding:
+            if scores:
+                return prediction_spk_rate_pop_scores
             return prediction_spk_rate_pop
         else:
+            if scores:
+                return prediction_spk_rate_scores
             return prediction_spk_rate
     elif encoding == 'ttfs':
         if pop_coding:

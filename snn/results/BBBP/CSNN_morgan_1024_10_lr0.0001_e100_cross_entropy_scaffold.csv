@@ -1,4 +1,0 @@
-Mean Acc,Std Acc,Mean AUC,Std AUC,Mean Sn,Std Sn,Mean Sp,Std Sp,Mean F1,Std F1,Mean Precision,Std Precision
-0.63,0.0,0.624,0.0,0.78,0.0,0.467,0.0,0.687,0.0,0.614,0.0
-
-32 -> 64 out channels

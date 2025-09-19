@@ -1,0 +1,1119 @@
+Index(['NR-AR', 'NR-AR-LBD', 'NR-AhR', 'NR-Aromatase', 'NR-ER', 'NR-ER-LBD',
+       'NR-PPAR-gamma', 'SR-ARE', 'SR-ATAD5', 'SR-HSE', 'SR-MMP', 'SR-p53'],
+      dtype='object')
+SR-ARE
+942.0
+5832
+maccs - 167
+morgan - 857
+fp
+torch.Size([5825, 1024])
+Iterations:
+0/30
+MLP parameter search...
+Fitting 5 folds for each of 40 candidates, totalling 200 fits
+[CV 1/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.730 total time=   7.8s
+[CV 2/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.750 total time=   4.0s
+[CV 3/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.756 total time=   3.3s
+[CV 4/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.744 total time=   5.2s
+[CV 5/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.779 total time=   4.4s
+[CV 1/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.741 total time=   5.2s
+[CV 2/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.748 total time=   4.7s
+[CV 3/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.745 total time=   9.1s
+[CV 4/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.779 total time=   4.9s
+[CV 5/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.797 total time=   5.5s
+[CV 1/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.785 total time=  12.2s
+[CV 2/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.721 total time=  10.0s
+[CV 3/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.807 total time=  11.0s
+[CV 4/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.808 total time=  11.4s
+[CV 5/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.803 total time=  11.1s
+[CV 1/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.790 total time=   4.9s
+[CV 2/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.740 total time=   4.9s
+[CV 3/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.791 total time=   5.3s
+[CV 4/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.799 total time=   4.8s
+[CV 5/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.804 total time=   9.1s
+[CV 1/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.733 total time=   8.1s
+[CV 2/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.726 total time=   9.2s
+[CV 3/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.770 total time=   9.1s
+[CV 4/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.770 total time=   7.6s
+[CV 5/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.785 total time=   9.4s
+[CV 1/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.780 total time=   5.4s
+[CV 2/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.755 total time=   4.5s
+[CV 3/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.790 total time=   5.2s
+[CV 4/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.793 total time=   7.0s
+[CV 5/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.800 total time=   5.1s
+[CV 1/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.776 total time=   9.6s
+[CV 2/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.754 total time=   7.2s
+[CV 3/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.798 total time=   8.7s
+[CV 4/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.786 total time=   6.6s
+[CV 5/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.798 total time=   6.5s
+[CV 1/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.770 total time=   8.8s
+[CV 2/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.756 total time=   8.7s
+[CV 3/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.796 total time=  10.8s
+[CV 4/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.779 total time=   9.4s
+[CV 5/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.788 total time=   8.5s
+[CV 1/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.716 total time=  11.8s
+[CV 2/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.729 total time=   9.7s
+[CV 3/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.753 total time=   7.6s
+[CV 4/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.769 total time=   7.4s
+[CV 5/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.794 total time=   8.6s
+[CV 1/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.782 total time=  11.2s
+[CV 2/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.722 total time=  12.4s
+[CV 3/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.761 total time=  19.5s
+[CV 4/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.787 total time=  10.4s
+[CV 5/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.788 total time=   9.6s
+[CV 1/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.774 total time=  11.6s
+[CV 2/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.722 total time=  11.6s
+[CV 3/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.762 total time=  18.7s
+[CV 4/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.793 total time=  11.3s
+[CV 5/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.799 total time=  11.3s
+[CV 1/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.768 total time=   4.2s
+[CV 2/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.755 total time=   4.2s
+[CV 3/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.803 total time=   4.3s
+[CV 4/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.785 total time=   3.7s
+[CV 5/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.780 total time=   6.1s
+[CV 1/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.764 total time=   4.7s
+[CV 2/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.748 total time=   3.7s
+[CV 3/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.792 total time=   3.9s
+[CV 4/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.790 total time=   3.6s
+[CV 5/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.805 total time=   3.7s
+[CV 1/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.754 total time=   7.6s
+[CV 2/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.734 total time=   7.0s
+[CV 3/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.741 total time=  12.2s
+[CV 4/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.736 total time=  16.0s
+[CV 5/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.762 total time=  13.5s
+[CV 1/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.765 total time=   8.0s
+[CV 2/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.728 total time=  14.0s
+[CV 3/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.793 total time=   8.7s
+[CV 4/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.800 total time=   8.6s
+[CV 5/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.811 total time=   9.4s
+[CV 1/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.730 total time=  13.9s
+[CV 2/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.721 total time=  10.8s
+[CV 3/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.745 total time=  19.0s
+[CV 4/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.765 total time=  11.0s
+[CV 5/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.800 total time=  14.6s
+[CV 1/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.738 total time=  10.3s
+[CV 2/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.720 total time=  11.6s
+[CV 3/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.765 total time=   9.9s
+[CV 4/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.742 total time=  13.0s
+[CV 5/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.788 total time=  11.1s
+[CV 1/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.719 total time=  15.4s
+[CV 2/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.713 total time=  16.5s
+[CV 3/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.767 total time=  12.3s
+[CV 4/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.742 total time=  16.8s
+[CV 5/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.777 total time=  13.5s
+[CV 1/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.757 total time=   4.4s
+[CV 2/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.738 total time=   4.6s
+[CV 3/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.792 total time=   4.1s
+[CV 4/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.796 total time=   4.0s
+[CV 5/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.799 total time=   4.1s
+[CV 1/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.716 total time=   5.9s
+[CV 2/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.749 total time=   4.2s
+[CV 3/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.761 total time=  10.7s
+[CV 4/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.731 total time=   5.5s
+[CV 5/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.795 total time=   4.9s
+[CV 1/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.763 total time=   7.7s
+[CV 2/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.739 total time=   9.1s
+[CV 3/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.800 total time=   7.4s
+[CV 4/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.784 total time=   8.7s
+[CV 5/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.829 total time=   7.6s
+[CV 1/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.750 total time=  10.3s
+[CV 2/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.740 total time=   9.6s
+[CV 3/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.777 total time=  10.7s
+[CV 4/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.753 total time=   9.9s
+[CV 5/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.794 total time=  14.1s
+[CV 1/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.785 total time=   4.7s
+[CV 2/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.751 total time=   5.2s
+[CV 3/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.783 total time=   4.3s
+[CV 4/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.789 total time=   5.2s
+[CV 5/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.819 total time=   4.4s
+[CV 1/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.786 total time=   9.3s
+[CV 2/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.745 total time=   9.3s
+[CV 3/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.807 total time=   9.0s
+[CV 4/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.799 total time=  10.1s
+[CV 5/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.787 total time=  13.7s
+[CV 1/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.736 total time=   4.6s
+[CV 2/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.744 total time=   4.2s
+[CV 3/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.772 total time=   4.4s
+[CV 4/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.787 total time=   4.6s
+[CV 5/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.786 total time=   5.5s
+[CV 1/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.784 total time=  10.1s
+[CV 2/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.721 total time=  10.8s
+[CV 3/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.800 total time=  10.6s
+[CV 4/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.791 total time=  10.7s
+[CV 5/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.772 total time=  12.6s
+[CV 1/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.729 total time=   6.4s
+[CV 2/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.716 total time=   6.1s
+[CV 3/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.743 total time=   9.8s
+[CV 4/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.748 total time=   4.3s
+[CV 5/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.810 total time=   5.2s
+[CV 1/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.698 total time=  18.5s
+[CV 2/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.719 total time=  12.0s
+[CV 3/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.739 total time=  10.7s
+[CV 4/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.739 total time=  13.6s
+[CV 5/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.781 total time=  21.2s
+[CV 1/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.736 total time=  10.4s
+[CV 2/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.734 total time=  10.9s
+[CV 3/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.781 total time=  10.5s
+[CV 4/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.750 total time=  11.6s
+[CV 5/5] END activation=tanh, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.789 total time=  13.8s
+[CV 1/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.776 total time=   4.0s
+[CV 2/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.754 total time=   4.4s
+[CV 3/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.790 total time=   4.2s
+[CV 4/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.783 total time=   4.0s
+[CV 5/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.813 total time=   6.4s
+[CV 1/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.741 total time=  12.5s
+[CV 2/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.736 total time=  12.5s
+[CV 3/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.765 total time=  11.4s
+[CV 4/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.737 total time=  15.7s
+[CV 5/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.782 total time=  13.0s
+[CV 1/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.732 total time=  10.9s
+[CV 2/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.692 total time=  14.3s
+[CV 3/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.761 total time=  12.9s
+[CV 4/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.768 total time=  12.7s
+[CV 5/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=constant, max_iter=1000, solver=adam;, score=0.788 total time=  26.5s
+[CV 1/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.766 total time=   5.4s
+[CV 2/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.719 total time=   6.5s
+[CV 3/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.755 total time=   5.2s
+[CV 4/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.739 total time=   6.9s
+[CV 5/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=constant, max_iter=1000, solver=adam;, score=0.775 total time=   5.5s
+[CV 1/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.760 total time=   6.2s
+[CV 2/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.733 total time=   5.4s
+[CV 3/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.789 total time=   4.8s
+[CV 4/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.805 total time=   5.0s
+[CV 5/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(512, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.807 total time=   4.7s
+[CV 1/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.717 total time=   6.6s
+[CV 2/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.722 total time=   4.1s
+[CV 3/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.764 total time=   5.3s
+[CV 4/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.764 total time=   3.9s
+[CV 5/5] END activation=tanh, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.798 total time=   5.1s
+[CV 1/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.776 total time=   7.9s
+[CV 2/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.751 total time=   7.4s
+[CV 3/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.792 total time=   7.3s
+[CV 4/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.783 total time=   8.3s
+[CV 5/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=constant, max_iter=1000, solver=adam;, score=0.814 total time=   8.6s
+[CV 1/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.780 total time=   7.7s
+[CV 2/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.742 total time=   7.8s
+[CV 3/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.780 total time=  10.7s
+[CV 4/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.793 total time=   7.2s
+[CV 5/5] END activation=relu, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.827 total time=   8.1s
+[CV 1/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.772 total time=   3.4s
+[CV 2/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.758 total time=   4.1s
+[CV 3/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.795 total time=   3.8s
+[CV 4/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.798 total time=   4.3s
+[CV 5/5] END activation=relu, alpha=0.0001, early_stopping=True, hidden_layer_sizes=(512,), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.793 total time=   4.7s
+[CV 1/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.768 total time=  13.2s
+[CV 2/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.717 total time=  11.5s
+[CV 3/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.771 total time=  10.7s
+[CV 4/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.786 total time=  12.5s
+[CV 5/5] END activation=relu, alpha=0, early_stopping=True, hidden_layer_sizes=(1024, 512), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.801 total time=  13.7s
+[CV 1/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.730 total time=  13.1s
+[CV 2/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.751 total time=   9.9s
+[CV 3/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.779 total time=  10.7s
+[CV 4/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.762 total time=  10.9s
+[CV 5/5] END activation=tanh, alpha=0.001, early_stopping=True, hidden_layer_sizes=(1024, 256), learning_rate=adaptive, max_iter=1000, solver=adam;, score=0.788 total time=  15.2s
+XGBoost parameter search...
+Fitting 5 folds for each of 40 candidates, totalling 200 fits
+[CV 1/5] END learning_rate=0.1, max_depth=12, n_estimators=250;, score=0.829 total time=   1.2s
+[CV 2/5] END learning_rate=0.1, max_depth=12, n_estimators=250;, score=0.796 total time=   1.1s
+[CV 3/5] END learning_rate=0.1, max_depth=12, n_estimators=250;, score=0.843 total time=   1.1s
+[CV 4/5] END learning_rate=0.1, max_depth=12, n_estimators=250;, score=0.846 total time=   1.1s
+[CV 5/5] END learning_rate=0.1, max_depth=12, n_estimators=250;, score=0.851 total time=   1.1s
+[CV 1/5] END learning_rate=0.005, max_depth=2, n_estimators=350;, score=0.696 total time=   0.7s
+[CV 2/5] END learning_rate=0.005, max_depth=2, n_estimators=350;, score=0.693 total time=   0.7s
+[CV 3/5] END learning_rate=0.005, max_depth=2, n_estimators=350;, score=0.720 total time=   0.6s
+[CV 4/5] END learning_rate=0.005, max_depth=2, n_estimators=350;, score=0.743 total time=   0.6s
+[CV 5/5] END learning_rate=0.005, max_depth=2, n_estimators=350;, score=0.724 total time=   0.9s
+[CV 1/5] END learning_rate=0.01, max_depth=14, n_estimators=350;, score=0.806 total time=   2.2s
+[CV 2/5] END learning_rate=0.01, max_depth=14, n_estimators=350;, score=0.799 total time=   1.8s
+[CV 3/5] END learning_rate=0.01, max_depth=14, n_estimators=350;, score=0.820 total time=   1.9s
+[CV 4/5] END learning_rate=0.01, max_depth=14, n_estimators=350;, score=0.835 total time=   1.8s
+[CV 5/5] END learning_rate=0.01, max_depth=14, n_estimators=350;, score=0.815 total time=   1.7s
+[CV 1/5] END learning_rate=0.1, max_depth=14, n_estimators=250;, score=0.828 total time=   1.2s
+[CV 2/5] END learning_rate=0.1, max_depth=14, n_estimators=250;, score=0.795 total time=   1.2s
+[CV 3/5] END learning_rate=0.1, max_depth=14, n_estimators=250;, score=0.840 total time=   1.2s
+[CV 4/5] END learning_rate=0.1, max_depth=14, n_estimators=250;, score=0.845 total time=   1.2s
+[CV 5/5] END learning_rate=0.1, max_depth=14, n_estimators=250;, score=0.848 total time=   1.2s
+[CV 1/5] END learning_rate=0.01, max_depth=16, n_estimators=200;, score=0.787 total time=   1.1s
+[CV 2/5] END learning_rate=0.01, max_depth=16, n_estimators=200;, score=0.786 total time=   1.0s
+[CV 3/5] END learning_rate=0.01, max_depth=16, n_estimators=200;, score=0.800 total time=   1.1s
+[CV 4/5] END learning_rate=0.01, max_depth=16, n_estimators=200;, score=0.817 total time=   1.2s
+[CV 5/5] END learning_rate=0.01, max_depth=16, n_estimators=200;, score=0.793 total time=   1.2s
+[CV 1/5] END learning_rate=0.1, max_depth=18, n_estimators=100;, score=0.836 total time=   0.6s
+[CV 2/5] END learning_rate=0.1, max_depth=18, n_estimators=100;, score=0.804 total time=   0.6s
+[CV 3/5] END learning_rate=0.1, max_depth=18, n_estimators=100;, score=0.839 total time=   0.6s
+[CV 4/5] END learning_rate=0.1, max_depth=18, n_estimators=100;, score=0.850 total time=   0.6s
+[CV 5/5] END learning_rate=0.1, max_depth=18, n_estimators=100;, score=0.843 total time=   0.6s
+[CV 1/5] END learning_rate=0.2, max_depth=4, n_estimators=200;, score=0.786 total time=   0.3s
+[CV 2/5] END learning_rate=0.2, max_depth=4, n_estimators=200;, score=0.759 total time=   0.3s
+[CV 3/5] END learning_rate=0.2, max_depth=4, n_estimators=200;, score=0.830 total time=   0.4s
+[CV 4/5] END learning_rate=0.2, max_depth=4, n_estimators=200;, score=0.834 total time=   0.3s
+[CV 5/5] END learning_rate=0.2, max_depth=4, n_estimators=200;, score=0.828 total time=   0.4s
+[CV 1/5] END learning_rate=0.2, max_depth=14, n_estimators=250;, score=0.821 total time=   1.2s
+[CV 2/5] END learning_rate=0.2, max_depth=14, n_estimators=250;, score=0.796 total time=   1.2s
+[CV 3/5] END learning_rate=0.2, max_depth=14, n_estimators=250;, score=0.831 total time=   1.2s
+[CV 4/5] END learning_rate=0.2, max_depth=14, n_estimators=250;, score=0.839 total time=   1.2s
+[CV 5/5] END learning_rate=0.2, max_depth=14, n_estimators=250;, score=0.830 total time=   1.2s
+[CV 1/5] END learning_rate=0.005, max_depth=4, n_estimators=150;, score=0.693 total time=   0.3s
+[CV 2/5] END learning_rate=0.005, max_depth=4, n_estimators=150;, score=0.688 total time=   0.3s
+[CV 3/5] END learning_rate=0.005, max_depth=4, n_estimators=150;, score=0.738 total time=   0.3s
+[CV 4/5] END learning_rate=0.005, max_depth=4, n_estimators=150;, score=0.759 total time=   0.3s
+[CV 5/5] END learning_rate=0.005, max_depth=4, n_estimators=150;, score=0.717 total time=   0.3s
+[CV 1/5] END learning_rate=0.005, max_depth=10, n_estimators=150;, score=0.769 total time=   0.6s
+[CV 2/5] END learning_rate=0.005, max_depth=10, n_estimators=150;, score=0.747 total time=   0.6s
+[CV 3/5] END learning_rate=0.005, max_depth=10, n_estimators=150;, score=0.782 total time=   0.6s
+[CV 4/5] END learning_rate=0.005, max_depth=10, n_estimators=150;, score=0.799 total time=   0.6s
+[CV 5/5] END learning_rate=0.005, max_depth=10, n_estimators=150;, score=0.763 total time=   0.5s
+[CV 1/5] END learning_rate=0.005, max_depth=18, n_estimators=250;, score=0.777 total time=   1.4s
+[CV 2/5] END learning_rate=0.005, max_depth=18, n_estimators=250;, score=0.768 total time=   1.3s
+[CV 3/5] END learning_rate=0.005, max_depth=18, n_estimators=250;, score=0.787 total time=   1.3s
+[CV 4/5] END learning_rate=0.005, max_depth=18, n_estimators=250;, score=0.815 total time=   1.4s
+[CV 5/5] END learning_rate=0.005, max_depth=18, n_estimators=250;, score=0.780 total time=   1.3s
+[CV 1/5] END learning_rate=0.2, max_depth=10, n_estimators=100;, score=0.818 total time=   0.4s
+[CV 2/5] END learning_rate=0.2, max_depth=10, n_estimators=100;, score=0.796 total time=   0.4s
+[CV 3/5] END learning_rate=0.2, max_depth=10, n_estimators=100;, score=0.843 total time=   0.4s
+[CV 4/5] END learning_rate=0.2, max_depth=10, n_estimators=100;, score=0.847 total time=   0.5s
+[CV 5/5] END learning_rate=0.2, max_depth=10, n_estimators=100;, score=0.846 total time=   0.4s
+[CV 1/5] END learning_rate=0.2, max_depth=12, n_estimators=150;, score=0.829 total time=   1.0s
+[CV 2/5] END learning_rate=0.2, max_depth=12, n_estimators=150;, score=0.795 total time=   0.8s
+[CV 3/5] END learning_rate=0.2, max_depth=12, n_estimators=150;, score=0.827 total time=   0.9s
+[CV 4/5] END learning_rate=0.2, max_depth=12, n_estimators=150;, score=0.844 total time=   0.7s
+[CV 5/5] END learning_rate=0.2, max_depth=12, n_estimators=150;, score=0.857 total time=   0.7s
+[CV 1/5] END learning_rate=0.1, max_depth=10, n_estimators=300;, score=0.828 total time=   1.1s
+[CV 2/5] END learning_rate=0.1, max_depth=10, n_estimators=300;, score=0.793 total time=   1.1s
+[CV 3/5] END learning_rate=0.1, max_depth=10, n_estimators=300;, score=0.843 total time=   1.2s
+[CV 4/5] END learning_rate=0.1, max_depth=10, n_estimators=300;, score=0.840 total time=   1.1s
+[CV 5/5] END learning_rate=0.1, max_depth=10, n_estimators=300;, score=0.842 total time=   1.0s
+[CV 1/5] END learning_rate=0.01, max_depth=2, n_estimators=300;, score=0.713 total time=   0.5s
+[CV 2/5] END learning_rate=0.01, max_depth=2, n_estimators=300;, score=0.710 total time=   0.4s
+[CV 3/5] END learning_rate=0.01, max_depth=2, n_estimators=300;, score=0.735 total time=   0.6s
+[CV 4/5] END learning_rate=0.01, max_depth=2, n_estimators=300;, score=0.760 total time=   0.4s
+[CV 5/5] END learning_rate=0.01, max_depth=2, n_estimators=300;, score=0.755 total time=   0.4s
+[CV 1/5] END learning_rate=0.1, max_depth=8, n_estimators=100;, score=0.822 total time=   0.3s
+[CV 2/5] END learning_rate=0.1, max_depth=8, n_estimators=100;, score=0.786 total time=   0.3s
+[CV 3/5] END learning_rate=0.1, max_depth=8, n_estimators=100;, score=0.834 total time=   0.3s
+[CV 4/5] END learning_rate=0.1, max_depth=8, n_estimators=100;, score=0.834 total time=   0.3s
+[CV 5/5] END learning_rate=0.1, max_depth=8, n_estimators=100;, score=0.827 total time=   0.3s
+[CV 1/5] END learning_rate=0.2, max_depth=4, n_estimators=50;, score=0.775 total time=   0.1s
+[CV 2/5] END learning_rate=0.2, max_depth=4, n_estimators=50;, score=0.761 total time=   0.1s
+[CV 3/5] END learning_rate=0.2, max_depth=4, n_estimators=50;, score=0.818 total time=   0.1s
+[CV 4/5] END learning_rate=0.2, max_depth=4, n_estimators=50;, score=0.821 total time=   0.1s
+[CV 5/5] END learning_rate=0.2, max_depth=4, n_estimators=50;, score=0.802 total time=   0.1s
+[CV 1/5] END learning_rate=0.005, max_depth=6, n_estimators=100;, score=0.741 total time=   0.3s
+[CV 2/5] END learning_rate=0.005, max_depth=6, n_estimators=100;, score=0.711 total time=   0.3s
+[CV 3/5] END learning_rate=0.005, max_depth=6, n_estimators=100;, score=0.758 total time=   0.3s
+[CV 4/5] END learning_rate=0.005, max_depth=6, n_estimators=100;, score=0.770 total time=   0.3s
+[CV 5/5] END learning_rate=0.005, max_depth=6, n_estimators=100;, score=0.739 total time=   0.3s
+[CV 1/5] END learning_rate=0.01, max_depth=12, n_estimators=200;, score=0.789 total time=   1.0s
+[CV 2/5] END learning_rate=0.01, max_depth=12, n_estimators=200;, score=0.781 total time=   1.0s
+[CV 3/5] END learning_rate=0.01, max_depth=12, n_estimators=200;, score=0.804 total time=   1.0s
+[CV 4/5] END learning_rate=0.01, max_depth=12, n_estimators=200;, score=0.814 total time=   1.0s
+[CV 5/5] END learning_rate=0.01, max_depth=12, n_estimators=200;, score=0.793 total time=   1.1s
+[CV 1/5] END learning_rate=0.005, max_depth=8, n_estimators=200;, score=0.766 total time=   0.7s
+[CV 2/5] END learning_rate=0.005, max_depth=8, n_estimators=200;, score=0.736 total time=   0.7s
+[CV 3/5] END learning_rate=0.005, max_depth=8, n_estimators=200;, score=0.774 total time=   0.9s
+[CV 4/5] END learning_rate=0.005, max_depth=8, n_estimators=200;, score=0.805 total time=   0.8s
+[CV 5/5] END learning_rate=0.005, max_depth=8, n_estimators=200;, score=0.768 total time=   0.7s
+[CV 1/5] END learning_rate=0.01, max_depth=8, n_estimators=150;, score=0.776 total time=   0.9s
+[CV 2/5] END learning_rate=0.01, max_depth=8, n_estimators=150;, score=0.751 total time=   0.7s
+[CV 3/5] END learning_rate=0.01, max_depth=8, n_estimators=150;, score=0.788 total time=   0.6s
+[CV 4/5] END learning_rate=0.01, max_depth=8, n_estimators=150;, score=0.805 total time=   0.6s
+[CV 5/5] END learning_rate=0.01, max_depth=8, n_estimators=150;, score=0.773 total time=   0.6s
+[CV 1/5] END learning_rate=0.005, max_depth=6, n_estimators=300;, score=0.765 total time=   0.8s
+[CV 2/5] END learning_rate=0.005, max_depth=6, n_estimators=300;, score=0.737 total time=   1.1s
+[CV 3/5] END learning_rate=0.005, max_depth=6, n_estimators=300;, score=0.771 total time=   1.0s
+[CV 4/5] END learning_rate=0.005, max_depth=6, n_estimators=300;, score=0.793 total time=   1.1s
+[CV 5/5] END learning_rate=0.005, max_depth=6, n_estimators=300;, score=0.765 total time=   0.9s
+[CV 1/5] END learning_rate=0.01, max_depth=16, n_estimators=300;, score=0.802 total time=   1.9s
+[CV 2/5] END learning_rate=0.01, max_depth=16, n_estimators=300;, score=0.796 total time=   1.7s
+[CV 3/5] END learning_rate=0.01, max_depth=16, n_estimators=300;, score=0.811 total time=   1.7s
+[CV 4/5] END learning_rate=0.01, max_depth=16, n_estimators=300;, score=0.833 total time=   1.8s
+[CV 5/5] END learning_rate=0.01, max_depth=16, n_estimators=300;, score=0.813 total time=   1.7s
+[CV 1/5] END learning_rate=0.01, max_depth=18, n_estimators=300;, score=0.805 total time=   1.8s
+[CV 2/5] END learning_rate=0.01, max_depth=18, n_estimators=300;, score=0.796 total time=   1.8s
+[CV 3/5] END learning_rate=0.01, max_depth=18, n_estimators=300;, score=0.811 total time=   1.9s
+[CV 4/5] END learning_rate=0.01, max_depth=18, n_estimators=300;, score=0.833 total time=   1.7s
+[CV 5/5] END learning_rate=0.01, max_depth=18, n_estimators=300;, score=0.815 total time=   1.8s
+[CV 1/5] END learning_rate=0.005, max_depth=10, n_estimators=300;, score=0.771 total time=   1.4s
+[CV 2/5] END learning_rate=0.005, max_depth=10, n_estimators=300;, score=0.763 total time=   1.4s
+[CV 3/5] END learning_rate=0.005, max_depth=10, n_estimators=300;, score=0.802 total time=   1.4s
+[CV 4/5] END learning_rate=0.005, max_depth=10, n_estimators=300;, score=0.810 total time=   1.4s
+[CV 5/5] END learning_rate=0.005, max_depth=10, n_estimators=300;, score=0.785 total time=   1.2s
+[CV 1/5] END learning_rate=0.2, max_depth=16, n_estimators=250;, score=0.816 total time=   1.3s
+[CV 2/5] END learning_rate=0.2, max_depth=16, n_estimators=250;, score=0.797 total time=   1.6s
+[CV 3/5] END learning_rate=0.2, max_depth=16, n_estimators=250;, score=0.835 total time=   1.5s
+[CV 4/5] END learning_rate=0.2, max_depth=16, n_estimators=250;, score=0.843 total time=   1.5s
+[CV 5/5] END learning_rate=0.2, max_depth=16, n_estimators=250;, score=0.835 total time=   1.5s
+[CV 1/5] END learning_rate=0.1, max_depth=18, n_estimators=250;, score=0.832 total time=   1.6s
+[CV 2/5] END learning_rate=0.1, max_depth=18, n_estimators=250;, score=0.801 total time=   1.5s
+[CV 3/5] END learning_rate=0.1, max_depth=18, n_estimators=250;, score=0.838 total time=   1.5s
+[CV 4/5] END learning_rate=0.1, max_depth=18, n_estimators=250;, score=0.848 total time=   1.5s
+[CV 5/5] END learning_rate=0.1, max_depth=18, n_estimators=250;, score=0.846 total time=   1.5s
+[CV 1/5] END learning_rate=0.2, max_depth=10, n_estimators=150;, score=0.821 total time=   0.6s
+[CV 2/5] END learning_rate=0.2, max_depth=10, n_estimators=150;, score=0.794 total time=   0.5s
+[CV 3/5] END learning_rate=0.2, max_depth=10, n_estimators=150;, score=0.842 total time=   0.5s
+[CV 4/5] END learning_rate=0.2, max_depth=10, n_estimators=150;, score=0.847 total time=   0.6s
+[CV 5/5] END learning_rate=0.2, max_depth=10, n_estimators=150;, score=0.847 total time=   0.6s
+[CV 1/5] END learning_rate=0.005, max_depth=4, n_estimators=200;, score=0.714 total time=   0.5s
+[CV 2/5] END learning_rate=0.005, max_depth=4, n_estimators=200;, score=0.691 total time=   0.4s
+[CV 3/5] END learning_rate=0.005, max_depth=4, n_estimators=200;, score=0.743 total time=   0.5s
+[CV 4/5] END learning_rate=0.005, max_depth=4, n_estimators=200;, score=0.764 total time=   0.5s
+[CV 5/5] END learning_rate=0.005, max_depth=4, n_estimators=200;, score=0.729 total time=   0.4s
+[CV 1/5] END learning_rate=0.1, max_depth=12, n_estimators=100;, score=0.831 total time=   0.5s
+[CV 2/5] END learning_rate=0.1, max_depth=12, n_estimators=100;, score=0.793 total time=   0.4s
+[CV 3/5] END learning_rate=0.1, max_depth=12, n_estimators=100;, score=0.841 total time=   0.4s
+[CV 4/5] END learning_rate=0.1, max_depth=12, n_estimators=100;, score=0.845 total time=   0.4s
+[CV 5/5] END learning_rate=0.1, max_depth=12, n_estimators=100;, score=0.844 total time=   0.4s
+[CV 1/5] END learning_rate=0.1, max_depth=6, n_estimators=50;, score=0.797 total time=   0.2s
+[CV 2/5] END learning_rate=0.1, max_depth=6, n_estimators=50;, score=0.771 total time=   0.1s
+[CV 3/5] END learning_rate=0.1, max_depth=6, n_estimators=50;, score=0.811 total time=   0.2s
+[CV 4/5] END learning_rate=0.1, max_depth=6, n_estimators=50;, score=0.812 total time=   0.1s
+[CV 5/5] END learning_rate=0.1, max_depth=6, n_estimators=50;, score=0.809 total time=   0.1s
+[CV 1/5] END learning_rate=0.01, max_depth=10, n_estimators=300;, score=0.802 total time=   1.4s
+[CV 2/5] END learning_rate=0.01, max_depth=10, n_estimators=300;, score=0.790 total time=   1.4s
+[CV 3/5] END learning_rate=0.01, max_depth=10, n_estimators=300;, score=0.817 total time=   1.4s
+[CV 4/5] END learning_rate=0.01, max_depth=10, n_estimators=300;, score=0.832 total time=   1.4s
+[CV 5/5] END learning_rate=0.01, max_depth=10, n_estimators=300;, score=0.807 total time=   1.3s
+[CV 1/5] END learning_rate=0.01, max_depth=18, n_estimators=350;, score=0.811 total time=   2.0s
+[CV 2/5] END learning_rate=0.01, max_depth=18, n_estimators=350;, score=0.799 total time=   2.0s
+[CV 3/5] END learning_rate=0.01, max_depth=18, n_estimators=350;, score=0.816 total time=   2.0s
+[CV 4/5] END learning_rate=0.01, max_depth=18, n_estimators=350;, score=0.837 total time=   2.1s
+[CV 5/5] END learning_rate=0.01, max_depth=18, n_estimators=350;, score=0.821 total time=   2.2s
+[CV 1/5] END learning_rate=0.01, max_depth=6, n_estimators=300;, score=0.786 total time=   1.0s
+[CV 2/5] END learning_rate=0.01, max_depth=6, n_estimators=300;, score=0.759 total time=   0.9s
+[CV 3/5] END learning_rate=0.01, max_depth=6, n_estimators=300;, score=0.802 total time=   1.0s
+[CV 4/5] END learning_rate=0.01, max_depth=6, n_estimators=300;, score=0.813 total time=   1.0s
+[CV 5/5] END learning_rate=0.01, max_depth=6, n_estimators=300;, score=0.792 total time=   1.0s
+[CV 1/5] END learning_rate=0.2, max_depth=8, n_estimators=200;, score=0.821 total time=   0.7s
+[CV 2/5] END learning_rate=0.2, max_depth=8, n_estimators=200;, score=0.782 total time=   0.6s
+[CV 3/5] END learning_rate=0.2, max_depth=8, n_estimators=200;, score=0.836 total time=   0.7s
+[CV 4/5] END learning_rate=0.2, max_depth=8, n_estimators=200;, score=0.837 total time=   0.7s
+[CV 5/5] END learning_rate=0.2, max_depth=8, n_estimators=200;, score=0.845 total time=   0.7s
+[CV 1/5] END learning_rate=0.005, max_depth=8, n_estimators=250;, score=0.768 total time=   1.0s
+[CV 2/5] END learning_rate=0.005, max_depth=8, n_estimators=250;, score=0.741 total time=   0.9s
+[CV 3/5] END learning_rate=0.005, max_depth=8, n_estimators=250;, score=0.783 total time=   1.0s
+[CV 4/5] END learning_rate=0.005, max_depth=8, n_estimators=250;, score=0.804 total time=   0.9s
+[CV 5/5] END learning_rate=0.005, max_depth=8, n_estimators=250;, score=0.771 total time=   0.9s
+[CV 1/5] END learning_rate=0.01, max_depth=14, n_estimators=250;, score=0.796 total time=   1.4s
+[CV 2/5] END learning_rate=0.01, max_depth=14, n_estimators=250;, score=0.792 total time=   1.4s
+[CV 3/5] END learning_rate=0.01, max_depth=14, n_estimators=250;, score=0.808 total time=   1.4s
+[CV 4/5] END learning_rate=0.01, max_depth=14, n_estimators=250;, score=0.827 total time=   1.4s
+[CV 5/5] END learning_rate=0.01, max_depth=14, n_estimators=250;, score=0.804 total time=   1.2s
+[CV 1/5] END learning_rate=0.005, max_depth=6, n_estimators=250;, score=0.761 total time=   0.8s
+[CV 2/5] END learning_rate=0.005, max_depth=6, n_estimators=250;, score=0.732 total time=   0.8s
+[CV 3/5] END learning_rate=0.005, max_depth=6, n_estimators=250;, score=0.769 total time=   0.8s
+[CV 4/5] END learning_rate=0.005, max_depth=6, n_estimators=250;, score=0.791 total time=   0.8s
+[CV 5/5] END learning_rate=0.005, max_depth=6, n_estimators=250;, score=0.752 total time=   0.8s
+[CV 1/5] END learning_rate=0.2, max_depth=6, n_estimators=150;, score=0.810 total time=   0.4s
+[CV 2/5] END learning_rate=0.2, max_depth=6, n_estimators=150;, score=0.776 total time=   0.4s
+[CV 3/5] END learning_rate=0.2, max_depth=6, n_estimators=150;, score=0.836 total time=   0.4s
+[CV 4/5] END learning_rate=0.2, max_depth=6, n_estimators=150;, score=0.836 total time=   0.4s
+[CV 5/5] END learning_rate=0.2, max_depth=6, n_estimators=150;, score=0.826 total time=   0.4s
+[CV 1/5] END learning_rate=0.1, max_depth=18, n_estimators=50;, score=0.822 total time=   0.3s
+[CV 2/5] END learning_rate=0.1, max_depth=18, n_estimators=50;, score=0.802 total time=   0.3s
+[CV 3/5] END learning_rate=0.1, max_depth=18, n_estimators=50;, score=0.826 total time=   0.3s
+[CV 4/5] END learning_rate=0.1, max_depth=18, n_estimators=50;, score=0.842 total time=   0.3s
+[CV 5/5] END learning_rate=0.1, max_depth=18, n_estimators=50;, score=0.830 total time=   0.3s
+KNN parameter search...
+Fitting 5 folds for each of 40 candidates, totalling 200 fits
+[CV 1/5] END metric=minkowski, n_neighbors=3, weights=uniform;, score=0.702 total time=   0.2s
+[CV 2/5] END metric=minkowski, n_neighbors=3, weights=uniform;, score=0.719 total time=   0.0s
+[CV 3/5] END metric=minkowski, n_neighbors=3, weights=uniform;, score=0.725 total time=   0.0s
+[CV 4/5] END metric=minkowski, n_neighbors=3, weights=uniform;, score=0.788 total time=   0.0s
+[CV 5/5] END metric=minkowski, n_neighbors=3, weights=uniform;, score=0.715 total time=   0.0s
+[CV 1/5] END metric=euclidean, n_neighbors=3, weights=uniform;, score=0.702 total time=   0.0s
+[CV 2/5] END metric=euclidean, n_neighbors=3, weights=uniform;, score=0.719 total time=   0.0s
+[CV 3/5] END metric=euclidean, n_neighbors=3, weights=uniform;, score=0.725 total time=   0.0s
+[CV 4/5] END metric=euclidean, n_neighbors=3, weights=uniform;, score=0.788 total time=   0.0s
+[CV 5/5] END metric=euclidean, n_neighbors=3, weights=uniform;, score=0.715 total time=   0.0s
+[CV 1/5] END metric=manhattan, n_neighbors=2, weights=uniform;, score=0.683 total time=   0.4s
+[CV 2/5] END metric=manhattan, n_neighbors=2, weights=uniform;, score=0.697 total time=   0.4s
+[CV 3/5] END metric=manhattan, n_neighbors=2, weights=uniform;, score=0.701 total time=   0.4s
+[CV 4/5] END metric=manhattan, n_neighbors=2, weights=uniform;, score=0.771 total time=   0.4s
+[CV 5/5] END metric=manhattan, n_neighbors=2, weights=uniform;, score=0.688 total time=   0.3s
+[CV 1/5] END metric=manhattan, n_neighbors=16, weights=distance;, score=0.783 total time=   0.3s
+[CV 2/5] END metric=manhattan, n_neighbors=16, weights=distance;, score=0.758 total time=   0.3s
+[CV 3/5] END metric=manhattan, n_neighbors=16, weights=distance;, score=0.792 total time=   0.4s
+[CV 4/5] END metric=manhattan, n_neighbors=16, weights=distance;, score=0.806 total time=   0.4s
+[CV 5/5] END metric=manhattan, n_neighbors=16, weights=distance;, score=0.774 total time=   0.3s
+[CV 1/5] END metric=euclidean, n_neighbors=6, weights=uniform;, score=0.733 total time=   0.0s
+[CV 2/5] END metric=euclidean, n_neighbors=6, weights=uniform;, score=0.719 total time=   0.0s
+[CV 3/5] END metric=euclidean, n_neighbors=6, weights=uniform;, score=0.746 total time=   0.0s
+[CV 4/5] END metric=euclidean, n_neighbors=6, weights=uniform;, score=0.791 total time=   0.0s
+[CV 5/5] END metric=euclidean, n_neighbors=6, weights=uniform;, score=0.755 total time=   0.0s
+[CV 1/5] END metric=manhattan, n_neighbors=4, weights=distance;, score=0.728 total time=   0.3s
+[CV 2/5] END metric=manhattan, n_neighbors=4, weights=distance;, score=0.740 total time=   0.4s
+[CV 3/5] END metric=manhattan, n_neighbors=4, weights=distance;, score=0.741 total time=   0.3s
+[CV 4/5] END metric=manhattan, n_neighbors=4, weights=distance;, score=0.795 total time=   0.3s
+[CV 5/5] END metric=manhattan, n_neighbors=4, weights=distance;, score=0.741 total time=   0.4s
+[CV 1/5] END metric=manhattan, n_neighbors=17, weights=uniform;, score=0.754 total time=   0.3s
+[CV 2/5] END metric=manhattan, n_neighbors=17, weights=uniform;, score=0.731 total time=   0.3s
+[CV 3/5] END metric=manhattan, n_neighbors=17, weights=uniform;, score=0.769 total time=   0.4s
+[CV 4/5] END metric=manhattan, n_neighbors=17, weights=uniform;, score=0.781 total time=   0.3s
+[CV 5/5] END metric=manhattan, n_neighbors=17, weights=uniform;, score=0.752 total time=   0.4s
+[CV 1/5] END metric=manhattan, n_neighbors=15, weights=uniform;, score=0.751 total time=   0.4s
+[CV 2/5] END metric=manhattan, n_neighbors=15, weights=uniform;, score=0.726 total time=   0.4s
+[CV 3/5] END metric=manhattan, n_neighbors=15, weights=uniform;, score=0.775 total time=   0.4s
+[CV 4/5] END metric=manhattan, n_neighbors=15, weights=uniform;, score=0.779 total time=   0.4s
+[CV 5/5] END metric=manhattan, n_neighbors=15, weights=uniform;, score=0.752 total time=   0.4s
+[CV 1/5] END metric=manhattan, n_neighbors=5, weights=distance;, score=0.735 total time=   0.5s
+[CV 2/5] END metric=manhattan, n_neighbors=5, weights=distance;, score=0.742 total time=   0.4s
+[CV 3/5] END metric=manhattan, n_neighbors=5, weights=distance;, score=0.750 total time=   0.4s
+[CV 4/5] END metric=manhattan, n_neighbors=5, weights=distance;, score=0.805 total time=   0.4s
+[CV 5/5] END metric=manhattan, n_neighbors=5, weights=distance;, score=0.749 total time=   0.4s
+[CV 1/5] END metric=euclidean, n_neighbors=6, weights=distance;, score=0.747 total time=   0.0s
+[CV 2/5] END metric=euclidean, n_neighbors=6, weights=distance;, score=0.742 total time=   0.0s
+[CV 3/5] END metric=euclidean, n_neighbors=6, weights=distance;, score=0.757 total time=   0.0s
+[CV 4/5] END metric=euclidean, n_neighbors=6, weights=distance;, score=0.804 total time=   0.0s
+[CV 5/5] END metric=euclidean, n_neighbors=6, weights=distance;, score=0.763 total time=   0.0s
+[CV 1/5] END metric=minkowski, n_neighbors=12, weights=uniform;, score=0.753 total time=   0.0s
+[CV 2/5] END metric=minkowski, n_neighbors=12, weights=uniform;, score=0.716 total time=   0.0s
+[CV 3/5] END metric=minkowski, n_neighbors=12, weights=uniform;, score=0.755 total time=   0.0s
+[CV 4/5] END metric=minkowski, n_neighbors=12, weights=uniform;, score=0.787 total time=   0.0s
+[CV 5/5] END metric=minkowski, n_neighbors=12, weights=uniform;, score=0.754 total time=   0.0s
+[CV 1/5] END metric=euclidean, n_neighbors=19, weights=uniform;, score=0.749 total time=   0.0s
+[CV 2/5] END metric=euclidean, n_neighbors=19, weights=uniform;, score=0.722 total time=   0.0s
+[CV 3/5] END metric=euclidean, n_neighbors=19, weights=uniform;, score=0.769 total time=   0.0s
+[CV 4/5] END metric=euclidean, n_neighbors=19, weights=uniform;, score=0.779 total time=   0.0s
+[CV 5/5] END metric=euclidean, n_neighbors=19, weights=uniform;, score=0.752 total time=   0.0s
+[CV 1/5] END metric=minkowski, n_neighbors=4, weights=distance;, score=0.727 total time=   0.0s
+[CV 2/5] END metric=minkowski, n_neighbors=4, weights=distance;, score=0.740 total time=   0.0s
+[CV 3/5] END metric=minkowski, n_neighbors=4, weights=distance;, score=0.740 total time=   0.0s
+[CV 4/5] END metric=minkowski, n_neighbors=4, weights=distance;, score=0.795 total time=   0.0s
+[CV 5/5] END metric=minkowski, n_neighbors=4, weights=distance;, score=0.741 total time=   0.0s
+[CV 1/5] END metric=minkowski, n_neighbors=19, weights=uniform;, score=0.749 total time=   0.0s
+[CV 2/5] END metric=minkowski, n_neighbors=19, weights=uniform;, score=0.722 total time=   0.0s
+[CV 3/5] END metric=minkowski, n_neighbors=19, weights=uniform;, score=0.769 total time=   0.0s
+[CV 4/5] END metric=minkowski, n_neighbors=19, weights=uniform;, score=0.779 total time=   0.0s
+[CV 5/5] END metric=minkowski, n_neighbors=19, weights=uniform;, score=0.752 total time=   0.0s
+[CV 1/5] END metric=euclidean, n_neighbors=10, weights=uniform;, score=0.757 total time=   0.0s
+[CV 2/5] END metric=euclidean, n_neighbors=10, weights=uniform;, score=0.729 total time=   0.0s
+[CV 3/5] END metric=euclidean, n_neighbors=10, weights=uniform;, score=0.757 total time=   0.0s
+[CV 4/5] END metric=euclidean, n_neighbors=10, weights=uniform;, score=0.789 total time=   0.0s
+[CV 5/5] END metric=euclidean, n_neighbors=10, weights=uniform;, score=0.750 total time=   0.0s
+[CV 1/5] END metric=euclidean, n_neighbors=1, weights=uniform;, score=0.637 total time=   0.0s
+[CV 2/5] END metric=euclidean, n_neighbors=1, weights=uniform;, score=0.651 total time=   0.0s
+[CV 3/5] END metric=euclidean, n_neighbors=1, weights=uniform;, score=0.656 total time=   0.0s
+[CV 4/5] END metric=euclidean, n_neighbors=1, weights=uniform;, score=0.695 total time=   0.0s
+[CV 5/5] END metric=euclidean, n_neighbors=1, weights=uniform;, score=0.649 total time=   0.0s
+[CV 1/5] END metric=manhattan, n_neighbors=18, weights=uniform;, score=0.748 total time=   0.4s
+[CV 2/5] END metric=manhattan, n_neighbors=18, weights=uniform;, score=0.729 total time=   0.4s
+[CV 3/5] END metric=manhattan, n_neighbors=18, weights=uniform;, score=0.768 total time=   0.4s
+[CV 4/5] END metric=manhattan, n_neighbors=18, weights=uniform;, score=0.773 total time=   0.4s
+[CV 5/5] END metric=manhattan, n_neighbors=18, weights=uniform;, score=0.758 total time=   0.4s
+[CV 1/5] END metric=euclidean, n_neighbors=14, weights=uniform;, score=0.751 total time=   0.0s
+[CV 2/5] END metric=euclidean, n_neighbors=14, weights=uniform;, score=0.724 total time=   0.0s
+[CV 3/5] END metric=euclidean, n_neighbors=14, weights=uniform;, score=0.772 total time=   0.0s
+[CV 4/5] END metric=euclidean, n_neighbors=14, weights=uniform;, score=0.781 total time=   0.0s
+[CV 5/5] END metric=euclidean, n_neighbors=14, weights=uniform;, score=0.757 total time=   0.0s
+[CV 1/5] END metric=minkowski, n_neighbors=3, weights=distance;, score=0.709 total time=   0.0s
+[CV 2/5] END metric=minkowski, n_neighbors=3, weights=distance;, score=0.728 total time=   0.0s
+[CV 3/5] END metric=minkowski, n_neighbors=3, weights=distance;, score=0.732 total time=   0.0s
+[CV 4/5] END metric=minkowski, n_neighbors=3, weights=distance;, score=0.792 total time=   0.0s
+[CV 5/5] END metric=minkowski, n_neighbors=3, weights=distance;, score=0.719 total time=   0.0s
+[CV 1/5] END metric=manhattan, n_neighbors=8, weights=distance;, score=0.768 total time=   0.4s
+[CV 2/5] END metric=manhattan, n_neighbors=8, weights=distance;, score=0.759 total time=   0.3s
+[CV 3/5] END metric=manhattan, n_neighbors=8, weights=distance;, score=0.766 total time=   0.4s
+[CV 4/5] END metric=manhattan, n_neighbors=8, weights=distance;, score=0.818 total time=   0.4s
+[CV 5/5] END metric=manhattan, n_neighbors=8, weights=distance;, score=0.770 total time=   0.4s
+[CV 1/5] END metric=minkowski, n_neighbors=14, weights=distance;, score=0.778 total time=   0.0s
+[CV 2/5] END metric=minkowski, n_neighbors=14, weights=distance;, score=0.749 total time=   0.0s
+[CV 3/5] END metric=minkowski, n_neighbors=14, weights=distance;, score=0.785 total time=   0.0s
+[CV 4/5] END metric=minkowski, n_neighbors=14, weights=distance;, score=0.803 total time=   0.0s
+[CV 5/5] END metric=minkowski, n_neighbors=14, weights=distance;, score=0.771 total time=   0.0s
+[CV 1/5] END metric=minkowski, n_neighbors=8, weights=distance;, score=0.766 total time=   0.0s
+[CV 2/5] END metric=minkowski, n_neighbors=8, weights=distance;, score=0.757 total time=   0.0s
+[CV 3/5] END metric=minkowski, n_neighbors=8, weights=distance;, score=0.764 total time=   0.0s
+[CV 4/5] END metric=minkowski, n_neighbors=8, weights=distance;, score=0.816 total time=   0.0s
+[CV 5/5] END metric=minkowski, n_neighbors=8, weights=distance;, score=0.769 total time=   0.0s
+[CV 1/5] END metric=euclidean, n_neighbors=7, weights=uniform;, score=0.743 total time=   0.0s
+[CV 2/5] END metric=euclidean, n_neighbors=7, weights=uniform;, score=0.723 total time=   0.0s
+[CV 3/5] END metric=euclidean, n_neighbors=7, weights=uniform;, score=0.749 total time=   0.0s
+[CV 4/5] END metric=euclidean, n_neighbors=7, weights=uniform;, score=0.799 total time=   0.0s
+[CV 5/5] END metric=euclidean, n_neighbors=7, weights=uniform;, score=0.767 total time=   0.0s
+[CV 1/5] END metric=euclidean, n_neighbors=16, weights=distance;, score=0.778 total time=   0.0s
+[CV 2/5] END metric=euclidean, n_neighbors=16, weights=distance;, score=0.753 total time=   0.0s
+[CV 3/5] END metric=euclidean, n_neighbors=16, weights=distance;, score=0.788 total time=   0.0s
+[CV 4/5] END metric=euclidean, n_neighbors=16, weights=distance;, score=0.802 total time=   0.0s
+[CV 5/5] END metric=euclidean, n_neighbors=16, weights=distance;, score=0.771 total time=   0.0s
+[CV 1/5] END metric=manhattan, n_neighbors=15, weights=distance;, score=0.783 total time=   0.4s
+[CV 2/5] END metric=manhattan, n_neighbors=15, weights=distance;, score=0.755 total time=   0.4s
+[CV 3/5] END metric=manhattan, n_neighbors=15, weights=distance;, score=0.792 total time=   0.3s
+[CV 4/5] END metric=manhattan, n_neighbors=15, weights=distance;, score=0.805 total time=   0.3s
+[CV 5/5] END metric=manhattan, n_neighbors=15, weights=distance;, score=0.770 total time=   0.4s
+[CV 1/5] END metric=minkowski, n_neighbors=18, weights=distance;, score=0.773 total time=   0.0s
+[CV 2/5] END metric=minkowski, n_neighbors=18, weights=distance;, score=0.752 total time=   0.0s
+[CV 3/5] END metric=minkowski, n_neighbors=18, weights=distance;, score=0.785 total time=   0.0s
+[CV 4/5] END metric=minkowski, n_neighbors=18, weights=distance;, score=0.797 total time=   0.0s
+[CV 5/5] END metric=minkowski, n_neighbors=18, weights=distance;, score=0.771 total time=   0.0s
+[CV 1/5] END metric=minkowski, n_neighbors=17, weights=uniform;, score=0.754 total time=   0.0s
+[CV 2/5] END metric=minkowski, n_neighbors=17, weights=uniform;, score=0.731 total time=   0.0s
+[CV 3/5] END metric=minkowski, n_neighbors=17, weights=uniform;, score=0.769 total time=   0.0s
+[CV 4/5] END metric=minkowski, n_neighbors=17, weights=uniform;, score=0.781 total time=   0.0s
+[CV 5/5] END metric=minkowski, n_neighbors=17, weights=uniform;, score=0.752 total time=   0.0s
+[CV 1/5] END metric=euclidean, n_neighbors=12, weights=uniform;, score=0.753 total time=   0.0s
+[CV 2/5] END metric=euclidean, n_neighbors=12, weights=uniform;, score=0.716 total time=   0.0s
+[CV 3/5] END metric=euclidean, n_neighbors=12, weights=uniform;, score=0.755 total time=   0.0s
+[CV 4/5] END metric=euclidean, n_neighbors=12, weights=uniform;, score=0.787 total time=   0.0s
+[CV 5/5] END metric=euclidean, n_neighbors=12, weights=uniform;, score=0.754 total time=   0.0s
+[CV 1/5] END metric=manhattan, n_neighbors=4, weights=uniform;, score=0.718 total time=   0.4s
+[CV 2/5] END metric=manhattan, n_neighbors=4, weights=uniform;, score=0.725 total time=   0.3s
+[CV 3/5] END metric=manhattan, n_neighbors=4, weights=uniform;, score=0.732 total time=   0.3s
+[CV 4/5] END metric=manhattan, n_neighbors=4, weights=uniform;, score=0.788 total time=   0.4s
+[CV 5/5] END metric=manhattan, n_neighbors=4, weights=uniform;, score=0.735 total time=   0.3s
+[CV 1/5] END metric=minkowski, n_neighbors=16, weights=distance;, score=0.778 total time=   0.0s
+[CV 2/5] END metric=minkowski, n_neighbors=16, weights=distance;, score=0.753 total time=   0.0s
+[CV 3/5] END metric=minkowski, n_neighbors=16, weights=distance;, score=0.788 total time=   0.0s
+[CV 4/5] END metric=minkowski, n_neighbors=16, weights=distance;, score=0.802 total time=   0.0s
+[CV 5/5] END metric=minkowski, n_neighbors=16, weights=distance;, score=0.771 total time=   0.0s
+[CV 1/5] END metric=minkowski, n_neighbors=2, weights=uniform;, score=0.683 total time=   0.0s
+[CV 2/5] END metric=minkowski, n_neighbors=2, weights=uniform;, score=0.697 total time=   0.0s
+[CV 3/5] END metric=minkowski, n_neighbors=2, weights=uniform;, score=0.701 total time=   0.0s
+[CV 4/5] END metric=minkowski, n_neighbors=2, weights=uniform;, score=0.771 total time=   0.0s
+[CV 5/5] END metric=minkowski, n_neighbors=2, weights=uniform;, score=0.688 total time=   0.0s
+[CV 1/5] END metric=euclidean, n_neighbors=8, weights=distance;, score=0.766 total time=   0.0s
+[CV 2/5] END metric=euclidean, n_neighbors=8, weights=distance;, score=0.757 total time=   0.0s
+[CV 3/5] END metric=euclidean, n_neighbors=8, weights=distance;, score=0.764 total time=   0.0s
+[CV 4/5] END metric=euclidean, n_neighbors=8, weights=distance;, score=0.816 total time=   0.0s
+[CV 5/5] END metric=euclidean, n_neighbors=8, weights=distance;, score=0.769 total time=   0.0s
+[CV 1/5] END metric=euclidean, n_neighbors=16, weights=uniform;, score=0.751 total time=   0.0s
+[CV 2/5] END metric=euclidean, n_neighbors=16, weights=uniform;, score=0.730 total time=   0.0s
+[CV 3/5] END metric=euclidean, n_neighbors=16, weights=uniform;, score=0.773 total time=   0.0s
+[CV 4/5] END metric=euclidean, n_neighbors=16, weights=uniform;, score=0.779 total time=   0.0s
+[CV 5/5] END metric=euclidean, n_neighbors=16, weights=uniform;, score=0.757 total time=   0.0s
+[CV 1/5] END metric=minkowski, n_neighbors=15, weights=uniform;, score=0.751 total time=   0.0s
+[CV 2/5] END metric=minkowski, n_neighbors=15, weights=uniform;, score=0.726 total time=   0.0s
+[CV 3/5] END metric=minkowski, n_neighbors=15, weights=uniform;, score=0.775 total time=   0.0s
+[CV 4/5] END metric=minkowski, n_neighbors=15, weights=uniform;, score=0.779 total time=   0.0s
+[CV 5/5] END metric=minkowski, n_neighbors=15, weights=uniform;, score=0.752 total time=   0.0s
+[CV 1/5] END metric=euclidean, n_neighbors=5, weights=distance;, score=0.735 total time=   0.0s
+[CV 2/5] END metric=euclidean, n_neighbors=5, weights=distance;, score=0.741 total time=   0.0s
+[CV 3/5] END metric=euclidean, n_neighbors=5, weights=distance;, score=0.749 total time=   0.0s
+[CV 4/5] END metric=euclidean, n_neighbors=5, weights=distance;, score=0.804 total time=   0.0s
+[CV 5/5] END metric=euclidean, n_neighbors=5, weights=distance;, score=0.749 total time=   0.0s
+[CV 1/5] END metric=euclidean, n_neighbors=17, weights=distance;, score=0.779 total time=   0.0s
+[CV 2/5] END metric=euclidean, n_neighbors=17, weights=distance;, score=0.753 total time=   0.0s
+[CV 3/5] END metric=euclidean, n_neighbors=17, weights=distance;, score=0.785 total time=   0.0s
+[CV 4/5] END metric=euclidean, n_neighbors=17, weights=distance;, score=0.804 total time=   0.0s
+[CV 5/5] END metric=euclidean, n_neighbors=17, weights=distance;, score=0.767 total time=   0.0s
+[CV 1/5] END metric=manhattan, n_neighbors=13, weights=uniform;, score=0.749 total time=   0.3s
+[CV 2/5] END metric=manhattan, n_neighbors=13, weights=uniform;, score=0.722 total time=   0.4s
+[CV 3/5] END metric=manhattan, n_neighbors=13, weights=uniform;, score=0.763 total time=   0.4s
+[CV 4/5] END metric=manhattan, n_neighbors=13, weights=uniform;, score=0.785 total time=   0.4s
+[CV 5/5] END metric=manhattan, n_neighbors=13, weights=uniform;, score=0.758 total time=   0.3s
+[CV 1/5] END metric=manhattan, n_neighbors=14, weights=distance;, score=0.781 total time=   0.4s
+[CV 2/5] END metric=manhattan, n_neighbors=14, weights=distance;, score=0.754 total time=   0.3s
+[CV 3/5] END metric=manhattan, n_neighbors=14, weights=distance;, score=0.788 total time=   0.3s
+[CV 4/5] END metric=manhattan, n_neighbors=14, weights=distance;, score=0.807 total time=   0.4s
+[CV 5/5] END metric=manhattan, n_neighbors=14, weights=distance;, score=0.773 total time=   0.3s
+[CV 1/5] END metric=euclidean, n_neighbors=15, weights=uniform;, score=0.751 total time=   0.0s
+[CV 2/5] END metric=euclidean, n_neighbors=15, weights=uniform;, score=0.726 total time=   0.0s
+[CV 3/5] END metric=euclidean, n_neighbors=15, weights=uniform;, score=0.775 total time=   0.0s
+[CV 4/5] END metric=euclidean, n_neighbors=15, weights=uniform;, score=0.779 total time=   0.0s
+[CV 5/5] END metric=euclidean, n_neighbors=15, weights=uniform;, score=0.752 total time=   0.0s
+[CV 1/5] END metric=manhattan, n_neighbors=3, weights=uniform;, score=0.702 total time=   0.4s
+[CV 2/5] END metric=manhattan, n_neighbors=3, weights=uniform;, score=0.719 total time=   0.3s
+[CV 3/5] END metric=manhattan, n_neighbors=3, weights=uniform;, score=0.725 total time=   0.3s
+[CV 4/5] END metric=manhattan, n_neighbors=3, weights=uniform;, score=0.788 total time=   0.3s
+[CV 5/5] END metric=manhattan, n_neighbors=3, weights=uniform;, score=0.715 total time=   0.3s
+SVM parameter search...
+Fitting 5 folds for each of 40 candidates, totalling 200 fits
+[CV 1/5] END C=46, degree=4, gamma=scale, kernel=poly;, score=0.792 total time=  20.4s
+[CV 2/5] END C=46, degree=4, gamma=scale, kernel=poly;, score=0.771 total time=  19.9s
+[CV 3/5] END C=46, degree=4, gamma=scale, kernel=poly;, score=0.809 total time=  22.0s
+[CV 4/5] END C=46, degree=4, gamma=scale, kernel=poly;, score=0.843 total time=  22.7s
+[CV 5/5] END C=46, degree=4, gamma=scale, kernel=poly;, score=0.814 total time=  21.3s
+[CV 1/5] END C=82, degree=4, gamma=scale, kernel=rbf;, score=0.809 total time=  20.2s
+[CV 2/5] END C=82, degree=4, gamma=scale, kernel=rbf;, score=0.793 total time=  20.4s
+[CV 3/5] END C=82, degree=4, gamma=scale, kernel=rbf;, score=0.826 total time=  21.6s
+[CV 4/5] END C=82, degree=4, gamma=scale, kernel=rbf;, score=0.851 total time=  20.8s
+[CV 5/5] END C=82, degree=4, gamma=scale, kernel=rbf;, score=0.849 total time=  25.5s
+[CV 1/5] END C=13, degree=4, gamma=auto, kernel=poly;, score=0.652 total time=  36.0s
+[CV 2/5] END C=13, degree=4, gamma=auto, kernel=poly;, score=0.641 total time=  33.1s
+[CV 3/5] END C=13, degree=4, gamma=auto, kernel=poly;, score=0.687 total time=  27.6s
+[CV 4/5] END C=13, degree=4, gamma=auto, kernel=poly;, score=0.691 total time=  30.5s
+[CV 5/5] END C=13, degree=4, gamma=auto, kernel=poly;, score=0.697 total time=  29.1s
+[CV 1/5] END C=45, degree=3, gamma=scale, kernel=linear;, score=0.699 total time=  27.7s
+[CV 2/5] END C=45, degree=3, gamma=scale, kernel=linear;, score=0.648 total time=  25.2s
+[CV 3/5] END C=45, degree=3, gamma=scale, kernel=linear;, score=0.721 total time=  28.4s
+[CV 4/5] END C=45, degree=3, gamma=scale, kernel=linear;, score=0.686 total time=  32.1s
+[CV 5/5] END C=45, degree=3, gamma=scale, kernel=linear;, score=0.717 total time=  26.8s
+[CV 1/5] END C=44, degree=2, gamma=auto, kernel=linear;, score=0.700 total time=  28.5s
+[CV 2/5] END C=44, degree=2, gamma=auto, kernel=linear;, score=0.648 total time=  23.3s
+[CV 3/5] END C=44, degree=2, gamma=auto, kernel=linear;, score=0.721 total time=  49.2s
+[CV 4/5] END C=44, degree=2, gamma=auto, kernel=linear;, score=0.686 total time=  41.6s
+[CV 5/5] END C=44, degree=2, gamma=auto, kernel=linear;, score=0.716 total time=  41.3s
+[CV 1/5] END C=16, degree=2, gamma=scale, kernel=linear;, score=0.700 total time=  29.4s
+[CV 2/5] END C=16, degree=2, gamma=scale, kernel=linear;, score=0.655 total time=  26.5s
+[CV 3/5] END C=16, degree=2, gamma=scale, kernel=linear;, score=0.732 total time=  33.9s
+[CV 4/5] END C=16, degree=2, gamma=scale, kernel=linear;, score=0.682 total time=  34.1s
+[CV 5/5] END C=16, degree=2, gamma=scale, kernel=linear;, score=0.723 total time=  35.3s
+[CV 1/5] END C=24, degree=2, gamma=scale, kernel=poly;, score=0.775 total time=  19.1s
+[CV 2/5] END C=24, degree=2, gamma=scale, kernel=poly;, score=0.770 total time=  19.3s
+[CV 3/5] END C=24, degree=2, gamma=scale, kernel=poly;, score=0.797 total time=  19.7s
+[CV 4/5] END C=24, degree=2, gamma=scale, kernel=poly;, score=0.831 total time=  21.1s
+[CV 5/5] END C=24, degree=2, gamma=scale, kernel=poly;, score=0.818 total time=  21.8s
+[CV 1/5] END C=80, degree=4, gamma=scale, kernel=rbf;, score=0.809 total time=  30.2s
+[CV 2/5] END C=80, degree=4, gamma=scale, kernel=rbf;, score=0.793 total time=  25.7s
+[CV 3/5] END C=80, degree=4, gamma=scale, kernel=rbf;, score=0.826 total time=  32.5s
+[CV 4/5] END C=80, degree=4, gamma=scale, kernel=rbf;, score=0.851 total time=  30.8s
+[CV 5/5] END C=80, degree=4, gamma=scale, kernel=rbf;, score=0.849 total time=  33.3s
+[CV 1/5] END C=75, degree=4, gamma=scale, kernel=rbf;, score=0.809 total time=  32.2s
+[CV 2/5] END C=75, degree=4, gamma=scale, kernel=rbf;, score=0.793 total time=  26.7s
+[CV 3/5] END C=75, degree=4, gamma=scale, kernel=rbf;, score=0.826 total time=  24.8s
+[CV 4/5] END C=75, degree=4, gamma=scale, kernel=rbf;, score=0.851 total time=  24.4s
+[CV 5/5] END C=75, degree=4, gamma=scale, kernel=rbf;, score=0.849 total time=  29.0s
+[CV 1/5] END C=7, degree=2, gamma=auto, kernel=linear;, score=0.701 total time=  23.5s
+[CV 2/5] END C=7, degree=2, gamma=auto, kernel=linear;, score=0.674 total time=  22.9s
+[CV 3/5] END C=7, degree=2, gamma=auto, kernel=linear;, score=0.736 total time=  21.8s
+[CV 4/5] END C=7, degree=2, gamma=auto, kernel=linear;, score=0.691 total time=  21.2s
+[CV 5/5] END C=7, degree=2, gamma=auto, kernel=linear;, score=0.730 total time=  23.0s
+[CV 1/5] END C=41, degree=4, gamma=auto, kernel=rbf;, score=0.747 total time=  21.6s
+[CV 2/5] END C=41, degree=4, gamma=auto, kernel=rbf;, score=0.760 total time=  21.2s
+[CV 3/5] END C=41, degree=4, gamma=auto, kernel=rbf;, score=0.796 total time=  20.9s
+[CV 4/5] END C=41, degree=4, gamma=auto, kernel=rbf;, score=0.781 total time=  20.2s
+[CV 5/5] END C=41, degree=4, gamma=auto, kernel=rbf;, score=0.802 total time=  20.4s
+[CV 1/5] END C=61, degree=2, gamma=auto, kernel=rbf;, score=0.744 total time=  17.9s
+[CV 2/5] END C=61, degree=2, gamma=auto, kernel=rbf;, score=0.751 total time=  18.1s
+[CV 3/5] END C=61, degree=2, gamma=auto, kernel=rbf;, score=0.790 total time=  19.2s
+[CV 4/5] END C=61, degree=2, gamma=auto, kernel=rbf;, score=0.775 total time=  20.6s
+[CV 5/5] END C=61, degree=2, gamma=auto, kernel=rbf;, score=0.798 total time=  19.9s
+[CV 1/5] END C=10, degree=3, gamma=auto, kernel=poly;, score=0.646 total time=  35.0s
+[CV 2/5] END C=10, degree=3, gamma=auto, kernel=poly;, score=0.639 total time=  38.3s
+[CV 3/5] END C=10, degree=3, gamma=auto, kernel=poly;, score=0.680 total time=  43.0s
+[CV 4/5] END C=10, degree=3, gamma=auto, kernel=poly;, score=0.692 total time=  35.4s
+[CV 5/5] END C=10, degree=3, gamma=auto, kernel=poly;, score=0.695 total time=  35.8s
+[CV 1/5] END C=42, degree=2, gamma=auto, kernel=linear;, score=0.701 total time=  33.6s
+[CV 2/5] END C=42, degree=2, gamma=auto, kernel=linear;, score=0.648 total time=  34.6s
+[CV 3/5] END C=42, degree=2, gamma=auto, kernel=linear;, score=0.722 total time=  38.5s
+[CV 4/5] END C=42, degree=2, gamma=auto, kernel=linear;, score=0.686 total time=  41.5s
+[CV 5/5] END C=42, degree=2, gamma=auto, kernel=linear;, score=0.717 total time=  48.4s
+[CV 1/5] END C=65, degree=4, gamma=auto, kernel=poly;, score=0.652 total time=  33.5s
+[CV 2/5] END C=65, degree=4, gamma=auto, kernel=poly;, score=0.641 total time=  33.0s
+[CV 3/5] END C=65, degree=4, gamma=auto, kernel=poly;, score=0.687 total time=  38.9s
+[CV 4/5] END C=65, degree=4, gamma=auto, kernel=poly;, score=0.691 total time=  37.3s
+[CV 5/5] END C=65, degree=4, gamma=auto, kernel=poly;, score=0.697 total time=  38.0s
+[CV 1/5] END C=75, degree=4, gamma=auto, kernel=linear;, score=0.696 total time=  38.6s
+[CV 2/5] END C=75, degree=4, gamma=auto, kernel=linear;, score=0.650 total time=  31.5s
+[CV 3/5] END C=75, degree=4, gamma=auto, kernel=linear;, score=0.711 total time=  35.3s
+[CV 4/5] END C=75, degree=4, gamma=auto, kernel=linear;, score=0.688 total time=  52.3s
+[CV 5/5] END C=75, degree=4, gamma=auto, kernel=linear;, score=0.718 total time=  46.7s
+[CV 1/5] END C=11, degree=3, gamma=scale, kernel=poly;, score=0.795 total time=  27.3s
+[CV 2/5] END C=11, degree=3, gamma=scale, kernel=poly;, score=0.779 total time=  26.1s
+[CV 3/5] END C=11, degree=3, gamma=scale, kernel=poly;, score=0.813 total time=  26.2s
+[CV 4/5] END C=11, degree=3, gamma=scale, kernel=poly;, score=0.845 total time=  28.3s
+[CV 5/5] END C=11, degree=3, gamma=scale, kernel=poly;, score=0.821 total time=  26.8s
+[CV 1/5] END C=77, degree=3, gamma=auto, kernel=rbf;, score=0.745 total time=  23.6s
+[CV 2/5] END C=77, degree=3, gamma=auto, kernel=rbf;, score=0.746 total time=  27.0s
+[CV 3/5] END C=77, degree=3, gamma=auto, kernel=rbf;, score=0.788 total time=  27.2s
+[CV 4/5] END C=77, degree=3, gamma=auto, kernel=rbf;, score=0.773 total time=  26.3s
+[CV 5/5] END C=77, degree=3, gamma=auto, kernel=rbf;, score=0.796 total time=  26.1s
+[CV 1/5] END C=96, degree=2, gamma=auto, kernel=poly;, score=0.787 total time=  32.1s
+[CV 2/5] END C=96, degree=2, gamma=auto, kernel=poly;, score=0.769 total time=  38.6s
+[CV 3/5] END C=96, degree=2, gamma=auto, kernel=poly;, score=0.813 total time=  32.0s
+[CV 4/5] END C=96, degree=2, gamma=auto, kernel=poly;, score=0.823 total time=  35.0s
+[CV 5/5] END C=96, degree=2, gamma=auto, kernel=poly;, score=0.825 total time=  33.2s
+[CV 1/5] END C=65, degree=4, gamma=auto, kernel=rbf;, score=0.745 total time=  27.1s
+[CV 2/5] END C=65, degree=4, gamma=auto, kernel=rbf;, score=0.750 total time=  27.8s
+[CV 3/5] END C=65, degree=4, gamma=auto, kernel=rbf;, score=0.790 total time=  26.1s
+[CV 4/5] END C=65, degree=4, gamma=auto, kernel=rbf;, score=0.774 total time=  28.5s
+[CV 5/5] END C=65, degree=4, gamma=auto, kernel=rbf;, score=0.798 total time=  29.4s
+[CV 1/5] END C=33, degree=3, gamma=scale, kernel=linear;, score=0.704 total time=  34.4s
+[CV 2/5] END C=33, degree=3, gamma=scale, kernel=linear;, score=0.648 total time=  36.9s
+[CV 3/5] END C=33, degree=3, gamma=scale, kernel=linear;, score=0.725 total time=  38.9s
+[CV 4/5] END C=33, degree=3, gamma=scale, kernel=linear;, score=0.686 total time=  45.6s
+[CV 5/5] END C=33, degree=3, gamma=scale, kernel=linear;, score=0.720 total time=  40.9s
+[CV 1/5] END C=55, degree=4, gamma=auto, kernel=rbf;, score=0.744 total time=  29.4s
+[CV 2/5] END C=55, degree=4, gamma=auto, kernel=rbf;, score=0.752 total time=  29.3s
+[CV 3/5] END C=55, degree=4, gamma=auto, kernel=rbf;, score=0.791 total time=  30.2s
+[CV 4/5] END C=55, degree=4, gamma=auto, kernel=rbf;, score=0.775 total time=  30.1s
+[CV 5/5] END C=55, degree=4, gamma=auto, kernel=rbf;, score=0.798 total time=  29.2s
+[CV 1/5] END C=84, degree=2, gamma=auto, kernel=linear;, score=0.696 total time=  38.8s
+[CV 2/5] END C=84, degree=2, gamma=auto, kernel=linear;, score=0.652 total time=  29.2s
+[CV 3/5] END C=84, degree=2, gamma=auto, kernel=linear;, score=0.710 total time=  39.1s
+[CV 4/5] END C=84, degree=2, gamma=auto, kernel=linear;, score=0.689 total time=  49.1s
+[CV 5/5] END C=84, degree=2, gamma=auto, kernel=linear;, score=0.718 total time=  40.9s
+[CV 1/5] END C=20, degree=3, gamma=auto, kernel=rbf;, score=0.762 total time=  29.3s
+[CV 2/5] END C=20, degree=3, gamma=auto, kernel=rbf;, score=0.768 total time=  28.5s
+[CV 3/5] END C=20, degree=3, gamma=auto, kernel=rbf;, score=0.803 total time=  29.4s
+[CV 4/5] END C=20, degree=3, gamma=auto, kernel=rbf;, score=0.792 total time=  30.7s
+[CV 5/5] END C=20, degree=3, gamma=auto, kernel=rbf;, score=0.808 total time=  29.3s
+[CV 1/5] END C=33, degree=4, gamma=auto, kernel=poly;, score=0.652 total time=  35.1s
+[CV 2/5] END C=33, degree=4, gamma=auto, kernel=poly;, score=0.641 total time=  30.5s
+[CV 3/5] END C=33, degree=4, gamma=auto, kernel=poly;, score=0.687 total time=  28.6s
+[CV 4/5] END C=33, degree=4, gamma=auto, kernel=poly;, score=0.691 total time=  29.8s
+[CV 5/5] END C=33, degree=4, gamma=auto, kernel=poly;, score=0.697 total time=  29.3s
+[CV 1/5] END C=52, degree=3, gamma=scale, kernel=poly;, score=0.783 total time=  17.5s
+[CV 2/5] END C=52, degree=3, gamma=scale, kernel=poly;, score=0.769 total time=  16.1s
+[CV 3/5] END C=52, degree=3, gamma=scale, kernel=poly;, score=0.802 total time=  17.4s
+[CV 4/5] END C=52, degree=3, gamma=scale, kernel=poly;, score=0.841 total time=  16.6s
+[CV 5/5] END C=52, degree=3, gamma=scale, kernel=poly;, score=0.814 total time=  17.7s
+[CV 1/5] END C=53, degree=3, gamma=scale, kernel=rbf;, score=0.808 total time=  20.9s
+[CV 2/5] END C=53, degree=3, gamma=scale, kernel=rbf;, score=0.793 total time=  20.8s
+[CV 3/5] END C=53, degree=3, gamma=scale, kernel=rbf;, score=0.826 total time=  20.9s
+[CV 4/5] END C=53, degree=3, gamma=scale, kernel=rbf;, score=0.852 total time=  21.7s
+[CV 5/5] END C=53, degree=3, gamma=scale, kernel=rbf;, score=0.848 total time=  21.4s
+[CV 1/5] END C=70, degree=4, gamma=auto, kernel=rbf;, score=0.744 total time=  15.5s
+[CV 2/5] END C=70, degree=4, gamma=auto, kernel=rbf;, score=0.748 total time=  15.2s
+[CV 3/5] END C=70, degree=4, gamma=auto, kernel=rbf;, score=0.789 total time=  16.6s
+[CV 4/5] END C=70, degree=4, gamma=auto, kernel=rbf;, score=0.774 total time=  17.8s
+[CV 5/5] END C=70, degree=4, gamma=auto, kernel=rbf;, score=0.798 total time=  17.9s
+[CV 1/5] END C=34, degree=3, gamma=scale, kernel=poly;, score=0.786 total time=  20.3s
+[CV 2/5] END C=34, degree=3, gamma=scale, kernel=poly;, score=0.771 total time=  20.3s
+[CV 3/5] END C=34, degree=3, gamma=scale, kernel=poly;, score=0.801 total time=  18.5s
+[CV 4/5] END C=34, degree=3, gamma=scale, kernel=poly;, score=0.843 total time=  18.6s
+[CV 5/5] END C=34, degree=3, gamma=scale, kernel=poly;, score=0.813 total time=  19.9s
+[CV 1/5] END C=26, degree=4, gamma=scale, kernel=poly;, score=0.792 total time=  20.4s
+[CV 2/5] END C=26, degree=4, gamma=scale, kernel=poly;, score=0.773 total time=  21.6s
+[CV 3/5] END C=26, degree=4, gamma=scale, kernel=poly;, score=0.812 total time=  21.6s
+[CV 4/5] END C=26, degree=4, gamma=scale, kernel=poly;, score=0.846 total time=  21.2s
+[CV 5/5] END C=26, degree=4, gamma=scale, kernel=poly;, score=0.816 total time=  23.2s
+[CV 1/5] END C=22, degree=2, gamma=auto, kernel=poly;, score=0.722 total time=  28.7s
+[CV 2/5] END C=22, degree=2, gamma=auto, kernel=poly;, score=0.719 total time=  31.0s
+[CV 3/5] END C=22, degree=2, gamma=auto, kernel=poly;, score=0.755 total time=  28.4s
+[CV 4/5] END C=22, degree=2, gamma=auto, kernel=poly;, score=0.776 total time=  23.3s
+[CV 5/5] END C=22, degree=2, gamma=auto, kernel=poly;, score=0.782 total time=  23.3s
+[CV 1/5] END C=68, degree=2, gamma=scale, kernel=poly;, score=0.771 total time=  10.8s
+[CV 2/5] END C=68, degree=2, gamma=scale, kernel=poly;, score=0.764 total time=  11.6s
+[CV 3/5] END C=68, degree=2, gamma=scale, kernel=poly;, score=0.794 total time=  11.3s
+[CV 4/5] END C=68, degree=2, gamma=scale, kernel=poly;, score=0.830 total time=  12.0s
+[CV 5/5] END C=68, degree=2, gamma=scale, kernel=poly;, score=0.819 total time=  12.2s
+[CV 1/5] END C=88, degree=3, gamma=scale, kernel=rbf;, score=0.809 total time=  19.1s
+[CV 2/5] END C=88, degree=3, gamma=scale, kernel=rbf;, score=0.793 total time=  18.7s
+[CV 3/5] END C=88, degree=3, gamma=scale, kernel=rbf;, score=0.825 total time=  20.8s
+[CV 4/5] END C=88, degree=3, gamma=scale, kernel=rbf;, score=0.851 total time=  20.1s
+[CV 5/5] END C=88, degree=3, gamma=scale, kernel=rbf;, score=0.849 total time=  20.2s
+[CV 1/5] END C=26, degree=4, gamma=scale, kernel=linear;, score=0.702 total time=  20.5s
+[CV 2/5] END C=26, degree=4, gamma=scale, kernel=linear;, score=0.653 total time=  22.2s
+[CV 3/5] END C=26, degree=4, gamma=scale, kernel=linear;, score=0.727 total time=  21.6s
+[CV 4/5] END C=26, degree=4, gamma=scale, kernel=linear;, score=0.684 total time=  23.8s
+[CV 5/5] END C=26, degree=4, gamma=scale, kernel=linear;, score=0.721 total time=  21.3s
+[CV 1/5] END C=62, degree=3, gamma=auto, kernel=rbf;, score=0.745 total time=  16.1s
+[CV 2/5] END C=62, degree=3, gamma=auto, kernel=rbf;, score=0.751 total time=  15.3s
+[CV 3/5] END C=62, degree=3, gamma=auto, kernel=rbf;, score=0.790 total time=  16.5s
+[CV 4/5] END C=62, degree=3, gamma=auto, kernel=rbf;, score=0.775 total time=  16.4s
+[CV 5/5] END C=62, degree=3, gamma=auto, kernel=rbf;, score=0.798 total time=  16.7s
+[CV 1/5] END C=84, degree=3, gamma=scale, kernel=rbf;, score=0.809 total time=  20.7s
+[CV 2/5] END C=84, degree=3, gamma=scale, kernel=rbf;, score=0.793 total time=  19.0s
+[CV 3/5] END C=84, degree=3, gamma=scale, kernel=rbf;, score=0.826 total time=  20.3s
+[CV 4/5] END C=84, degree=3, gamma=scale, kernel=rbf;, score=0.851 total time=  20.4s
+[CV 5/5] END C=84, degree=3, gamma=scale, kernel=rbf;, score=0.849 total time=  19.7s
+[CV 1/5] END C=71, degree=3, gamma=auto, kernel=poly;, score=0.656 total time=  26.4s
+[CV 2/5] END C=71, degree=3, gamma=auto, kernel=poly;, score=0.653 total time=  27.9s
+[CV 3/5] END C=71, degree=3, gamma=auto, kernel=poly;, score=0.691 total time=  25.5s
+[CV 4/5] END C=71, degree=3, gamma=auto, kernel=poly;, score=0.702 total time=  26.5s
+[CV 5/5] END C=71, degree=3, gamma=auto, kernel=poly;, score=0.712 total time=  28.0s
+[CV 1/5] END C=4, degree=3, gamma=auto, kernel=poly;, score=0.646 total time=  29.4s
+[CV 2/5] END C=4, degree=3, gamma=auto, kernel=poly;, score=0.639 total time=  25.7s
+[CV 3/5] END C=4, degree=3, gamma=auto, kernel=poly;, score=0.680 total time=  25.3s
+[CV 4/5] END C=4, degree=3, gamma=auto, kernel=poly;, score=0.692 total time=  25.3s
+[CV 5/5] END C=4, degree=3, gamma=auto, kernel=poly;, score=0.695 total time=  28.0s
+[CV 1/5] END C=64, degree=3, gamma=scale, kernel=linear;, score=0.696 total time=  21.1s
+[CV 2/5] END C=64, degree=3, gamma=scale, kernel=linear;, score=0.648 total time=  22.5s
+[CV 3/5] END C=64, degree=3, gamma=scale, kernel=linear;, score=0.715 total time=  26.4s
+[CV 4/5] END C=64, degree=3, gamma=scale, kernel=linear;, score=0.686 total time=  33.5s
+[CV 5/5] END C=64, degree=3, gamma=scale, kernel=linear;, score=0.717 total time=  25.5s
+[CV 1/5] END C=48, degree=3, gamma=auto, kernel=poly;, score=0.649 total time=  24.8s
+[CV 2/5] END C=48, degree=3, gamma=auto, kernel=poly;, score=0.644 total time=  26.5s
+[CV 3/5] END C=48, degree=3, gamma=auto, kernel=poly;, score=0.682 total time=  26.6s
+[CV 4/5] END C=48, degree=3, gamma=auto, kernel=poly;, score=0.693 total time=  26.4s
+[CV 5/5] END C=48, degree=3, gamma=auto, kernel=poly;, score=0.701 total time=  27.8s
+Random Forest parameter search...
+Fitting 5 folds for each of 40 candidates, totalling 200 fits
+[CV 1/5] END max_depth=70, min_samples_leaf=4, min_samples_split=10, n_estimators=50;, score=0.808 total time=   0.6s
+[CV 2/5] END max_depth=70, min_samples_leaf=4, min_samples_split=10, n_estimators=50;, score=0.797 total time=   0.5s
+[CV 3/5] END max_depth=70, min_samples_leaf=4, min_samples_split=10, n_estimators=50;, score=0.809 total time=   0.5s
+[CV 4/5] END max_depth=70, min_samples_leaf=4, min_samples_split=10, n_estimators=50;, score=0.835 total time=   0.5s
+[CV 5/5] END max_depth=70, min_samples_leaf=4, min_samples_split=10, n_estimators=50;, score=0.820 total time=   0.6s
+[CV 1/5] END max_depth=30, min_samples_leaf=4, min_samples_split=5, n_estimators=350;, score=0.818 total time=   4.2s
+[CV 2/5] END max_depth=30, min_samples_leaf=4, min_samples_split=5, n_estimators=350;, score=0.800 total time=   4.1s
+[CV 3/5] END max_depth=30, min_samples_leaf=4, min_samples_split=5, n_estimators=350;, score=0.828 total time=   4.0s
+[CV 4/5] END max_depth=30, min_samples_leaf=4, min_samples_split=5, n_estimators=350;, score=0.841 total time=   4.1s
+[CV 5/5] END max_depth=30, min_samples_leaf=4, min_samples_split=5, n_estimators=350;, score=0.833 total time=   4.3s
+[CV 1/5] END max_depth=80, min_samples_leaf=4, min_samples_split=2, n_estimators=350;, score=0.818 total time=   4.1s
+[CV 2/5] END max_depth=80, min_samples_leaf=4, min_samples_split=2, n_estimators=350;, score=0.801 total time=   4.1s
+[CV 3/5] END max_depth=80, min_samples_leaf=4, min_samples_split=2, n_estimators=350;, score=0.828 total time=   4.0s
+[CV 4/5] END max_depth=80, min_samples_leaf=4, min_samples_split=2, n_estimators=350;, score=0.840 total time=   4.1s
+[CV 5/5] END max_depth=80, min_samples_leaf=4, min_samples_split=2, n_estimators=350;, score=0.834 total time=   4.1s
+[CV 1/5] END max_depth=30, min_samples_leaf=2, min_samples_split=2, n_estimators=200;, score=0.829 total time=   2.6s
+[CV 2/5] END max_depth=30, min_samples_leaf=2, min_samples_split=2, n_estimators=200;, score=0.818 total time=   2.6s
+[CV 3/5] END max_depth=30, min_samples_leaf=2, min_samples_split=2, n_estimators=200;, score=0.835 total time=   2.5s
+[CV 4/5] END max_depth=30, min_samples_leaf=2, min_samples_split=2, n_estimators=200;, score=0.848 total time=   2.5s
+[CV 5/5] END max_depth=30, min_samples_leaf=2, min_samples_split=2, n_estimators=200;, score=0.829 total time=   2.5s
+[CV 1/5] END max_depth=80, min_samples_leaf=4, min_samples_split=2, n_estimators=200;, score=0.817 total time=   2.3s
+[CV 2/5] END max_depth=80, min_samples_leaf=4, min_samples_split=2, n_estimators=200;, score=0.803 total time=   2.3s
+[CV 3/5] END max_depth=80, min_samples_leaf=4, min_samples_split=2, n_estimators=200;, score=0.826 total time=   2.3s
+[CV 4/5] END max_depth=80, min_samples_leaf=4, min_samples_split=2, n_estimators=200;, score=0.839 total time=   2.5s
+[CV 5/5] END max_depth=80, min_samples_leaf=4, min_samples_split=2, n_estimators=200;, score=0.833 total time=   2.8s
+[CV 1/5] END max_depth=80, min_samples_leaf=1, min_samples_split=2, n_estimators=150;, score=0.825 total time=   2.6s
+[CV 2/5] END max_depth=80, min_samples_leaf=1, min_samples_split=2, n_estimators=150;, score=0.818 total time=   2.4s
+[CV 3/5] END max_depth=80, min_samples_leaf=1, min_samples_split=2, n_estimators=150;, score=0.848 total time=   2.8s
+[CV 4/5] END max_depth=80, min_samples_leaf=1, min_samples_split=2, n_estimators=150;, score=0.852 total time=   3.1s
+[CV 5/5] END max_depth=80, min_samples_leaf=1, min_samples_split=2, n_estimators=150;, score=0.831 total time=   2.8s
+[CV 1/5] END max_depth=90, min_samples_leaf=2, min_samples_split=10, n_estimators=200;, score=0.824 total time=   3.2s
+[CV 2/5] END max_depth=90, min_samples_leaf=2, min_samples_split=10, n_estimators=200;, score=0.811 total time=   3.5s
+[CV 3/5] END max_depth=90, min_samples_leaf=2, min_samples_split=10, n_estimators=200;, score=0.835 total time=   3.5s
+[CV 4/5] END max_depth=90, min_samples_leaf=2, min_samples_split=10, n_estimators=200;, score=0.855 total time=   3.1s
+[CV 5/5] END max_depth=90, min_samples_leaf=2, min_samples_split=10, n_estimators=200;, score=0.835 total time=   3.0s
+[CV 1/5] END max_depth=10, min_samples_leaf=1, min_samples_split=10, n_estimators=50;, score=0.779 total time=   0.5s
+[CV 2/5] END max_depth=10, min_samples_leaf=1, min_samples_split=10, n_estimators=50;, score=0.779 total time=   0.5s
+[CV 3/5] END max_depth=10, min_samples_leaf=1, min_samples_split=10, n_estimators=50;, score=0.792 total time=   0.5s
+[CV 4/5] END max_depth=10, min_samples_leaf=1, min_samples_split=10, n_estimators=50;, score=0.808 total time=   0.5s
+[CV 5/5] END max_depth=10, min_samples_leaf=1, min_samples_split=10, n_estimators=50;, score=0.805 total time=   0.5s
+[CV 1/5] END max_depth=80, min_samples_leaf=2, min_samples_split=2, n_estimators=350;, score=0.826 total time=   5.6s
+[CV 2/5] END max_depth=80, min_samples_leaf=2, min_samples_split=2, n_estimators=350;, score=0.814 total time=   6.8s
+[CV 3/5] END max_depth=80, min_samples_leaf=2, min_samples_split=2, n_estimators=350;, score=0.840 total time=   5.4s
+[CV 4/5] END max_depth=80, min_samples_leaf=2, min_samples_split=2, n_estimators=350;, score=0.851 total time=   5.8s
+[CV 5/5] END max_depth=80, min_samples_leaf=2, min_samples_split=2, n_estimators=350;, score=0.834 total time=   5.6s
+[CV 1/5] END max_depth=20, min_samples_leaf=1, min_samples_split=10, n_estimators=300;, score=0.819 total time=   4.6s
+[CV 2/5] END max_depth=20, min_samples_leaf=1, min_samples_split=10, n_estimators=300;, score=0.798 total time=   5.1s
+[CV 3/5] END max_depth=20, min_samples_leaf=1, min_samples_split=10, n_estimators=300;, score=0.836 total time=   5.0s
+[CV 4/5] END max_depth=20, min_samples_leaf=1, min_samples_split=10, n_estimators=300;, score=0.842 total time=   4.3s
+[CV 5/5] END max_depth=20, min_samples_leaf=1, min_samples_split=10, n_estimators=300;, score=0.830 total time=   4.7s
+[CV 1/5] END max_depth=40, min_samples_leaf=1, min_samples_split=10, n_estimators=150;, score=0.825 total time=   2.6s
+[CV 2/5] END max_depth=40, min_samples_leaf=1, min_samples_split=10, n_estimators=150;, score=0.811 total time=   2.5s
+[CV 3/5] END max_depth=40, min_samples_leaf=1, min_samples_split=10, n_estimators=150;, score=0.839 total time=   2.5s
+[CV 4/5] END max_depth=40, min_samples_leaf=1, min_samples_split=10, n_estimators=150;, score=0.851 total time=   2.6s
+[CV 5/5] END max_depth=40, min_samples_leaf=1, min_samples_split=10, n_estimators=150;, score=0.829 total time=   2.4s
+[CV 1/5] END max_depth=5, min_samples_leaf=2, min_samples_split=5, n_estimators=200;, score=0.722 total time=   1.4s
+[CV 2/5] END max_depth=5, min_samples_leaf=2, min_samples_split=5, n_estimators=200;, score=0.727 total time=   1.2s
+[CV 3/5] END max_depth=5, min_samples_leaf=2, min_samples_split=5, n_estimators=200;, score=0.757 total time=   1.3s
+[CV 4/5] END max_depth=5, min_samples_leaf=2, min_samples_split=5, n_estimators=200;, score=0.791 total time=   1.2s
+[CV 5/5] END max_depth=5, min_samples_leaf=2, min_samples_split=5, n_estimators=200;, score=0.780 total time=   1.3s
+[CV 1/5] END max_depth=5, min_samples_leaf=4, min_samples_split=5, n_estimators=350;, score=0.724 total time=   2.1s
+[CV 2/5] END max_depth=5, min_samples_leaf=4, min_samples_split=5, n_estimators=350;, score=0.725 total time=   2.2s
+[CV 3/5] END max_depth=5, min_samples_leaf=4, min_samples_split=5, n_estimators=350;, score=0.754 total time=   2.8s
+[CV 4/5] END max_depth=5, min_samples_leaf=4, min_samples_split=5, n_estimators=350;, score=0.786 total time=   2.2s
+[CV 5/5] END max_depth=5, min_samples_leaf=4, min_samples_split=5, n_estimators=350;, score=0.783 total time=   2.6s
+[CV 1/5] END max_depth=10, min_samples_leaf=2, min_samples_split=2, n_estimators=350;, score=0.779 total time=   3.6s
+[CV 2/5] END max_depth=10, min_samples_leaf=2, min_samples_split=2, n_estimators=350;, score=0.776 total time=   3.7s
+[CV 3/5] END max_depth=10, min_samples_leaf=2, min_samples_split=2, n_estimators=350;, score=0.800 total time=   3.5s
+[CV 4/5] END max_depth=10, min_samples_leaf=2, min_samples_split=2, n_estimators=350;, score=0.818 total time=   3.8s
+[CV 5/5] END max_depth=10, min_samples_leaf=2, min_samples_split=2, n_estimators=350;, score=0.810 total time=   4.0s
+[CV 1/5] END max_depth=60, min_samples_leaf=2, min_samples_split=10, n_estimators=100;, score=0.822 total time=   1.7s
+[CV 2/5] END max_depth=60, min_samples_leaf=2, min_samples_split=10, n_estimators=100;, score=0.810 total time=   1.5s
+[CV 3/5] END max_depth=60, min_samples_leaf=2, min_samples_split=10, n_estimators=100;, score=0.832 total time=   1.5s
+[CV 4/5] END max_depth=60, min_samples_leaf=2, min_samples_split=10, n_estimators=100;, score=0.849 total time=   1.5s
+[CV 5/5] END max_depth=60, min_samples_leaf=2, min_samples_split=10, n_estimators=100;, score=0.829 total time=   1.8s
+[CV 1/5] END max_depth=10, min_samples_leaf=1, min_samples_split=5, n_estimators=350;, score=0.778 total time=   3.5s
+[CV 2/5] END max_depth=10, min_samples_leaf=1, min_samples_split=5, n_estimators=350;, score=0.776 total time=   4.4s
+[CV 3/5] END max_depth=10, min_samples_leaf=1, min_samples_split=5, n_estimators=350;, score=0.800 total time=   3.2s
+[CV 4/5] END max_depth=10, min_samples_leaf=1, min_samples_split=5, n_estimators=350;, score=0.821 total time=   3.6s
+[CV 5/5] END max_depth=10, min_samples_leaf=1, min_samples_split=5, n_estimators=350;, score=0.813 total time=   3.7s
+[CV 1/5] END max_depth=5, min_samples_leaf=1, min_samples_split=2, n_estimators=150;, score=0.721 total time=   1.3s
+[CV 2/5] END max_depth=5, min_samples_leaf=1, min_samples_split=2, n_estimators=150;, score=0.724 total time=   0.9s
+[CV 3/5] END max_depth=5, min_samples_leaf=1, min_samples_split=2, n_estimators=150;, score=0.757 total time=   1.0s
+[CV 4/5] END max_depth=5, min_samples_leaf=1, min_samples_split=2, n_estimators=150;, score=0.790 total time=   0.9s
+[CV 5/5] END max_depth=5, min_samples_leaf=1, min_samples_split=2, n_estimators=150;, score=0.784 total time=   1.1s
+[CV 1/5] END max_depth=70, min_samples_leaf=2, min_samples_split=10, n_estimators=200;, score=0.824 total time=   3.5s
+[CV 2/5] END max_depth=70, min_samples_leaf=2, min_samples_split=10, n_estimators=200;, score=0.811 total time=   4.1s
+[CV 3/5] END max_depth=70, min_samples_leaf=2, min_samples_split=10, n_estimators=200;, score=0.835 total time=   2.9s
+[CV 4/5] END max_depth=70, min_samples_leaf=2, min_samples_split=10, n_estimators=200;, score=0.855 total time=   2.8s
+[CV 5/5] END max_depth=70, min_samples_leaf=2, min_samples_split=10, n_estimators=200;, score=0.835 total time=   3.2s
+[CV 1/5] END max_depth=20, min_samples_leaf=4, min_samples_split=10, n_estimators=350;, score=0.814 total time=   4.8s
+[CV 2/5] END max_depth=20, min_samples_leaf=4, min_samples_split=10, n_estimators=350;, score=0.804 total time=   4.5s
+[CV 3/5] END max_depth=20, min_samples_leaf=4, min_samples_split=10, n_estimators=350;, score=0.824 total time=   4.6s
+[CV 4/5] END max_depth=20, min_samples_leaf=4, min_samples_split=10, n_estimators=350;, score=0.839 total time=   4.6s
+[CV 5/5] END max_depth=20, min_samples_leaf=4, min_samples_split=10, n_estimators=350;, score=0.830 total time=   5.1s
+[CV 1/5] END max_depth=90, min_samples_leaf=4, min_samples_split=2, n_estimators=250;, score=0.818 total time=   3.9s
+[CV 2/5] END max_depth=90, min_samples_leaf=4, min_samples_split=2, n_estimators=250;, score=0.801 total time=   4.2s
+[CV 3/5] END max_depth=90, min_samples_leaf=4, min_samples_split=2, n_estimators=250;, score=0.827 total time=   3.4s
+[CV 4/5] END max_depth=90, min_samples_leaf=4, min_samples_split=2, n_estimators=250;, score=0.840 total time=   4.1s
+[CV 5/5] END max_depth=90, min_samples_leaf=4, min_samples_split=2, n_estimators=250;, score=0.832 total time=   4.0s
+[CV 1/5] END max_depth=20, min_samples_leaf=1, min_samples_split=2, n_estimators=300;, score=0.815 total time=   4.1s
+[CV 2/5] END max_depth=20, min_samples_leaf=1, min_samples_split=2, n_estimators=300;, score=0.808 total time=   4.5s
+[CV 3/5] END max_depth=20, min_samples_leaf=1, min_samples_split=2, n_estimators=300;, score=0.827 total time=   4.8s
+[CV 4/5] END max_depth=20, min_samples_leaf=1, min_samples_split=2, n_estimators=300;, score=0.844 total time=   5.1s
+[CV 5/5] END max_depth=20, min_samples_leaf=1, min_samples_split=2, n_estimators=300;, score=0.823 total time=   5.2s
+[CV 1/5] END max_depth=20, min_samples_leaf=2, min_samples_split=2, n_estimators=100;, score=0.821 total time=   1.5s
+[CV 2/5] END max_depth=20, min_samples_leaf=2, min_samples_split=2, n_estimators=100;, score=0.810 total time=   1.5s
+[CV 3/5] END max_depth=20, min_samples_leaf=2, min_samples_split=2, n_estimators=100;, score=0.822 total time=   1.4s
+[CV 4/5] END max_depth=20, min_samples_leaf=2, min_samples_split=2, n_estimators=100;, score=0.846 total time=   1.4s
+[CV 5/5] END max_depth=20, min_samples_leaf=2, min_samples_split=2, n_estimators=100;, score=0.824 total time=   1.4s
+[CV 1/5] END max_depth=5, min_samples_leaf=4, min_samples_split=5, n_estimators=50;, score=0.707 total time=   0.3s
+[CV 2/5] END max_depth=5, min_samples_leaf=4, min_samples_split=5, n_estimators=50;, score=0.722 total time=   0.3s
+[CV 3/5] END max_depth=5, min_samples_leaf=4, min_samples_split=5, n_estimators=50;, score=0.755 total time=   0.3s
+[CV 4/5] END max_depth=5, min_samples_leaf=4, min_samples_split=5, n_estimators=50;, score=0.775 total time=   0.2s
+[CV 5/5] END max_depth=5, min_samples_leaf=4, min_samples_split=5, n_estimators=50;, score=0.785 total time=   0.3s
+[CV 1/5] END max_depth=90, min_samples_leaf=4, min_samples_split=10, n_estimators=200;, score=0.813 total time=   2.9s
+[CV 2/5] END max_depth=90, min_samples_leaf=4, min_samples_split=10, n_estimators=200;, score=0.801 total time=   2.9s
+[CV 3/5] END max_depth=90, min_samples_leaf=4, min_samples_split=10, n_estimators=200;, score=0.820 total time=   2.9s
+[CV 4/5] END max_depth=90, min_samples_leaf=4, min_samples_split=10, n_estimators=200;, score=0.847 total time=   2.8s
+[CV 5/5] END max_depth=90, min_samples_leaf=4, min_samples_split=10, n_estimators=200;, score=0.827 total time=   2.8s
+[CV 1/5] END max_depth=70, min_samples_leaf=2, min_samples_split=10, n_estimators=100;, score=0.822 total time=   1.5s
+[CV 2/5] END max_depth=70, min_samples_leaf=2, min_samples_split=10, n_estimators=100;, score=0.810 total time=   1.5s
+[CV 3/5] END max_depth=70, min_samples_leaf=2, min_samples_split=10, n_estimators=100;, score=0.832 total time=   1.5s
+[CV 4/5] END max_depth=70, min_samples_leaf=2, min_samples_split=10, n_estimators=100;, score=0.849 total time=   1.5s
+[CV 5/5] END max_depth=70, min_samples_leaf=2, min_samples_split=10, n_estimators=100;, score=0.829 total time=   1.5s
+[CV 1/5] END max_depth=10, min_samples_leaf=4, min_samples_split=2, n_estimators=300;, score=0.780 total time=   3.1s
+[CV 2/5] END max_depth=10, min_samples_leaf=4, min_samples_split=2, n_estimators=300;, score=0.772 total time=   3.1s
+[CV 3/5] END max_depth=10, min_samples_leaf=4, min_samples_split=2, n_estimators=300;, score=0.799 total time=   3.2s
+[CV 4/5] END max_depth=10, min_samples_leaf=4, min_samples_split=2, n_estimators=300;, score=0.821 total time=   3.1s
+[CV 5/5] END max_depth=10, min_samples_leaf=4, min_samples_split=2, n_estimators=300;, score=0.813 total time=   3.2s
+[CV 1/5] END max_depth=20, min_samples_leaf=2, min_samples_split=5, n_estimators=250;, score=0.817 total time=   3.6s
+[CV 2/5] END max_depth=20, min_samples_leaf=2, min_samples_split=5, n_estimators=250;, score=0.809 total time=   3.7s
+[CV 3/5] END max_depth=20, min_samples_leaf=2, min_samples_split=5, n_estimators=250;, score=0.834 total time=   3.7s
+[CV 4/5] END max_depth=20, min_samples_leaf=2, min_samples_split=5, n_estimators=250;, score=0.845 total time=   3.6s
+[CV 5/5] END max_depth=20, min_samples_leaf=2, min_samples_split=5, n_estimators=250;, score=0.830 total time=   3.7s
+[CV 1/5] END max_depth=90, min_samples_leaf=2, min_samples_split=2, n_estimators=300;, score=0.827 total time=   5.0s
+[CV 2/5] END max_depth=90, min_samples_leaf=2, min_samples_split=2, n_estimators=300;, score=0.813 total time=   5.4s
+[CV 3/5] END max_depth=90, min_samples_leaf=2, min_samples_split=2, n_estimators=300;, score=0.840 total time=   5.2s
+[CV 4/5] END max_depth=90, min_samples_leaf=2, min_samples_split=2, n_estimators=300;, score=0.851 total time=   5.1s
+[CV 5/5] END max_depth=90, min_samples_leaf=2, min_samples_split=2, n_estimators=300;, score=0.834 total time=   4.8s
+[CV 1/5] END max_depth=90, min_samples_leaf=4, min_samples_split=10, n_estimators=150;, score=0.812 total time=   2.0s
+[CV 2/5] END max_depth=90, min_samples_leaf=4, min_samples_split=10, n_estimators=150;, score=0.799 total time=   2.3s
+[CV 3/5] END max_depth=90, min_samples_leaf=4, min_samples_split=10, n_estimators=150;, score=0.819 total time=   2.1s
+[CV 4/5] END max_depth=90, min_samples_leaf=4, min_samples_split=10, n_estimators=150;, score=0.847 total time=   2.3s
+[CV 5/5] END max_depth=90, min_samples_leaf=4, min_samples_split=10, n_estimators=150;, score=0.823 total time=   2.5s
+[CV 1/5] END max_depth=60, min_samples_leaf=2, min_samples_split=2, n_estimators=250;, score=0.826 total time=   4.6s
+[CV 2/5] END max_depth=60, min_samples_leaf=2, min_samples_split=2, n_estimators=250;, score=0.812 total time=   4.5s
+[CV 3/5] END max_depth=60, min_samples_leaf=2, min_samples_split=2, n_estimators=250;, score=0.839 total time=   4.4s
+[CV 4/5] END max_depth=60, min_samples_leaf=2, min_samples_split=2, n_estimators=250;, score=0.852 total time=   4.5s
+[CV 5/5] END max_depth=60, min_samples_leaf=2, min_samples_split=2, n_estimators=250;, score=0.833 total time=   4.4s
+[CV 1/5] END max_depth=20, min_samples_leaf=2, min_samples_split=10, n_estimators=150;, score=0.823 total time=   2.4s
+[CV 2/5] END max_depth=20, min_samples_leaf=2, min_samples_split=10, n_estimators=150;, score=0.796 total time=   2.1s
+[CV 3/5] END max_depth=20, min_samples_leaf=2, min_samples_split=10, n_estimators=150;, score=0.830 total time=   2.5s
+[CV 4/5] END max_depth=20, min_samples_leaf=2, min_samples_split=10, n_estimators=150;, score=0.840 total time=   2.1s
+[CV 5/5] END max_depth=20, min_samples_leaf=2, min_samples_split=10, n_estimators=150;, score=0.832 total time=   2.0s
+[CV 1/5] END max_depth=40, min_samples_leaf=1, min_samples_split=5, n_estimators=300;, score=0.827 total time=   4.0s
+[CV 2/5] END max_depth=40, min_samples_leaf=1, min_samples_split=5, n_estimators=300;, score=0.814 total time=   4.7s
+[CV 3/5] END max_depth=40, min_samples_leaf=1, min_samples_split=5, n_estimators=300;, score=0.840 total time=   5.4s
+[CV 4/5] END max_depth=40, min_samples_leaf=1, min_samples_split=5, n_estimators=300;, score=0.853 total time=   5.1s
+[CV 5/5] END max_depth=40, min_samples_leaf=1, min_samples_split=5, n_estimators=300;, score=0.842 total time=   5.8s
+[CV 1/5] END max_depth=40, min_samples_leaf=1, min_samples_split=2, n_estimators=250;, score=0.829 total time=   4.3s
+[CV 2/5] END max_depth=40, min_samples_leaf=1, min_samples_split=2, n_estimators=250;, score=0.813 total time=   4.8s
+[CV 3/5] END max_depth=40, min_samples_leaf=1, min_samples_split=2, n_estimators=250;, score=0.844 total time=   4.5s
+[CV 4/5] END max_depth=40, min_samples_leaf=1, min_samples_split=2, n_estimators=250;, score=0.857 total time=   3.4s
+[CV 5/5] END max_depth=40, min_samples_leaf=1, min_samples_split=2, n_estimators=250;, score=0.832 total time=   3.3s
+[CV 1/5] END max_depth=40, min_samples_leaf=2, min_samples_split=10, n_estimators=150;, score=0.821 total time=   1.7s
+[CV 2/5] END max_depth=40, min_samples_leaf=2, min_samples_split=10, n_estimators=150;, score=0.813 total time=   1.7s
+[CV 3/5] END max_depth=40, min_samples_leaf=2, min_samples_split=10, n_estimators=150;, score=0.836 total time=   1.7s
+[CV 4/5] END max_depth=40, min_samples_leaf=2, min_samples_split=10, n_estimators=150;, score=0.854 total time=   1.9s
+[CV 5/5] END max_depth=40, min_samples_leaf=2, min_samples_split=10, n_estimators=150;, score=0.831 total time=   1.7s
+[CV 1/5] END max_depth=20, min_samples_leaf=1, min_samples_split=2, n_estimators=350;, score=0.817 total time=   4.1s
+[CV 2/5] END max_depth=20, min_samples_leaf=1, min_samples_split=2, n_estimators=350;, score=0.811 total time=   4.1s
+[CV 3/5] END max_depth=20, min_samples_leaf=1, min_samples_split=2, n_estimators=350;, score=0.827 total time=   4.3s
+[CV 4/5] END max_depth=20, min_samples_leaf=1, min_samples_split=2, n_estimators=350;, score=0.844 total time=   4.9s
+[CV 5/5] END max_depth=20, min_samples_leaf=1, min_samples_split=2, n_estimators=350;, score=0.822 total time=   5.6s
+[CV 1/5] END max_depth=50, min_samples_leaf=1, min_samples_split=10, n_estimators=150;, score=0.826 total time=   2.2s
+[CV 2/5] END max_depth=50, min_samples_leaf=1, min_samples_split=10, n_estimators=150;, score=0.811 total time=   2.5s
+[CV 3/5] END max_depth=50, min_samples_leaf=1, min_samples_split=10, n_estimators=150;, score=0.841 total time=   2.8s
+[CV 4/5] END max_depth=50, min_samples_leaf=1, min_samples_split=10, n_estimators=150;, score=0.852 total time=   2.1s
+[CV 5/5] END max_depth=50, min_samples_leaf=1, min_samples_split=10, n_estimators=150;, score=0.827 total time=   2.3s
+[CV 1/5] END max_depth=70, min_samples_leaf=1, min_samples_split=5, n_estimators=300;, score=0.826 total time=   4.4s
+[CV 2/5] END max_depth=70, min_samples_leaf=1, min_samples_split=5, n_estimators=300;, score=0.815 total time=   4.4s
+[CV 3/5] END max_depth=70, min_samples_leaf=1, min_samples_split=5, n_estimators=300;, score=0.840 total time=   4.4s
+[CV 4/5] END max_depth=70, min_samples_leaf=1, min_samples_split=5, n_estimators=300;, score=0.856 total time=   4.5s
+[CV 5/5] END max_depth=70, min_samples_leaf=1, min_samples_split=5, n_estimators=300;, score=0.839 total time=   4.4s
+[CV 1/5] END max_depth=90, min_samples_leaf=4, min_samples_split=5, n_estimators=100;, score=0.821 total time=   1.2s
+[CV 2/5] END max_depth=90, min_samples_leaf=4, min_samples_split=5, n_estimators=100;, score=0.805 total time=   1.3s
+[CV 3/5] END max_depth=90, min_samples_leaf=4, min_samples_split=5, n_estimators=100;, score=0.826 total time=   1.5s
+[CV 4/5] END max_depth=90, min_samples_leaf=4, min_samples_split=5, n_estimators=100;, score=0.835 total time=   1.3s
+[CV 5/5] END max_depth=90, min_samples_leaf=4, min_samples_split=5, n_estimators=100;, score=0.835 total time=   1.3s
+[CV 1/5] END max_depth=50, min_samples_leaf=1, min_samples_split=2, n_estimators=100;, score=0.826 total time=   1.9s
+[CV 2/5] END max_depth=50, min_samples_leaf=1, min_samples_split=2, n_estimators=100;, score=0.821 total time=   1.5s
+[CV 3/5] END max_depth=50, min_samples_leaf=1, min_samples_split=2, n_estimators=100;, score=0.842 total time=   1.6s
+[CV 4/5] END max_depth=50, min_samples_leaf=1, min_samples_split=2, n_estimators=100;, score=0.850 total time=   1.5s
+[CV 5/5] END max_depth=50, min_samples_leaf=1, min_samples_split=2, n_estimators=100;, score=0.824 total time=   1.5s
+[CV 1/5] END max_depth=50, min_samples_leaf=1, min_samples_split=2, n_estimators=200;, score=0.824 total time=   3.0s
+[CV 2/5] END max_depth=50, min_samples_leaf=1, min_samples_split=2, n_estimators=200;, score=0.816 total time=   3.0s
+[CV 3/5] END max_depth=50, min_samples_leaf=1, min_samples_split=2, n_estimators=200;, score=0.845 total time=   2.9s
+[CV 4/5] END max_depth=50, min_samples_leaf=1, min_samples_split=2, n_estimators=200;, score=0.853 total time=   3.0s
+[CV 5/5] END max_depth=50, min_samples_leaf=1, min_samples_split=2, n_estimators=200;, score=0.834 total time=   3.1s
+{'weights': 'distance', 'n_neighbors': 16, 'metric': 'manhattan'} {'kernel': 'rbf', 'gamma': 'scale', 'degree': 3, 'C': 53} {'n_estimators': 300, 'min_samples_split': 5, 'min_samples_leaf': 1, 'max_depth': 70} {'n_estimators': 100, 'max_depth': 18, 'learning_rate': 0.1}
+0.8191062349478191
+0.8198472653918198
+0.8262077767028261
+0.7611308947942612
+0.7447355962207448
+1/30
+0.8648681516914284
+0.8561525832539474
+0.8682530352473803
+0.7769118511461985
+0.7863266919350589
+2/30
+0.7870635578174933
+0.8173038229376257
+0.8045685879985798
+0.7395549769203456
+0.7578293289146645
+3/30
+0.8508048780487805
+0.8379756097560975
+0.8408536585365853
+0.8111463414634146
+0.8210731707317073
+4/30
+0.795633247487294
+0.8306629897212663
+0.8401668300020512
+0.7876108211591494
+0.7296989311028558
+5/30
+0.8128071606332476
+0.8542777673212456
+0.8471673254281951
+0.7385971516406299
+0.7954702302528389
+6/30
+0.8273748124531134
+0.8233659977494374
+0.8282891035258815
+0.7936515378844711
+0.808479463615904
+7/30
+0.8038401190859351
+0.8182732539427101
+0.8060126327647248
+0.7526150627615062
+0.8007422755069199
+8/30
+0.8336003715314061
+0.8440264716126784
+0.8589573899918728
+0.7790781376988274
+0.7829559967491001
+9/30
+0.8049704142011834
+0.8240894148586455
+0.817475345167653
+0.8097304404996712
+0.7422485207100591
+10/30
+0.7856781376518219
+0.797271807140228
+0.7882315053367684
+0.7396255060728745
+0.7274107471475891
+11/30
+0.8412650037509377
+0.8532680045011252
+0.8487199924981246
+0.7816133720930232
+0.7691766691672918
+12/30
+0.8142137783934735
+0.8119049189700288
+0.8169184422895089
+0.7783165116432482
+0.7133276161576181
+13/30
+0.7884372177055103
+0.814182475158085
+0.8146115627822945
+0.7611788617886179
+0.7941508581752483
+14/30
+0.8134323559670781
+0.8352301954732511
+0.8298825445816186
+0.7625064300411522
+0.7505144032921811
+15/30
+0.8497193595877807
+0.850743006993007
+0.8555506993006994
+0.7892666543982334
+0.8126725248435774
+16/30

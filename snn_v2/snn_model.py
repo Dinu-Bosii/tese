@@ -5,6 +5,7 @@ from snntorch.functional import ce_rate_loss, ce_temporal_loss, ce_count_loss
 from sklearn.metrics import roc_auc_score, accuracy_score
 from snntorch import spikegen
 import copy
+import numpy as np
 
 # NN Architecture
 class SNNet(nn.Module):
@@ -19,16 +20,13 @@ class SNNet(nn.Module):
         self.num_outputs = net_config['layer_sizes'][-1]
         self.encoding = net_config['encoding']
         self.layers = nn.ModuleList()
-        #self.bn = nn.BatchNorm1d(net_config['layer_sizes'][0])
-        #print("self.num_layers:", self.num_layers)
+
         for i in range(len(self.layer_sizes) - 1):
             print(self.layer_sizes[i], self.layer_sizes[i+1])
             fc_layer = nn.Linear(self.layer_sizes[i], self.layer_sizes[i+1])
             self.layers.append(fc_layer)
             lif = snn.Leaky(beta=net_config["beta"], spike_grad=net_config['spike_grad'])
             self.layers.append(lif)
-
-        #print("len(self.layers):", len(self.layers))
 
         if self.encoding == "rate":
             self.forward = self.forward_rate
@@ -50,34 +48,24 @@ class SNNet(nn.Module):
         mem_out_rec = []
 
         for x_in in in_spikes:
-            #print('x')
             spk = x_in
             for i in range(0, self.num_layers, 2):
-                #print(i)
+
                 fc = self.layers[i]
                 lif = self.layers[i+1]
-              
-                #if i == 0:
-                #    cur = cur_1
-                #else:
-                #    cur = fc(spk) 
+
                 cur = fc(spk) 
-                #cur = torch.relu(cur)  # Remove inhibitory current
-                #if i == 0:
-                    #cur = self.bn(cur)
+
                 spk, membranes[i+1] = lif(cur, spk)
 
             spk_out_rec.append(spk)
             mem_out_rec.append(membranes[-1])
 
-        #print(torch.stack(spk_out_rec, dim=0).size())
         return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
     
     def forward_ttfs(self, x):
         in_spikes = spikegen.latency(x, num_steps=self.num_steps, linear=True)
-        #print(in_spikes.sum())
-        #print(x.shape)
-        #print(in_spikes.shape)
+
         membranes = []
         for layer in self.layers:
             mem = layer.reset_mem() if isinstance(layer, snn.Leaky) else None
@@ -89,26 +77,18 @@ class SNNet(nn.Module):
 
         for x_in in in_spikes:
             spk = x_in
-            #print(spk.sum())
             for i in range(0, self.num_layers, 2):
-                #print(i)
+
                 fc = self.layers[i]
                 lif = self.layers[i+1]
-              
-                #if i == 0:
-                #    cur = cur_1
-                #else:
-                #    cur = fc(spk) 
+
                 cur = fc(spk) 
-                #cur = torch.relu(cur)  # Remove inhibitory current
 
                 spk, membranes[i+1] = lif(cur, spk)
 
             spk_out_rec.append(spk)
-            #print(spk.sum())
+
             mem_out_rec.append(membranes[-1])
-        #print(spk_out_rec.sum())
-        #print(torch.stack(spk_out_rec, dim=0).size())
 
         return torch.stack(spk_out_rec, dim=0), torch.stack(mem_out_rec, dim=0)
     
@@ -123,16 +103,12 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
     loss_hist = []
     num_steps = net.num_steps
     best_auc_roc, best_epoch = 0, 0
-    #patience, stop_limit = 50, 0
     best_net_list = []
     best_val_net = None
-    #best_net_list = {}  
-    #epoch_list = []
+
     val_auc_roc, train_auc_roc = 0, 0
     loss_val = 0
-    #aux_net = copy.deepcopy(net)
-    aux_auc = 0
-    #print("Epoch:0", end ='', flush=True)
+
     for epoch in range(num_epochs):
         net.train()
         #print(f"Epoch:{epoch + 1}")
@@ -143,12 +119,10 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
         for data, targets in train_batch:
             data = data.to(device, non_blocking=True)
             targets = targets.to(device, non_blocking=True)
-            #print(data.size(), data.view(batch_size, -1).size())
-            #print(data.shape)  # Should be [32, 1, 167]
+
             # forward pass
             spk_rec, mem_rec = net(data)
-            #print(spk_rec, mem_rec)
-            #print(spk_rec.size(), mem_rec.size(), targets.size())
+
             # Compute loss
             loss_val = compute_loss(loss_type, loss_fn, spk_rec, mem_rec, num_steps, targets, dtype, device) 
             #print(loss_val.item())
@@ -162,10 +136,9 @@ def train_snn(net, optimizer,  train_loader, val_loader, train_config, net_confi
         #scheduler.step()
         
         val_acc, val_auc_roc = val_fn(net, device, val_loader, train_config)
-        #if (epoch + 1) % 10 == 0: 
-            #print(f"Epoch:{epoch + 1}|val_auc:{val_auc_roc:.4f}|loss:{loss_val.item()}", flush=True)
-        test_acc, test_auc_roc = val_fn(net, device, train_config['test_loader'], train_config)
-        print(f"Epoch:{epoch + 1}|val_acc:{val_acc:.4f}|val_auc:{val_auc_roc:.4f}|test_acc:{test_acc:.4f}|test_auc:{test_auc_roc:.4f}|loss:{loss_val.item()}", flush=True)
+        if (epoch + 1) % 10 == 0: 
+            print(f"Epoch:{epoch + 1}|val_auc:{val_auc_roc:.4f}|loss:{loss_val.item()}", flush=True)
+
         if val_auc_roc > best_auc_roc:
             best_auc_roc = val_auc_roc
             best_epoch = epoch
@@ -190,18 +163,14 @@ def val_snn(net, device, val_loader, train_config):
         data = data.to(device)
         targets = targets.to(device)
         spk_rec, mem_rec = net(data)
-        #print(spk_rec.size())
 
         predicted = prediction_fn(spk_rec)  
 
-        all_preds.extend(predicted.cpu().numpy())
+        all_preds.extend(predicted.cpu().detach().numpy())
         all_targets.extend(targets.cpu().numpy())
 
-        #loss_val = compute_loss(loss_type, loss_fn, spk_rec, mem_rec, targets, dtype, device) 
-        # Store loss
-        #mean_loss += loss_val
     ## accuracy and roc-auc
-    accuracy = accuracy_score(all_targets, all_preds)
+    accuracy = accuracy_score(all_targets, np.array(all_preds) >= 0.0)
     auc_roc = roc_auc_score(all_targets, all_preds)
     
     return accuracy, auc_roc
@@ -210,7 +179,6 @@ def val_snn(net, device, val_loader, train_config):
 def test_snn(net,  device, test_loader, train_config):
     all_preds = []
     all_targets = []
-    #all_probs = []
     prediction_fn = train_config['prediction_fn']
     # Testing Set Loss
     with torch.no_grad():
@@ -219,28 +187,22 @@ def test_snn(net,  device, test_loader, train_config):
             data = data.to(device)
             targets = targets.to(device)
             # forward pass
-            #test_spk, _ = net(data.view(data.size(0), -1))
-            test_spk, _ = net(data)
 
-            # calculate total accuracy
-            # max(1) -> gives the index (either 0 or 1) for either output neuron 
-            # based on the times they spiked in the 10 time step interval
+            test_spk, _ = net(data)
 
             predicted = prediction_fn(test_spk)        
 
-            all_preds.extend(predicted.cpu().numpy())
+            all_preds.extend(predicted.cpu().detach().numpy())
             all_targets.extend(targets.cpu().numpy())
 
     return all_preds, all_targets
 
-# ver binary cross entropy, bcewithlogits
 def get_loss_fn(loss_type, class_weights=None, pop_coding=False):
     loss_dict = {
         "rate_loss": ce_rate_loss(weight=class_weights),
         "count_loss": ce_count_loss(weight=class_weights, population_code=pop_coding, num_classes=2),
         "temporal_loss": ce_temporal_loss(weight=class_weights),
         "ce_mem": nn.CrossEntropyLoss(weight=class_weights),
-        "bce_loss": nn.BCEWithLogitsLoss(weight=class_weights[1])
     }
 
     return loss_dict[loss_type]
@@ -248,13 +210,10 @@ def get_loss_fn(loss_type, class_weights=None, pop_coding=False):
 
 def compute_loss(loss_type, loss_fn, spk_rec, mem_rec, num_steps, targets, dtype, device):
     loss_val = torch.zeros((1), dtype=dtype, device=device)
-    #targets = targets.unsqueeze(1)
-    #print(mem_rec[0].size(), targets.size())
-    #print(spk_rec[0].size(), targets.size())
-    #print(spk_rec[0].sum().item())
+
     if loss_type in ["rate_loss", "count_loss"]:
         loss_val = loss_fn(spk_rec, targets)
-    elif loss_type in ["ce_mem", "bce_loss"]:
+    elif loss_type == "ce_mem":
         for step in range(num_steps):
             loss_val += loss_fn(mem_rec[step], targets) / num_steps
     elif loss_type == "temporal_loss":
